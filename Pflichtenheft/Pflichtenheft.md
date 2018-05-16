@@ -17,7 +17,7 @@ Die App funktioniert, sobald sich der Nutzer eingeloggt hat. Falls kein Account 
 
 
 ## 1.2 Ziele
-BuyLocal soll ausschließlich für den Privat An- und Verkauf genutzt werden. Es stellt kein Zahlungssystem bereit, sondern bringt ausschließlich Käufer und Verkäufer in Kontakt. Es kann somit überall auf der Welt angewendet werden. BuyLocal stellt neben dem grundlegenden Inserieren und Suchen von Angeboten die Möglichkeit bereit, Verkäufer und Käufer zu bewerten. Angebote können nach Kategorien oder Tags eingeordnet werden und so leichter gefunden werden. Angebote können weiterhin auf einer Karte um seinen eigenen Standpunkt herum angezeigt. Bewerten kann man Käufer und Verkäufer mit einer Anzahl von Sternen und optional mit einem Text, dieser ist dann für alle anderen Besucher des jeweiligen Profils sichtbar.
+BuyLocal soll ausschließlich für den Privat An- und Verkauf genutzt werden. Es stellt kein Zahlungssystem bereit, sondern bringt ausschließlich Käufer und Verkäufer in Kontakt. Es kann somit überall auf der Welt angewendet werden. BuyLocal stellt neben dem grundlegenden Inserieren und Suchen von Angeboten die Möglichkeit bereit, Verkäufer und Käufer zu bewerten. Angebote können nach Kategorien oder Tags eingeordnet werden und so leichter gefunden werden. Angebote können weiterhin auf einer Karte um seinen eigenen Standpunkt herum angezeigt werden. Bewerten kann man Käufer und Verkäufer mit einer Anzahl von Sternen und optional mit einem Text, dieser ist dann für alle anderen Besucher des jeweiligen Profils sichtbar.
 
 
 Unsere App richtet sich an Privatpersonen ab 13 Jahren, die gebrauchte Gegenstände online kaufen oder verkaufen wollen. Der Bildungsstand der Nutzer ist für die Verwendung der App unerheblich. Eine grundlegende Erfahrung mit vergleichbaren Flohmarktapps könnte einem die Benutzung erleichtern, wird allerdings nicht vorausgesetzt. Wie auch auf einem Flohmarkt üblich, wird in der App um Preise verhandelt werden. Nutzer, die in diesem Bereich Kenntnisse haben, werden es bei den Preisverhandlungen leichter haben. Es kann nicht davon ausgegangen werden, dass Käufer und Verkäufer spezielle Sachkenntnisse über die angebotenen Gegenstände besitzen.
@@ -26,7 +26,7 @@ Unsere App richtet sich an Privatpersonen ab 13 Jahren, die gebrauchte Gegenstä
 BuyLocal soll nicht gewerblich verwendet werden, das heißt ausschließlich von Privatkunden die keinen dauerhaften Verkauf von Neuwaren betreiben.
 
 
-BuyLocal soll eine sichere Anwendung sein, die Informationen zwischen Server und Client dürfen nur über abgesicherte Verbindungen versendand werden und es ist eventuell notwendig eine seperate Verschlüsselung bereitzustellen. 
+BuyLocal soll eine sichere Anwendung sein, die Informationen zwischen Server und Client dürfen nur über abgesicherte Verbindungen versendet werden und es ist eventuell notwendig eine seperate Verschlüsselung bereitzustellen. Das selbe gilt auch für die über die App versendeten Nachrichten. Es soll dafür gesorgt werden das keine Drittpartei an die Suchen oder Nachrichten eines Nutzers kommt oder diese einfach herausfinden kann. 
 
 
 
