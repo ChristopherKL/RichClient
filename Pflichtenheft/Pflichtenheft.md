@@ -8,7 +8,12 @@ BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck, (Inhaltsverzeichnis)
 
 
 ## 1.1 Beschreibung
-BuyLocal bietet dem Nutzer die Möglichkeit, Gegenstände per App zu kaufen oder verkaufen. Die App funktioniert, sobald sich der Nutzer eingeloggt hat. Falls kein Account vorhanden ist, kann der Nutzer sich registrieren. Zum Verkauf inserierte Produkte werden nach Kategorien und/oder Tags sortiert, wodurch die Suche nach passenden Angeboten erleichtert wird. Käufer können sich anhand von Städtenamen oder Postleitzahlen Angebote in ihrer Nähe anzeigen lassen. BuyLocal stellt lediglich eine Umgebung für Selbstabholer bereit. Hat ein Käufer einen passenden Artikel gefunden, kann er den Verkäufer mit einer Nachricht kontaktieren. Sollte es zu einer Einigung kommen und der Artikel wird verkauft, kann der Verkäufer das Angebot löschen.
+BuyLocal bietet dem Nutzer die Möglichkeit, Gegenstände per App zu kaufen oder verkaufen. 
+Die App funktioniert, sobald sich der Nutzer eingeloggt hat. Falls kein Account vorhanden ist, kann der Nutzer sich registrieren.
+ Zum Verkauf inserierte Produkte werden nach Kategorien und/oder Tags sortiert, wodurch die Suche nach passenden Angeboten erleichtert wird.
+ Käufer können sich anhand von Städtenamen oder Postleitzahlen Angebote in ihrer Nähe anzeigen lassen.
+ BuyLocal stellt lediglich eine Umgebung für Selbstabholer bereit. Hat ein Käufer einen passenden Artikel gefunden, kann er den Verkäufer mit einer Nachricht kontaktieren.
+ Sollte es zu einer Einigung kommen und der Artikel wird verkauft, kann der Verkäufer das Angebot löschen.
 
 
 ## 1.2 Ziele
@@ -19,6 +24,9 @@ Unsere App richtet sich an Privatpersonen ab 13 Jahren, die gebrauchte Gegenstä
 
 
 BuyLocal soll nicht gewerblich verwendet werden, das heißt ausschließlich von Privatkunden die keinen dauerhaften Verkauf von Neuwaren betreiben.
+
+
+BuyLocal soll eine sichere Anwendung sein, die Informationen zwischen Server und Client dürfen nur über abgesicherte Verbindungen versendand werden und es ist eventuell notwendig eine seperate Verschlüsselung bereitzustellen. 
 
 
 
