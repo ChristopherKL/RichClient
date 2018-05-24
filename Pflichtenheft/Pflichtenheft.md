@@ -102,20 +102,6 @@ BuyLocal soll eine sichere Anwendung sein, die Informationen zwischen Server und
         - Strukturierung der User Stories in funktionale Gruppen
 
 
-Als unangemeldeter Nutzer möchte ich meine E-Mail-Adresse und mein Passwort im Loginformular eingeben, so dass ich mich mit diesen Daten Anmelden kann. Erfüllt wenn Nutzer seine Login-Daten eingeben kann und der Server eine passende Rückmeldung zum Login liefert.
-Als unangemeldeter Nutzer möchte meine E-Mail-Adresse in das Passwort-Vergessen-Formular eingeben, so dass ich mein Passwort über meine E-Mail-Adresse zurücksetzen kann. Erfüllt wenn Nutzer seine E-Mail eingeben kann und die E-Mail mit dem Link zum zurücksetzen des Passworts gesendet wird.
-
-
-Als unangemeldeter Nutzer möchte ich mich mit meiner E-Mail, einem Passwort und meiner Anschrift regestrieren, so dass ich ein eigenes Konto bekomme. Erfüllt wenn der Nutzer seine Daten eingeben konnte und das Konto bei korrektheit dieser erstellt wird.
-
-
-Als angemeldeter Nutzer möchte ich mein Profil ändern, so dass ich z.B. bei einem Umzug meine Daten aktuell halten kann oder aus Sicherheitsgründen ein neues Passwort genutzt werden muss. Erfüllt wenn der Nutzer seine neuen Daten eingeben kann und sie bei korrektheit dieser geändert werden können.
-Als angemeldeter Nutzer möchte ich mein Profil löschen, so dass ich wenn ich BuyLocal nicht mehr nützen möchte ich mein Konto entfernen kann. Erfüllt wenn nutzer sein Profil löschen kann.
-
-
-Als angemeldeter Benutzer möchte ich mein eigenes oder ein beliebiges Fremdes Profil ansehen, so dass ich Bewertungen und letzte Aktivätszeiten einsehen kann. Erfüllt wenn Nutzerprofile korrekt angezeigt werden.
-Als angemeldeter Benutzer möchte ich einen Nutzer melden oder blockieren, so dass ich bei Konflikten oder Spam eine Möglichkeit habe mich zu schützen. Erfüllt wenn Nachrichten vom blockierten Nutzer nicht mehr angezeigt werden oder die Meldung beim Admin eingegangen ist.
-
 
 Als angemeldeter Benutzer möchte Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen, so dass ich schnell und einfach dass finde was ich benötige. Erfüllt wenn Angeboten passend zu der Suchanfrage angezeigt werden.
 Als angemeldeter Benutzer möchte ich Suchanfragen speicher, so dass falls neue Angebote mit dieser Suchanfrage gefunden werden, der Nutzer mit eine Push-Nachricht darüber informiert wird.
@@ -139,6 +125,15 @@ Als angemeldeter Benutzer möchte ich Suchanfragen speicher, so dass falls neue 
 | Nutzer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche Angebote in meiner Nähe sind. | Angebote werden angezeigt |
 | Nutzer | andere Nutzer bewerten | ich vor einem Kauf oder Verkauf weiß, wie vertrauenswürdig die andere Person ist. |
 | Verkäufer | Angebote erstellen können | ich meine Gegenstände verkaufen kann. | Eintragen der Angebotsdetails und Erstellung des Angebots auf dem Server |
+| unangemeldeter Nutzer | meine E-Mail-Adresse und mein Passwort im Loginformular eingeben | ich mich mit diesen Daten Anmelden kann. | Erfüllt wenn Nutzer seine Login-Daten eingeben kann und der Server eine passende Rückmeldung zum Login liefert.
+| unangemeldeter Nutzer | meine E-Mail-Adresse in das Passwort-Vergessen-Formular eingeben | ich mein Passwort über meine E-Mail-Adresse zurücksetzen kann | Erfüllt wenn Nutzer seine E-Mail eingeben kann und die E-Mail mit dem Link zum zurücksetzen des Passworts gesendet wird.
+| unangemeldeter Nutzer | mich mit meiner E-Mail, einem Passwort und meiner Anschrift regestrieren | so dass ich ein eigenes Konto bekomme | Erfüllt wenn der Nutzer seine Daten eingeben konnte und das Konto bei korrektheit dieser erstellt wird.
+| angemeldeter Nutzer | mein Profil ändern | ich z.B. bei einem Umzug meine Daten aktuell halten kann oder aus Sicherheitsgründen ein neues Passwort genutzt werden muss | Erfüllt wenn der Nutzer seine neuen Daten eingeben kann und sie bei korrektheit dieser geändert werden können.
+| angemeldeter Nutzer | mein Profil löschen | ich wenn ich BuyLocal nicht mehr nützen möchte ich mein Konto entfernen kann. | Erfüllt wenn nutzer sein Profil löschen kann.
+| angemeldeter Benutzer | mein eigenes oder ein beliebiges Fremdes Profil ansehen | ich Bewertungen und letzte Aktivätszeiten einsehen kann | Erfüllt wenn Nutzerprofile korrekt angezeigt werden.
+| angemeldeter Benutzer | einen Nutzer melden oder blockieren | so dass ich bei Konflikten oder Spam eine Möglichkeit habe mich zu schützen. | Erfüllt wenn Nachrichten vom blockierten Nutzer nicht mehr angezeigt werden oder die Meldung beim Admin eingegangen ist.
+| angemeldeter Benutzer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach dass finde was ich benötige. | Erfüllt wenn Angeboten passend zu der Suchanfrage angezeigt werden.
+| angemeldeter Benutzer | Suchanfragen speichern | falls neue Angebote mit dieser Suchanfrage gefunden werden, der Nutzer mit eine Push-Nachricht darüber informiert wird. | Erfüllt wenn die Push-Nachricht korrekt erscheint sobald ein Angebot, welches durch die gespeicherte Suchanfrage gefunden wurde, neu eingestellt wird.
 
 
 # 3 Technische Beschreibung
