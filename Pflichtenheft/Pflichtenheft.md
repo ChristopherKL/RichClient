@@ -1,4 +1,4 @@
-﻿# Anforderungs- und Entwurfsspezifikation ("Pflichtenheft")
+# Anforderungs- und Entwurfsspezifikation ("Pflichtenheft")
 
 
 BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck, (Inhaltsverzeichnis)
@@ -101,39 +101,26 @@ BuyLocal soll eine sichere Anwendung sein, die Informationen zwischen Server und
         - Optional: Name (oder ID) und Priorität ("Must", "Should", "Could", "Won't")
         - Strukturierung der User Stories in funktionale Gruppen
 
-
-
-Als angemeldeter Benutzer möchte Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen, so dass ich schnell und einfach dass finde was ich benötige. Erfüllt wenn Angeboten passend zu der Suchanfrage angezeigt werden.
-Als angemeldeter Benutzer möchte ich Suchanfragen speicher, so dass falls neue Angebote mit dieser Suchanfrage gefunden werden, der Nutzer mit eine Push-Nachricht darüber informiert wird.
-
-
 ### Schablone für User Stories
 
-
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Wer | Was | Warum | Wann akzeptiert |
-
-
-
-
-| **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
-| :------ | :----- | :------ | :-------- |
-| Nutzer | die Ergebnisse einer Suchanfrage auf einer Karten dargestellt bekommen | ich die Orte zum Abholen der Produkte visuell besser einordnen kann. | Alle gefundenen Angebote im Umkreis von 50km zu einer Suchanfrage werden auf einer Karte angezeigt |
-| Nutzer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Nutzer kann sich ein beliebiges Angebot anzeigen |
-| Nutzer | Angebote melden | betrügerische oder irreführende Angebote entfernt werden können. | Nutzer kann Angebote anhand von vorgegebenen Kategorien melden und optional einen Text angeben |
-| Nutzer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche Angebote in meiner Nähe sind. | Angebote werden angezeigt |
-| Nutzer | andere Nutzer bewerten | ich vor einem Kauf oder Verkauf weiß, wie vertrauenswürdig die andere Person ist. |
-| Verkäufer | Angebote erstellen können | ich meine Gegenstände verkaufen kann. | Eintragen der Angebotsdetails und Erstellung des Angebots auf dem Server |
-| unangemeldeter Nutzer | meine E-Mail-Adresse und mein Passwort im Loginformular eingeben | ich mich mit diesen Daten Anmelden kann. | Erfüllt wenn Nutzer seine Login-Daten eingeben kann und der Server eine passende Rückmeldung zum Login liefert.
-| unangemeldeter Nutzer | meine E-Mail-Adresse in das Passwort-Vergessen-Formular eingeben | ich mein Passwort über meine E-Mail-Adresse zurücksetzen kann | Erfüllt wenn Nutzer seine E-Mail eingeben kann und die E-Mail mit dem Link zum zurücksetzen des Passworts gesendet wird.
-| unangemeldeter Nutzer | mich mit meiner E-Mail, einem Passwort und meiner Anschrift regestrieren | so dass ich ein eigenes Konto bekomme | Erfüllt wenn der Nutzer seine Daten eingeben konnte und das Konto bei korrektheit dieser erstellt wird.
-| angemeldeter Nutzer | mein Profil ändern | ich z.B. bei einem Umzug meine Daten aktuell halten kann oder aus Sicherheitsgründen ein neues Passwort genutzt werden muss | Erfüllt wenn der Nutzer seine neuen Daten eingeben kann und sie bei korrektheit dieser geändert werden können.
-| angemeldeter Nutzer | mein Profil löschen | ich wenn ich BuyLocal nicht mehr nützen möchte ich mein Konto entfernen kann. | Erfüllt wenn nutzer sein Profil löschen kann.
-| angemeldeter Benutzer | mein eigenes oder ein beliebiges Fremdes Profil ansehen | ich Bewertungen und letzte Aktivätszeiten einsehen kann | Erfüllt wenn Nutzerprofile korrekt angezeigt werden.
-| angemeldeter Benutzer | einen Nutzer melden oder blockieren | so dass ich bei Konflikten oder Spam eine Möglichkeit habe mich zu schützen. | Erfüllt wenn Nachrichten vom blockierten Nutzer nicht mehr angezeigt werden oder die Meldung beim Admin eingegangen ist.
-| angemeldeter Benutzer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach dass finde was ich benötige. | Erfüllt wenn Angeboten passend zu der Suchanfrage angezeigt werden.
-| angemeldeter Benutzer | Suchanfragen speichern | falls neue Angebote mit dieser Suchanfrage gefunden werden, der Nutzer mit eine Push-Nachricht darüber informiert wird. | Erfüllt wenn die Push-Nachricht korrekt erscheint sobald ein Angebot, welches durch die gespeicherte Suchanfrage gefunden wurde, neu eingestellt wird.
+| Nutzer | die Ergebnisse einer Suchanfrage auf einer Karten dargestellt bekommen | ich die Orte zum Abholen der Produkte visuell besser einordnen kann. | Alle gefundenen Angebote im Umkreis von 50km zu einer Suchanfrage werden auf einer Karte angezeigt. |
+| Nutzer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Nutzer kann sich ein beliebiges Angebot anzeigen. |
+| Nutzer | Angebote melden | betrügerische oder irreführende Angebote entfernt werden können. | Nutzer kann Angebote anhand von vorgegebenen Kategorien melden und optional einen Text angeben. |
+| Nutzer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche Angebote in meiner Nähe sind. | Angebote werden angezeigt. |
+| Nutzer | andere Nutzer bewerten | ich vor einem Kauf oder Verkauf weiß, wie vertrauenswürdig die andere Person ist. | Erstellung von Bewertungen von Nutzern für Nutzer mit 1-5 Sternen und optionalem Text. |
+| Nutzer | Angebote erstellen können | ich meine Gegenstände verkaufen kann. | Eintragen der Angebotsdetails und Erstellung des Angebots auf dem Server. |
+| Nutzer | meine E-Mail-Adresse und mein Passwort im Loginformular eingeben | ich mich mit diesen Daten in der buyLocal App anmelden kann. | Nutzer kann seine Login-Daten eingeben und der Server liefert eine passende Rückmeldung zum Login.
+| Nutzer | meine E-Mail-Adresse in das Passwort-Vergessen-Formular eingeben | ich mein Passwort über meine E-Mail-Adresse zurücksetzen kann. | Nutzer kann seine E-Mail eingeben und die E-Mail mit dem Link zum Zurücksetzen des Passworts wird gesendet.
+| Nutzer | mich mit meiner E-Mail, einem Passwort und meinem Geburtsdatum registrieren | ich ein Konto für buyLocal anlegen kann. | Nutzer kann mit seinen angegebenen Daten ein Konto anlegen.
+| Nutzer | mein Profil ändern | ich meine E-Mail-Adresse oder mein Passwort zu jeder Zeit ändern kann. | Nutzer kann seine E-Mail-Adresse und sein Passwort ändern.
+| Nutzer | mein Konto löschen | ich ,wenn ich BuyLocal nicht mehr nutzen möchte, mein Konto entfernen kann. | Nutzer hat die Möglichkeit, sein Konto zu löschen.
+| Nutzer | mein eigenes oder ein beliebiges fremdes Profil ansehen | ich die Bewertung des jeweiligen Nutzers und seine aktuellen Angebote ansehen kann. | Nutzerprofile werden mit Bewertung und aktuellen Angeboten angezeigt.
+| Nutzer | einen Nutzer melden | ich bei Betrug oder Regelverletzung eine Möglichkeit habe, mich und andere Nutzer zu schützen. | Die Meldung wird zu einem Admin weitergeleitet.
+| Nutzer | einen Nutzer blockieren | ich bei Konflikten, Spam oder Betrug eine Möglichkeit habe, mich vor dem blockierten Nutzer zu schützen. | Nachrichten vom blockierten Nutzer werden nicht mehr angezeigt.
+| Nutzer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach das finde, wonach ich suche. | Angebote können durch Tags, Kategorien und Schlagwörter gefiltert werden.
+| Nutzer | Suchanfragen speichern | ich benachrichtigt werde, wenn neue Angebote eingestellt werden, auf die diese Suchanfrage zutrifft. | Eine Push-Nachricht erscheint, sobald ein neues Angebot erstellt wurde, welches durch die gespeicherte Suchanfrage gefunden wird.
 
 
 # 3 Technische Beschreibung
