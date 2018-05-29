@@ -127,6 +127,12 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 ## 3.4 Abläufe
         - Aktivitätsdiagramme für relevante Use Cases
         - Aktivitätsdiagramm für den Ablauf sämtlicher Use Cases
+        
+### Login
+![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Login.jpg)
+
+### Profil ändern
+![Profil ändern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Profil%20%C3%A4ndern.jpg)
 
 
 ## 3.5 Entwurf
