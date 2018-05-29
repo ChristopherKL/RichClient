@@ -44,13 +44,14 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 ### 2.2.1 Rahmenbedingungen
         Die App soll durch React Native auf iOS wie auf Android funktionieren.
-        ## Sicherheit
+        ### Sicherheit
         Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden aus unserem Server zu erfahren,
         speichern wir alle den Kunden betreffenden Daten nur Verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
         Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
         Die privaten Schlüssel werden nur auf den Endgeräten auf denen sich der Nutzer anmeldet gespeichtert und auf dem Server wird lediglich der dazugehörige Public Key gespeichtert,
         dieser wird dann vom Kommunikationspartner erfragt und für die Verschlüsselung genutzt.
-        Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen passendes RSA-Schlüsselpaar anhand des Passwortes eines Nutzers generieren können.
+        Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen Strom an Pseudozufallszahlen erzeuegen können der auf dem Passwort des Nutzers beruht
+        und dadurch nicht von Gerät zu Gerät wechselt, mit diesen Zufallszahlen generieren wir dann ein RSA-Schlüsselpaar, dass für jedes Gerät das selbe ist.
         (Bei Passwortwechsel muss man entweder alle Chatverläufe neu verschlüsseln oder eventuell sich den bisherigen Private Key neu verschlüsselt in der DB rücksichern)
         Das Passwort eines Nutzers wird ebenfalls nur anhand eines Hash-Wertes auf dem Server rückgespeichert, dafür verwenden wir SHA512.
 
@@ -185,6 +186,9 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 
 ## 3.5 Entwurf
+### Sequenzdiagramm der Chatverschlüsselung
+![Chatverschluesselung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/SequenzdiagrammChat.jpg)
+
         - Detaillierte UML-Diagramme für relevante Softwarebausteine
 
 
@@ -211,13 +215,21 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 
 ## 5.1 Glossar
-    ###RSA
+    ### Public Key Verfahren
+    Werden genutzt um Nachrichten asymetrisch zu Verschlüsseln dabei wird der öffentliche Schlüssel gentuzt um eine Nachricht zu verschlüsseln,
+    und der private Schlüssel um diese Nachricht wieder zu entschlüsseln.
+    Der public Key kann eine Nachricht nicht wieder entschlüsseln, sondern ist eine Einwegfunktion und kann lediglich verschlüsseln
+    ### RSA
     Ist ein asymetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
     Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
     Ist eines der gängisten Verfahren der heutigen Zeit.
-    ###Public Key Verfahren
-    ###PBKDF2
-    ###SHA512
+    ### PBKDF2
+    Password-Based Key Derivation Function 2
+    ist ein Verfahren um aus einem geeigneten Passwort einen Kryptographischen Schlüssel zu erzeugen.
+    ist von RSA Laboratories entwickelt worden.  
+    ### SHA512
+    Ist eine Kryptographische Hashfunktion, die den Hashwert eines eingabe Wortes als 512 Byte String sichert.
+    Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreitesten Funktionen zum rückspeichern von Passwörtern in Datenbanken
     
         - Definitionen, Abkürzungen, Begriffe
 
