@@ -44,7 +44,15 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 ### 2.2.1 Rahmenbedingungen
         Die App soll durch React Native auf iOS wie auf Android funktionieren.
-        - Normen, Standards, Protokolle, Hardware, externe Vorgaben
+        ## Sicherheit
+        Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden aus unserem Server zu erfahren,
+        speichern wir alle den Kunden betreffenden Daten nur Verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
+        Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
+        Die privaten Schlüssel werden nur auf den Endgeräten auf denen sich der Nutzer anmeldet gespeichtert und auf dem Server wird lediglich der dazugehörige Public Key gespeichtert,
+        dieser wird dann vom Kommunikationspartner erfragt und für die Verschlüsselung genutzt.
+        Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen passendes RSA-Schlüsselpaar anhand des Passwortes eines Nutzers generieren können.
+        (Bei Passwortwechsel muss man entweder alle Chatverläufe neu verschlüsseln oder eventuell sich den bisherigen Private Key neu verschlüsselt in der DB rücksichern)
+        Das Passwort eines Nutzers wird ebenfalls nur anhand eines Hash-Wertes auf dem Server rückgespeichert, dafür verwenden wir SHA512.
 
 ### 2.2.2 Betriebsbedingungen
         Die App wird mit React Native verwirklicht. Der Server nutzt Node.JS und MySQL um         JSON Daten für die App als API-Zugang bereitzustellen. Als ORM-Schicht zwischen         Node.JS und MySQL nutzen wir sequelizejs.
@@ -203,6 +211,14 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 
 ## 5.1 Glossar
+    ###RSA
+    Ist ein asymetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
+    Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
+    Ist eines der gängisten Verfahren der heutigen Zeit.
+    ###Public Key Verfahren
+    ###PBKDF2
+    ###SHA512
+    
         - Definitionen, Abkürzungen, Begriffe
 
 
