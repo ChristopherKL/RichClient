@@ -7,21 +7,10 @@
       <x>600</x>
       <y>180</y>
       <w>330</w>
-      <h>340</h>
+      <h>380</h>
     </coordinates>
-    <panel_attributes>buyLocal
+    <panel_attributes>BuyLocal
 halign=center</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLUseCase</id>
-    <coordinates>
-      <x>700</x>
-      <y>310</y>
-      <w>120</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>Angebot anzeigen</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -32,19 +21,18 @@ halign=center</panel_attributes>
       <w>120</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>Angebot melden</panel_attributes>
+    <panel_attributes>Angebot anzeigen</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLUseCase</id>
     <coordinates>
       <x>700</x>
-      <y>380</y>
+      <y>310</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>Verkäufer
-kontaktieren</panel_attributes>
+    <panel_attributes>Angebot melden</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -62,17 +50,6 @@ kontaktieren</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>480</x>
-      <y>310</y>
-      <w>240</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes>10.0;20.0;220.0;20.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>480</x>
       <y>250</y>
       <w>240</w>
       <h>100</h>
@@ -84,12 +61,12 @@ kontaktieren</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>480</x>
-      <y>320</y>
+      <y>310</y>
       <w>240</w>
-      <h>100</h>
+      <h>40</h>
     </coordinates>
     <panel_attributes/>
-    <additional_attributes>10.0;10.0;220.0;80.0</additional_attributes>
+    <additional_attributes>10.0;20.0;220.0;20.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
@@ -97,21 +74,44 @@ kontaktieren</panel_attributes>
       <x>480</x>
       <y>320</y>
       <w>240</w>
-      <h>170</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes/>
-    <additional_attributes>10.0;10.0;220.0;150.0</additional_attributes>
+    <additional_attributes>10.0;10.0;220.0;90.0</additional_attributes>
   </element>
   <element>
     <id>UMLUseCase</id>
     <coordinates>
       <x>700</x>
-      <y>450</y>
+      <y>390</y>
       <w>120</w>
       <h>50</h>
     </coordinates>
     <panel_attributes>neues Angebot
 erstellen</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>700</x>
+      <y>470</y>
+      <w>120</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Angebot
+löschen</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>480</x>
+      <y>320</y>
+      <w>240</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes/>
+    <additional_attributes>10.0;10.0;220.0;170.0</additional_attributes>
   </element>
 </diagram>
