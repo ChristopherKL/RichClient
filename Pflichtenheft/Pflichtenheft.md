@@ -57,24 +57,43 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
         - Externe Qualitätsanforderungen (z.B. Performance, Sicherheit, Zuverlässigkeit, Benutzerfreundlichkeit)
 
 ## 2.3 Graphische Benutzerschnittstelle
+### Zustandsdiagramm
 ![Zustandsdiagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Zustandsdiagramm.jpg)
+### Login
 ![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
+### Register
 ![Register](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
+### Passwort vergessen
 ![Passwort vergessen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/PasswortVergessen.png)
+### Startseite
 ![Startseite](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Startseite.png)
-![Startseite mit Dropdown Menü](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/StartseiteCopy.png)
+### Startseite mit Dropdown Menü
+![Startseite mit Dropdown Menue](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/StartseiteCopy.png)
+### Neues Angebot
 ![Neues Angebot](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NeuesAngebot.png)
-![Neues Angebot mit Dropdown Menü](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NeuesAngebotCopy.png)
+### Neues Angebot mit Dropdown Menü
+![Neues Angebot mit Dropdown Menue](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NeuesAngebotCopy.png)
+### Angebotsdetailansicht
 ![Angebotsdetailansicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/AngebotsdetailAnsicht.png)
+### fremdes Nutzerprofil
 ![fremdes Nutzerprofil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nutzerprofil.png)
+### eigenes Nutzerprofil
 ![eigenes Nutzerprofil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NutzerprofilEigenesProfil.png)
-![profil ändern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ProfilAendern.png)
+### profil ändern
+![profil aendern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ProfilAendern.png)
+### erweiterte Suche
 ![erweiterte Suche](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ErweiterteSuche.png)
-![Nutzerbewertung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nutzerbewertung.png)
+### Nutzerbewertungen
+![Nutzerbewertungen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nutzerbewertungen.png)
+### Suchergebnisse
 ![Suchergebnisse](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Suchergebnisse.png)
+### Kartenansicht
 ![Kartenansicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Kartenansicht.png)
+### Chat
 ![Chat](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Chat.png)
-![Nachrichtenübersicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nachrichtenuebersicht.png)
+### Nachrichtenübersicht
+![Nachrichtenuebersicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nachrichtenuebersicht.png)
+### Nutzer bewerten
 ![Nutzer bewerten](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NutzerBewerten.png)
 
 
