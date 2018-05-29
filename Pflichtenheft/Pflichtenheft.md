@@ -46,7 +46,7 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 ### 2.2.1 Rahmenbedingungen
 Die App soll durch React Native auf Android funktionieren.
-## Sicherheit
+### Sicherheit
 Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden von unserem Server in Erfahrung zu bringen,
 speichern wir alle den Kunden betreffenden Daten nur verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
 Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymmetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
@@ -129,18 +129,18 @@ Node.JS und MySQL nutzen wir sequelizejs.
 ### Suche
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Käufer | die Ergebnisse einer Suchanfrage auf einer Karte dargestellt bekommen | ich die Orte zum Abholen der Produkte visuell besser einordnen kann. | Alle gefundenen Angebote im Umkreis von 50km zu einer Suchanfrage werden auf einer Karte angezeigt. |
-| Käufer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach ein passendes Produkt finde. | Angebote können durch Tags, Kategorien und Schlagwörter gefiltert werden. |
-| Käufer | Suchanfragen speichern | ich benachrichtigt werde, wenn neue Angebote eingestellt werden, auf die eine meiner Suchanfrage zutrifft. | Eine Push-Nachricht erscheint, sobald ein neues Angebot erstellt wurde, welches die Kriterien einer gespeicherten Suchanfrage erfüllt. |
-| Käufer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche, für mich relevanten, Angebote in meiner Nähe sind. | Angebote werden auf einer passend skalierten oder skalierbaren Karte angezeigt. |
+| Nutzer | die Ergebnisse einer Suchanfrage auf einer Karte dargestellt bekommen | ich die Orte zum Abholen der Produkte visuell besser einordnen kann. | Alle gefundenen Angebote im Umkreis von 50km zu einer Suchanfrage werden auf einer Karte angezeigt. |
+| Nutzer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach ein passendes Produkt finde. | Angebote können durch Tags, Kategorien und Schlagwörter gefiltert werden. |
+| Nutzer | Suchanfragen speichern | ich benachrichtigt werde, wenn neue Angebote eingestellt werden, auf die eine meiner Suchanfrage zutrifft. | Eine Push-Nachricht erscheint, sobald ein neues Angebot erstellt wurde, welches die Kriterien einer gespeicherten Suchanfrage erfüllt. |
+| Nutzer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche, für mich relevanten, Angebote in meiner Nähe sind. | Angebote werden auf einer passend skalierten oder skalierbaren Karte angezeigt. |
 
 ### Angebote
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Käufer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Ich kann mir ein beliebiges Angebot im Detail anzeigen lassen. |
+| Nutzer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Ich kann mir ein beliebiges Angebot im Detail anzeigen lassen. |
 | Nutzer | Angebote melden | betrügerische oder irreführende Angebote entfernt werden können. | Ich kann Angebote anhand von vorgegebenen Kategorien melden und optional einen Text angeben. |
-| Verkäufer | Angebote erstellen können | ich ein Produkt verkaufen kann. | Ich kann ein Angebit mit Details eintragen und das Angebot auf dem Server erstellen. |
-| Verkäufer | Angebote löschen können | ich verkaufte oder anderweitig nicht mehr zum verkaufstehende Produkte aus meinen Angeboten entfernen kann | Ich kann Angebote löschen, so dass Sie nicht mehr auf dem Server vorhanden sind und keinem Interessenten mehr angezeigt werden. |
+| Nutzer | Angebote erstellen können | ich ein Produkt verkaufen kann. | Ich kann ein Angebit mit Details eintragen und das Angebot auf dem Server erstellen. |
+| Nutzer | Angebote löschen können | ich verkaufte oder anderweitig nicht mehr zum verkaufstehende Produkte aus meinen Angeboten entfernen kann | Ich kann Angebote löschen, so dass Sie nicht mehr auf dem Server vorhanden sind und keinem Interessenten mehr angezeigt werden. |
 
 ### Profil
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
@@ -153,7 +153,7 @@ Node.JS und MySQL nutzen wir sequelizejs.
 ### Chat
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Käufer | einen Verkäufer kontaktieren | ich ihm bei Interesse an einem seiner Angebote eine Nachricht senden kann. | Ich kann dem Verkäufer Nachrichten senden. |
+| Nutzer | einen Verkäufer kontaktieren | ich ihm bei Interesse an einem seiner Angebote eine Nachricht senden kann. | Ich kann dem Verkäufer Nachrichten senden. |
 | Nutzer | einem Verkäufer/Käufer einen Preisvorschlag senden können | ich eine Möglichkeit habe, ihm meine Preisvorstellungen mitzuteilen. | Ich kann Preisvorschläge zu einem Produkt an die Verhandlungspartei senden. |
 | Nutzer | einen Preisvorschlag, der mir gesendet wurde, annehmen oder ablehnen können | ich den Preisvorstellungen des Käufers/Verkäufers zustimmen oder weitere Presiverhandlungen führen kann. | Ich kann Presivorschläge akzeptieren oder ablehnen und meiner Verhandlungspartei wird dies mitgeteilt.
 | Nutzer | einen Nutzer blockieren | ich bei Konflikten, Spam oder Betrug eine Möglichkeit habe, mich vor dem blockierten Nutzer zu schützen. | Nachrichten vom blockierten Nutzer werden nicht mehr angezeigt. |
@@ -221,22 +221,22 @@ Node.JS und MySQL nutzen wir sequelizejs.
 # 5 Anhänge
 
 
-## 5.1 Glossar
-## Public Key Verfahren
+### 5.1 Glossar
+### Public Key Verfahren
 Werden genutzt um Nachrichten asymmetrisch zu verschlüsseln dabei wird der öffentliche Schlüssel genutzt um eine Nachricht zu verschlüsseln,
 und der private Schlüssel um diese Nachricht wieder zu entschlüsseln.
 Der öffentliche Schlüssel kann eine Nachricht nicht wieder entschlüsseln, sondern ist eine Einwegfunktion und kann lediglich verschlüsseln
 
-## RSA
+### RSA
 Ist ein asymmetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
 Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
 Ist eines der gängigsten Verfahren der heutigen Zeit.
 
-## PBKDF2
+### PBKDF2
 Password-Based Key Derivation Function 2
 ist ein Verfahren um aus einem geeigneten Passwort einen Pseudozufallszahlen-Stream zu erzeugen.
 ist von RSA Laboratories entwickelt worden.
-## SHA512
+### SHA512
 Ist eine Kryptographische Hashfunktion, die den Hashwert eines Eingabewortes als 512 Byte String sichert.
 Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreiteten Funktionen zum rückspeichern von Passwörtern in Datenbanken
 
