@@ -1,11 +1,13 @@
 # Anforderungs- und Entwurfsspezifikation ("Pflichtenheft")
 
-BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck, (Inhaltsverzeichnis)
+BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck
+
+(Inhaltsverzeichnis)
 
 # 1 Einführung
 
 ## 1.1 Beschreibung
-BuyLocal bietet dem Nutzer die Möglichkeit, Gegenstände per App zu kaufen oder verkaufen. 
+BuyLocal bietet dem Nutzer die Möglichkeit, Gegenstände per App zu kaufen oder zu verkaufen. 
 Die App funktioniert, sobald sich der Nutzer eingeloggt hat. Falls kein Account vorhanden ist, kann der Nutzer sich registrieren.
  Zum Verkauf inserierte Produkte werden nach Kategorien und/oder Tags sortiert, wodurch die Suche nach passenden Angeboten erleichtert wird.
  Käufer können sich anhand von Städtenamen oder Postleitzahlen Angebote in ihrer Nähe anzeigen lassen.
@@ -43,20 +45,25 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 ## 2.2 Nicht-funktionale Anforderungen
 
 ### 2.2.1 Rahmenbedingungen
-        Die App soll durch React Native auf iOS wie auf Android funktionieren.
-        ### Sicherheit
-        Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden aus unserem Server zu erfahren,
-        speichern wir alle den Kunden betreffenden Daten nur Verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
-        Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
-        Die privaten Schlüssel werden nur auf den Endgeräten auf denen sich der Nutzer anmeldet gespeichtert und auf dem Server wird lediglich der dazugehörige Public Key gespeichtert,
-        dieser wird dann vom Kommunikationspartner erfragt und für die Verschlüsselung genutzt.
-        Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen Strom an Pseudozufallszahlen erzeuegen können der auf dem Passwort des Nutzers beruht
-        und dadurch nicht von Gerät zu Gerät wechselt, mit diesen Zufallszahlen generieren wir dann ein RSA-Schlüsselpaar, dass für jedes Gerät das selbe ist.
-        (Bei Passwortwechsel muss man entweder alle Chatverläufe neu verschlüsseln oder eventuell sich den bisherigen Private Key neu verschlüsselt in der DB rücksichern)
-        Das Passwort eines Nutzers wird ebenfalls nur anhand eines Hash-Wertes auf dem Server rückgespeichert, dafür verwenden wir SHA512.
+Die App soll durch React Native auf Android funktionieren.
+## Sicherheit
+Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden von unserem Server in Erfahrung zu bringen,
+speichern wir alle den Kunden betreffenden Daten nur verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
+Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymmetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
+Die privaten Schlüssel werden nur auf den Endgeräten auf denen sich der Nutzer anmeldet gespeichert und auf dem Server wird lediglich der dazugehörige Public Key gespeichert,
+dieser wird dann vom Kommunikationspartner erfragt und für die Verschlüsselung genutzt.
+Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen Strom an Pseudozufallszahlen erzeugen können der auf dem Passwort des Nutzers beruht
+und dadurch nicht von Gerät zu Gerät wechselt, mit diesen Zufallszahlen generieren wir dann ein RSA-Schlüsselpaar, dass für jedes Gerät gleich ist.
+Das Passwort eines Nutzers wird ebenfalls nur anhand eines Hash-Wertes auf dem Server rückgespeichert, dafür verwenden wir SHA512.
+Die Suchanfragen die ein Nutzer für sich formuliert hat werden ebenfalls, mit dem öffentlichen Schlüssel verschlüsselt auf dem Server hinterlegt, damit er diese abrufen und mit seinem privaten Schlüssel wieder entschlüsseln kann,
+dadurch kann selbst wenn ein Angreifer vom Server Daten stiehlt sichergestellt werden das er keine Informationen aus ihnen gewinnen kann.
+
+
 
 ### 2.2.2 Betriebsbedingungen
-        Die App wird mit React Native verwirklicht. Der Server nutzt Node.JS und MySQL um         JSON Daten für die App als API-Zugang bereitzustellen. Als ORM-Schicht zwischen         Node.JS und MySQL nutzen wir sequelizejs.
+Die App wird mit React Native verwirklicht. Der Server nutzt Node.JS und MySQL um 
+JSON Daten für die App als API-Zugang bereitzustellen. Als ORM-Schicht zwischen 
+Node.JS und MySQL nutzen wir sequelizejs.
 
 ### 2.2.3 Qualitätsmerkmale
         Die Zuverlässigkeit hängt stark vom Online-Status des Servers ab, sollte dieser
@@ -115,42 +122,42 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 ### Authentifizierung
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Nutzer | meine E-Mail-Adresse und mein Passwort im Loginformular eingeben | ich mich mit diesen Daten in der buyLocal App anmelden kann. | Nutzer kann seine Login-Daten eingeben und der Server liefert eine passende Rückmeldung zum Login. |
-| Nutzer | meine E-Mail-Adresse in das Passwort-Vergessen-Formular eingeben | ich mein Passwort über meine E-Mail-Adresse zurücksetzen kann. | Nutzer kann seine E-Mail eingeben und die E-Mail mit dem Link zum Zurücksetzen des Passworts wird gesendet. |
-| Nutzer | mich mit meiner E-Mail, einem Passwort und meinem Geburtsdatum registrieren | ich ein Konto für BuyLocal anlegen kann. | Nutzer kann mit seinen angegebenen Daten ein Konto anlegen. |
+| Nutzer | meine E-Mail-Adresse und mein Passwort im Loginformular eingeben | ich mich mit diesen Daten in der buyLocal App anmelden kann. | Ich kann meine Login-Daten eingeben und der Server liefert eine passende Rückmeldung zum Login. |
+| Nutzer | meine E-Mail-Adresse in das Passwort-Vergessen-Formular eingeben | ich mein Passwort über meine E-Mail-Adresse zurücksetzen kann. | Ich kann meine E-Mail eingeben und die E-Mail mit dem Link zum Zurücksetzen des Passworts wird gesendet. |
+| Nutzer | mich mit meiner E-Mail, einem Passwort und meinem Geburtsdatum registrieren | ich ein Konto für BuyLocal anlegen kann. | Ich kann mit meinen angegebenen Daten ein Konto anlegen. |
 
 ### Suche
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Nutzer | die Ergebnisse einer Suchanfrage auf einer Karten dargestellt bekommen | ich die Orte zum Abholen der Produkte visuell besser einordnen kann. | Alle gefundenen Angebote im Umkreis von 50km zu einer Suchanfrage werden auf einer Karte angezeigt. |
-| Nutzer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach das finde, wonach ich suche. | Angebote können durch Tags, Kategorien und Schlagwörter gefiltert werden. |
-| Nutzer | Suchanfragen speichern | ich benachrichtigt werde, wenn neue Angebote eingestellt werden, auf die diese Suchanfrage zutrifft. | Eine Push-Nachricht erscheint, sobald ein neues Angebot erstellt wurde, welches durch die gespeicherte Suchanfrage gefunden wird. |
-| Nutzer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche Angebote in meiner Nähe sind. | Angebote werden angezeigt. |
+| Käufer | die Ergebnisse einer Suchanfrage auf einer Karte dargestellt bekommen | ich die Orte zum Abholen der Produkte visuell besser einordnen kann. | Alle gefundenen Angebote im Umkreis von 50km zu einer Suchanfrage werden auf einer Karte angezeigt. |
+| Käufer | Produkte anhand von Tags, Kategorien oder Schlagwörtern suchen | ich schnell und einfach ein passendes Produkt finde. | Angebote können durch Tags, Kategorien und Schlagwörter gefiltert werden. |
+| Käufer | Suchanfragen speichern | ich benachrichtigt werde, wenn neue Angebote eingestellt werden, auf die eine meiner Suchanfrage zutrifft. | Eine Push-Nachricht erscheint, sobald ein neues Angebot erstellt wurde, welches die Kriterien einer gespeicherten Suchanfrage erfüllt. |
+| Käufer | meine gespeicherten Suchen auf einer Karte anzeigen lassen | ich sehen kann, welche, für mich relevanten, Angebote in meiner Nähe sind. | Angebote werden auf einer passend skalierten oder skalierbaren Karte angezeigt. |
 
 ### Angebote
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Nutzer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Nutzer kann sich ein beliebiges Angebot anzeigen. |
-| Nutzer | Angebote melden | betrügerische oder irreführende Angebote entfernt werden können. | Nutzer kann Angebote anhand von vorgegebenen Kategorien melden und optional einen Text angeben. |
-| Nutzer | Angebote erstellen können | ich meine Gegenstände verkaufen kann. | Eintragen der Angebotsdetails und Erstellung des Angebots auf dem Server. |
-| Nutzer | Angebote löschen können | ich verkaufte Gegenstände aus meinen Angeboten entfernen kann | Nutzer kann seine eigenen Angebote löschen. |
+| Käufer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Ich kann mir ein beliebiges Angebot im Detail anzeigen lassen. |
+| Nutzer | Angebote melden | betrügerische oder irreführende Angebote entfernt werden können. | Ich kann Angebote anhand von vorgegebenen Kategorien melden und optional einen Text angeben. |
+| Verkäufer | Angebote erstellen können | ich ein Produkt verkaufen kann. | Ich kann ein Angebit mit Details eintragen und das Angebot auf dem Server erstellen. |
+| Verkäufer | Angebote löschen können | ich verkaufte oder anderweitig nicht mehr zum verkaufstehende Produkte aus meinen Angeboten entfernen kann | Ich kann Angebote löschen, so dass Sie nicht mehr auf dem Server vorhanden sind und keinem Interessenten mehr angezeigt werden. |
 
 ### Profil
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Nutzer | andere Nutzer bewerten | ich vor einem Kauf oder Verkauf weiß, wie vertrauenswürdig die andere Person ist. | Erstellung von Bewertungen von Nutzern für Nutzer mit 1-5 Sternen und optionalem Text. |
-| Nutzer | mein Profil ändern | ich meine E-Mail-Adresse oder mein Passwort zu jeder Zeit ändern kann. | Nutzer kann seine E-Mail-Adresse und sein Passwort ändern. |
-| Nutzer | mein Konto löschen | ich ,wenn ich BuyLocal nicht mehr nutzen möchte, mein Konto entfernen kann. | Nutzer hat die Möglichkeit, sein Konto zu löschen. |
-| Nutzer | mein eigenes oder ein beliebiges fremdes Profil ansehen | ich die Bewertung des jeweiligen Nutzers und seine aktuellen Angebote ansehen kann. | Nutzerprofile werden mit Bewertung und aktuellen Angeboten angezeigt. |
+| Nutzer | andere Nutzer bewerten | ich meine Zufriedenheit über die Verhandlung und/oder das Produkt mitteilen kann und andere Nutzer über diese informieren kann. | Ich kann Bewertungen von Nutzern für Nutzer mit 1-5 Sternen und optionalem Text erstellen. |
+| Nutzer | mein Profil ändern | ich meine E-Mail-Adresse oder mein Passwort zu jeder Zeit ändern kann. | Ich kann meine E-Mail-Adresse und mein Passwort ändern. |
+| Nutzer | mein Konto löschen | ich ,wenn ich BuyLocal nicht mehr nutzen möchte, mein Konto entfernen kann. | Ich kann mein Konto löschen und meine gespeicherten Informationen werden aus dem System entfernt. |
+| Nutzer | mein eigenes oder ein beliebiges fremdes Profil ansehen | ich die Bewertung des jeweiligen Nutzers und seine aktuellen Angebote ansehen kann. |  Ich kann mir ein Nutzerprofil und dessen Bewertungen und Angebote anzeigen lassen. |
 
 ### Chat
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
-| Nutzer | einen Verkäufer kontaktieren | ich ihm bei Interesse an einem seiner Angebote eine Nachricht senden kann. | Nutzer können Verkäufern Nachrichten senden. |
-| Nutzer | einem Verkäufer/Käufer einen Preisvorschlag senden können | ich eine Möglichkeit habe, ihm meine Preisvorstellungen mitzuteilen. | Nutzer können Verkäufern Preisvorschläge senden. |
-| Nutzer | einen Preisvorschlag, der mir gesendet wurde, annehmen oder ablehnen können | ich den Preisvorstellungen des Käufers/Verkäufers zustimmen oder weitere Presiverhandlungen führen kann. | Nutzer können Verkäufern Preisvorschläge senden.
+| Käufer | einen Verkäufer kontaktieren | ich ihm bei Interesse an einem seiner Angebote eine Nachricht senden kann. | Ich kann dem Verkäufer Nachrichten senden. |
+| Nutzer | einem Verkäufer/Käufer einen Preisvorschlag senden können | ich eine Möglichkeit habe, ihm meine Preisvorstellungen mitzuteilen. | Ich kann Preisvorschläge zu einem Produkt an die Verhandlungspartei senden. |
+| Nutzer | einen Preisvorschlag, der mir gesendet wurde, annehmen oder ablehnen können | ich den Preisvorstellungen des Käufers/Verkäufers zustimmen oder weitere Presiverhandlungen führen kann. | Ich kann Presivorschläge akzeptieren oder ablehnen und meiner Verhandlungspartei wird dies mitgeteilt.
 | Nutzer | einen Nutzer blockieren | ich bei Konflikten, Spam oder Betrug eine Möglichkeit habe, mich vor dem blockierten Nutzer zu schützen. | Nachrichten vom blockierten Nutzer werden nicht mehr angezeigt. |
-| Nutzer | einen Nutzer melden | ich bei Betrug oder Regelverletzung eine Möglichkeit habe, mich und andere Nutzer zu schützen. | Die Meldung wird zu einem Admin weitergeleitet. |
+| Nutzer | einen Nutzer melden | ich bei Betrug oder Regelverletzung eine Möglichkeit habe, mich und andere Nutzer zu schützen. | Ich kann einen Nutzer melden und diese Meldung wird im System verarbeitet. |
 
 # 3 Technische Beschreibung
 
@@ -215,21 +222,24 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 
 ## 5.1 Glossar
-    ### Public Key Verfahren
-    Werden genutzt um Nachrichten asymetrisch zu Verschlüsseln dabei wird der öffentliche Schlüssel gentuzt um eine Nachricht zu verschlüsseln,
-    und der private Schlüssel um diese Nachricht wieder zu entschlüsseln.
-    Der public Key kann eine Nachricht nicht wieder entschlüsseln, sondern ist eine Einwegfunktion und kann lediglich verschlüsseln
-    ### RSA
-    Ist ein asymetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
-    Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
-    Ist eines der gängisten Verfahren der heutigen Zeit.
-    ### PBKDF2
-    Password-Based Key Derivation Function 2
-    ist ein Verfahren um aus einem geeigneten Passwort einen Pseudozufallszahlen-Stream zu erzeugen.
-    ist von RSA Laboratories entwickelt worden.  
-    ### SHA512
-    Ist eine Kryptographische Hashfunktion, die den Hashwert eines eingabe Wortes als 512 Byte String sichert.
-    Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreitesten Funktionen zum rückspeichern von Passwörtern in Datenbanken
+## Public Key Verfahren
+Werden genutzt um Nachrichten asymmetrisch zu verschlüsseln dabei wird der öffentliche Schlüssel genutzt um eine Nachricht zu verschlüsseln,
+und der private Schlüssel um diese Nachricht wieder zu entschlüsseln.
+Der öffentliche Schlüssel kann eine Nachricht nicht wieder entschlüsseln, sondern ist eine Einwegfunktion und kann lediglich verschlüsseln
+
+## RSA
+Ist ein asymmetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
+Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
+Ist eines der gängigsten Verfahren der heutigen Zeit.
+
+## PBKDF2
+Password-Based Key Derivation Function 2
+ist ein Verfahren um aus einem geeigneten Passwort einen Pseudozufallszahlen-Stream zu erzeugen.
+ist von RSA Laboratories entwickelt worden.
+## SHA512
+Ist eine Kryptographische Hashfunktion, die den Hashwert eines Eingabewortes als 512 Byte String sichert.
+Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreiteten Funktionen zum rückspeichern von Passwörtern in Datenbanken
+
     
         - Definitionen, Abkürzungen, Begriffe
 
