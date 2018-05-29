@@ -25,32 +25,20 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 ## 2.1 Funktionale Anforderungen
 
-        - Use-Case Diagramme
-        Login
-                Passwort vergessen
-        Registrierung
-        Profil ändern
-                Profil löschen
-        Profil ansehen (irgendeins)
-                Nutzer melden (could have)
-                Nutzer blockieren
-        Produkt suchen
-                Nach Tag
-                Nach Kategorie
-                Nach Schlagwort
-                Suche speichern
-                Suche auf Karte darstellen
-        Angebot ansehen
-                Verkäufer kontaktieren
-                Angebot melden (could have)
-        Kartenansicht anzeigen
-                Nur gespeicherte Suchen
-        Nutzer bewerten
-                Mit Stern
-                optional mit Text
-        Angebot inserieren
-        
-        - Strukturierung der Diagramme in funktionale Gruppen
+### Authentifizierung
+![Authentifizierung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/UseCases/Authentifizierung.jpg)
+
+### Suche
+![Suche](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/UseCases/Suche.jpg)
+
+### Angebote
+![Angebote](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/UseCases/Angebote.jpg)
+
+### Profil
+![Profil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/UseCases/Profil.jpg)
+
+### Chat
+![Chat](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/UseCases/Chat.jpg)
 
 ## 2.2 Nicht-funktionale Anforderungen
 
@@ -73,9 +61,6 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
         - Modellierung der Navigation zwischen den Screens der GUI-Mockups als Zustandsdiagramm
 
 ## 2.4 Anforderungen im Detail
-        - User Stories mit Akzeptanzkritierien
-        - Optional: Name (oder ID) und Priorität ("Must", "Should", "Could", "Won't")
-        - Strukturierung der User Stories in funktionale Gruppen
 
 ### Authentifizierung
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
@@ -98,18 +83,24 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 | Nutzer | Angebote ansehen | ich den Verkäufer bei Interesse kontaktieren kann. | Nutzer kann sich ein beliebiges Angebot anzeigen. |
 | Nutzer | Angebote melden | betrügerische oder irreführende Angebote entfernt werden können. | Nutzer kann Angebote anhand von vorgegebenen Kategorien melden und optional einen Text angeben. |
 | Nutzer | Angebote erstellen können | ich meine Gegenstände verkaufen kann. | Eintragen der Angebotsdetails und Erstellung des Angebots auf dem Server. |
+| Nutzer | Angebote löschen können | ich verkaufte Gegenstände aus meinen Angeboten entfernen kann | Nutzer kann seine eigenen Angebote löschen. |
 
 ### Profil
 | **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
 | :------ | :----- | :------ | :-------- |
 | Nutzer | andere Nutzer bewerten | ich vor einem Kauf oder Verkauf weiß, wie vertrauenswürdig die andere Person ist. | Erstellung von Bewertungen von Nutzern für Nutzer mit 1-5 Sternen und optionalem Text. |
-| Nutzer | mein Profil ändern | ich meine E-Mail-Adresse oder mein Passwort zu jeder Zeit ändern kann. | Nutzer kann seine E-Mail-Adresse und sein Passwort ändern.
-| Nutzer | mein Konto löschen | ich ,wenn ich BuyLocal nicht mehr nutzen möchte, mein Konto entfernen kann. | Nutzer hat die Möglichkeit, sein Konto zu löschen.
-| Nutzer | mein eigenes oder ein beliebiges fremdes Profil ansehen | ich die Bewertung des jeweiligen Nutzers und seine aktuellen Angebote ansehen kann. | Nutzerprofile werden mit Bewertung und aktuellen Angeboten angezeigt.
-| Nutzer | einen Nutzer melden | ich bei Betrug oder Regelverletzung eine Möglichkeit habe, mich und andere Nutzer zu schützen. | Die Meldung wird zu einem Admin weitergeleitet.
-| Nutzer | einen Nutzer blockieren | ich bei Konflikten, Spam oder Betrug eine Möglichkeit habe, mich vor dem blockierten Nutzer zu schützen. | Nachrichten vom blockierten Nutzer werden nicht mehr angezeigt.
+| Nutzer | mein Profil ändern | ich meine E-Mail-Adresse oder mein Passwort zu jeder Zeit ändern kann. | Nutzer kann seine E-Mail-Adresse und sein Passwort ändern. |
+| Nutzer | mein Konto löschen | ich ,wenn ich BuyLocal nicht mehr nutzen möchte, mein Konto entfernen kann. | Nutzer hat die Möglichkeit, sein Konto zu löschen. |
+| Nutzer | mein eigenes oder ein beliebiges fremdes Profil ansehen | ich die Bewertung des jeweiligen Nutzers und seine aktuellen Angebote ansehen kann. | Nutzerprofile werden mit Bewertung und aktuellen Angeboten angezeigt. |
 
-
+### Chat
+| **Als** | **möchte ich** | **so dass** | **Akzeptanz** |
+| :------ | :----- | :------ | :-------- |
+| Nutzer | einen Verkäufer kontaktieren | ich ihm bei Interesse an einem seiner Angebote eine Nachricht senden kann. | Nutzer können Verkäufern Nachrichten senden. |
+| Nutzer | einem Verkäufer/Käufer einen Preisvorschlag senden können | ich eine Möglichkeit habe, ihm meine Preisvorstellungen mitzuteilen. | Nutzer können Verkäufern Preisvorschläge senden. |
+| Nutzer | einen Preisvorschlag, der mir gesendet wurde, annehmen oder ablehnen können | ich den Preisvorstellungen des Käufers/Verkäufers zustimmen oder weitere Presiverhandlungen führen kann. | Nutzer können Verkäufern Preisvorschläge senden.
+| Nutzer | einen Nutzer blockieren | ich bei Konflikten, Spam oder Betrug eine Möglichkeit habe, mich vor dem blockierten Nutzer zu schützen. | Nachrichten vom blockierten Nutzer werden nicht mehr angezeigt. |
+| Nutzer | einen Nutzer melden | ich bei Betrug oder Regelverletzung eine Möglichkeit habe, mich und andere Nutzer zu schützen. | Die Meldung wird zu einem Admin weitergeleitet. |
 
 # 3 Technische Beschreibung
 
@@ -125,8 +116,12 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 
 ## 3.3 Datenmodell
-        - Konzeptionelles Analyseklassendiagramm
-        - ER Diagramm 
+
+### Konzeptionelles Analyseklassendiagramm
+![Analyseklassendiagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/AnalyseKlassendiagramm.jpg)
+
+### ER-Diagramm
+![ER-Diagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/ER-Diagramm.jpeg)
 
 
 ## 3.4 Abläufe
