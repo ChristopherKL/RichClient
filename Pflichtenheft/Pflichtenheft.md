@@ -57,8 +57,30 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
         - Externe Qualitätsanforderungen (z.B. Performance, Sicherheit, Zuverlässigkeit, Benutzerfreundlichkeit)
 
 ## 2.3 Graphische Benutzerschnittstelle
-        - GUI-Mockups passend zu User Stories
-        - Modellierung der Navigation zwischen den Screens der GUI-Mockups als Zustandsdiagramm
+![Zustandsdiagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Zustandsdiagramm.jpg)
+![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
+![Register](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
+![Passwort vergessen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/PasswortVergessen.png)
+![Startseite](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Startseite.png)
+![Startseite mit Dropdown Menü](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/StartseiteCopy.png)
+![Neues Angebot](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NeuesAngebot.png)
+![Neues Angebot mit Dropdown Menü](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NeuesAngebotCopy.png)
+![Angebotsdetailansicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/AngebotsdetailAnsicht.png)
+![fremdes Nutzerprofil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nutzerprofil.png)
+![eigenes Nutzerprofil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NutzerprofilEigenesProfil.png)
+![profil ändern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ProfilAendern.png)
+![erweiterte Suche](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ErweiterteSuche.png)
+![Nutzerbewertung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nutzerbewertung.png)
+![Suchergebnisse](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Suchergebnisse.png)
+![Kartenansicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Kartenansicht.png)
+![Chat](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Chat.png)
+![Nachrichtenübersicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nachrichtenuebersicht.png)
+![Nutzer bewerten](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NutzerBewerten.png)
+
+
+
+
+
 
 ## 2.4 Anforderungen im Detail
 
