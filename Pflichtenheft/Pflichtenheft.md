@@ -225,7 +225,7 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
     Ist eines der gängisten Verfahren der heutigen Zeit.
     ### PBKDF2
     Password-Based Key Derivation Function 2
-    ist ein Verfahren um aus einem geeigneten Passwort einen Kryptographischen Schlüssel zu erzeugen.
+    ist ein Verfahren um aus einem geeigneten Passwort einen Pseudozufallszahlen-Stream zu erzeugen.
     ist von RSA Laboratories entwickelt worden.  
     ### SHA512
     Ist eine Kryptographische Hashfunktion, die den Hashwert eines eingabe Wortes als 512 Byte String sichert.
