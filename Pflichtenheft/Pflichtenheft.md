@@ -1,11 +1,13 @@
 # Anforderungs- und Entwurfsspezifikation ("Pflichtenheft")
 
-BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck, (Inhaltsverzeichnis)
+BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck
+
+(Inhaltsverzeichnis)
 
 # 1 Einführung
 
 ## 1.1 Beschreibung
-BuyLocal bietet dem Nutzer die Möglichkeit, Gegenstände per App zu kaufen oder verkaufen. 
+BuyLocal bietet dem Nutzer die Möglichkeit, Gegenstände per App zu kaufen oder zu verkaufen. 
 Die App funktioniert, sobald sich der Nutzer eingeloggt hat. Falls kein Account vorhanden ist, kann der Nutzer sich registrieren.
  Zum Verkauf inserierte Produkte werden nach Kategorien und/oder Tags sortiert, wodurch die Suche nach passenden Angeboten erleichtert wird.
  Käufer können sich anhand von Städtenamen oder Postleitzahlen Angebote in ihrer Nähe anzeigen lassen.
@@ -43,20 +45,25 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 ## 2.2 Nicht-funktionale Anforderungen
 
 ### 2.2.1 Rahmenbedingungen
-        Die App soll durch React Native auf iOS wie auf Android funktionieren.
-        ### Sicherheit
-        Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden aus unserem Server zu erfahren,
-        speichern wir alle den Kunden betreffenden Daten nur Verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
-        Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
-        Die privaten Schlüssel werden nur auf den Endgeräten auf denen sich der Nutzer anmeldet gespeichtert und auf dem Server wird lediglich der dazugehörige Public Key gespeichtert,
-        dieser wird dann vom Kommunikationspartner erfragt und für die Verschlüsselung genutzt.
-        Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen Strom an Pseudozufallszahlen erzeuegen können der auf dem Passwort des Nutzers beruht
-        und dadurch nicht von Gerät zu Gerät wechselt, mit diesen Zufallszahlen generieren wir dann ein RSA-Schlüsselpaar, dass für jedes Gerät das selbe ist.
-        (Bei Passwortwechsel muss man entweder alle Chatverläufe neu verschlüsseln oder eventuell sich den bisherigen Private Key neu verschlüsselt in der DB rücksichern)
-        Das Passwort eines Nutzers wird ebenfalls nur anhand eines Hash-Wertes auf dem Server rückgespeichert, dafür verwenden wir SHA512.
+Die App soll durch React Native auf Android funktionieren.
+## Sicherheit
+Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden von unserem Server in Erfahrung zu bringen,
+speichern wir alle den Kunden betreffenden Daten nur verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
+Um die Kommunikation unter den Kunden zu ermöglichen Nutzen wir RSA als asymmetrische Verschlüsselung und das dazugehörige Public Key Verfahren.
+Die privaten Schlüssel werden nur auf den Endgeräten auf denen sich der Nutzer anmeldet gespeichert und auf dem Server wird lediglich der dazugehörige Public Key gespeichert,
+dieser wird dann vom Kommunikationspartner erfragt und für die Verschlüsselung genutzt.
+Um zu bewerkstelligen, dass jeder Nutzer auf jedem Endgerät seiner Wahl den selben privaten Schlüssel erhält nutzen wir PBKDF2, mit dessen Hilfe wir einen Strom an Pseudozufallszahlen erzeugen können der auf dem Passwort des Nutzers beruht
+und dadurch nicht von Gerät zu Gerät wechselt, mit diesen Zufallszahlen generieren wir dann ein RSA-Schlüsselpaar, dass für jedes Gerät gleich ist.
+Das Passwort eines Nutzers wird ebenfalls nur anhand eines Hash-Wertes auf dem Server rückgespeichert, dafür verwenden wir SHA512.
+Die Suchanfragen die ein Nutzer für sich formuliert hat werden ebenfalls, mit dem öffentlichen Schlüssel verschlüsselt auf dem Server hinterlegt, damit er diese abrufen und mit seinem privaten Schlüssel wieder entschlüsseln kann,
+dadurch kann selbst wenn ein Angreifer vom Server Daten stiehlt sichergestellt werden das er keine Informationen aus ihnen gewinnen kann.
+
+
 
 ### 2.2.2 Betriebsbedingungen
-        Die App wird mit React Native verwirklicht. Der Server nutzt Node.JS und MySQL um         JSON Daten für die App als API-Zugang bereitzustellen. Als ORM-Schicht zwischen         Node.JS und MySQL nutzen wir sequelizejs.
+Die App wird mit React Native verwirklicht. Der Server nutzt Node.JS und MySQL um 
+JSON Daten für die App als API-Zugang bereitzustellen. Als ORM-Schicht zwischen 
+Node.JS und MySQL nutzen wir sequelizejs.
 
 ### 2.2.3 Qualitätsmerkmale
         Die Zuverlässigkeit hängt stark vom Online-Status des Servers ab, sollte dieser
@@ -215,21 +222,24 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 
 
 ## 5.1 Glossar
-    ### Public Key Verfahren
-    Werden genutzt um Nachrichten asymetrisch zu Verschlüsseln dabei wird der öffentliche Schlüssel gentuzt um eine Nachricht zu verschlüsseln,
-    und der private Schlüssel um diese Nachricht wieder zu entschlüsseln.
-    Der public Key kann eine Nachricht nicht wieder entschlüsseln, sondern ist eine Einwegfunktion und kann lediglich verschlüsseln
-    ### RSA
-    Ist ein asymetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
-    Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
-    Ist eines der gängisten Verfahren der heutigen Zeit.
-    ### PBKDF2
-    Password-Based Key Derivation Function 2
-    ist ein Verfahren um aus einem geeigneten Passwort einen Pseudozufallszahlen-Stream zu erzeugen.
-    ist von RSA Laboratories entwickelt worden.  
-    ### SHA512
-    Ist eine Kryptographische Hashfunktion, die den Hashwert eines eingabe Wortes als 512 Byte String sichert.
-    Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreitesten Funktionen zum rückspeichern von Passwörtern in Datenbanken
+## Public Key Verfahren
+Werden genutzt um Nachrichten asymmetrisch zu verschlüsseln dabei wird der öffentliche Schlüssel genutzt um eine Nachricht zu verschlüsseln,
+und der private Schlüssel um diese Nachricht wieder zu entschlüsseln.
+Der öffentliche Schlüssel kann eine Nachricht nicht wieder entschlüsseln, sondern ist eine Einwegfunktion und kann lediglich verschlüsseln
+
+## RSA
+Ist ein asymmetrisches Verschlüsselungsverfahren entwickelt von Rivest, Shamir und Adleman.
+Es nutzt die mathematischen Probleme der Primzahlbestimmung und des Faktorisierens um Sicherheit zu erzeugen.
+Ist eines der gängigsten Verfahren der heutigen Zeit.
+
+## PBKDF2
+Password-Based Key Derivation Function 2
+ist ein Verfahren um aus einem geeigneten Passwort einen Pseudozufallszahlen-Stream zu erzeugen.
+ist von RSA Laboratories entwickelt worden.
+## SHA512
+Ist eine Kryptographische Hashfunktion, die den Hashwert eines Eingabewortes als 512 Byte String sichert.
+Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreiteten Funktionen zum rückspeichern von Passwörtern in Datenbanken
+
     
         - Definitionen, Abkürzungen, Begriffe
 
