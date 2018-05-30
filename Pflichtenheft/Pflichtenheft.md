@@ -227,14 +227,14 @@ Legende: C - Christopher K - Karl S - Stefan
 
 
 ## 4.3 Grober Projektplan
-28.05: SQL-Datenbank erstellt
-31.05: Pflichtenheft Abgabe
-07.06: App - Login, Regestration, Profil anzeigen, Profil ändern
-14.06: API + App - Tokens, Login, Regestration, Profil anzeigen, Profil ändern
-21.06: API + App - Angebot erstellen, Angebot ansehen
-28.06: API + App - Nachrichten ansehen, Nachrichten verschicken, Angebot Melden
-05.07: API + App - Suchanfragen ausführen, Suchanfragen speichern, Push-Nachrichten (Nur App), kontinuierliche Abfragen
-12.07: Test API, möglicherweise auch App
+28.05: SQL-Datenbank erstellt<br />
+31.05: Pflichtenheft Abgabe<br />
+07.06: App - Login, Regestration, Profil anzeigen, Profil ändern<br />
+14.06: API + App - Tokens, Login, Regestration, Profil anzeigen, Profil ändern<br />
+21.06: API + App - Angebot erstellen, Angebot ansehen<br />
+28.06: API + App - Nachrichten ansehen, Nachrichten verschicken, Angebot Melden<br />
+05.07: API + App - Suchanfragen ausführen, Suchanfragen speichern, Push-Nachrichten (Nur App), kontinuierliche Abfragen<br />
+12.07: Test API, möglicherweise auch App<br />
 
 
 # 5 Anhänge
