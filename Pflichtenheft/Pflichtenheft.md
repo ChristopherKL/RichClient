@@ -210,12 +210,31 @@ Node.JS und MySQL nutzen wir sequelizejs.
 
 
 ## 4.2 Verantwortlichkeiten
-        - Zuordnung von Personen zu Softwarebausteinen aus Kapitel 3.1 und 3.2
-        - Rollendefinition und Zuordnung
+Legende: C - Christopher K - Karl S - Stefan
+
+
+| **Modul** | **App** | **API** |
+| :------ | :----- | :------ |
+| Tokens | K | S
+| Login | K | S
+| Logout | K | S
+| Profil (Anzeigen, ändern) | C, K | S
+| Angebot (Erstellen, anzeigen, melden) | C | S, K
+| Nachrichten (Anzeigen, schicken) | C, K | S,K
+| Suchanfragen | C, K | k
+| Live-Abfrage  / Push-Nachricht | C, K | S, K 
+
 
 
 ## 4.3 Grober Projektplan
-        - Meilensteine
+28.05: SQL-Datenbank erstellt
+31.05: Pflichtenheft Abgabe
+07.06: App - Login, Regestration, Profil anzeigen, Profil ändern
+14.06: API + App - Tokens, Login, Regestration, Profil anzeigen, Profil ändern
+21.06: API + App - Angebot erstellen, Angebot ansehen
+28.06: API + App - Nachrichten ansehen, Nachrichten verschicken, Angebot Melden
+05.07: API + App - Suchanfragen ausführen, Suchanfragen speichern, Push-Nachrichten (Nur App), kontinuierliche Abfragen
+12.07: Test API, möglicherweise auch App
 
 
 # 5 Anhänge
