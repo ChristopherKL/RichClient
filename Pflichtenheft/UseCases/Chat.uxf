@@ -7,7 +7,7 @@
       <x>590</x>
       <y>160</y>
       <w>360</w>
-      <h>400</h>
+      <h>340</h>
     </coordinates>
     <panel_attributes>BuyLocal
 halign=center</panel_attributes>
@@ -37,30 +37,6 @@ kontaktieren</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLUseCase</id>
-    <coordinates>
-      <x>710</x>
-      <y>270</y>
-      <w>120</w>
-      <h>50</h>
-    </coordinates>
-    <panel_attributes>Preisvorschlag
-senden</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLUseCase</id>
-    <coordinates>
-      <x>710</x>
-      <y>340</y>
-      <w>120</w>
-      <h>60</h>
-    </coordinates>
-    <panel_attributes>Preisvorschlag
-akzeptieren</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
     <id>Relation</id>
     <coordinates>
       <x>460</x>
@@ -75,23 +51,36 @@ akzeptieren</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>460</x>
-      <y>280</y>
+      <y>290</y>
       <w>270</w>
-      <h>60</h>
+      <h>50</h>
     </coordinates>
     <panel_attributes/>
-    <additional_attributes>10.0;40.0;250.0;10.0</additional_attributes>
+    <additional_attributes>10.0;30.0;250.0;20.0</additional_attributes>
   </element>
   <element>
-    <id>Relation</id>
+    <id>UMLUseCase</id>
     <coordinates>
-      <x>460</x>
-      <y>310</y>
-      <w>270</w>
-      <h>80</h>
+      <x>710</x>
+      <y>290</y>
+      <w>120</w>
+      <h>40</h>
     </coordinates>
-    <panel_attributes/>
-    <additional_attributes>10.0;10.0;250.0;60.0</additional_attributes>
+    <panel_attributes>Nutzer
+melden</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLUseCase</id>
+    <coordinates>
+      <x>710</x>
+      <y>420</y>
+      <w>120</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Nutzer
+blockieren</panel_attributes>
+    <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
@@ -108,24 +97,11 @@ akzeptieren</panel_attributes>
     <id>UMLUseCase</id>
     <coordinates>
       <x>710</x>
-      <y>420</y>
+      <y>350</y>
       <w>120</w>
       <h>40</h>
     </coordinates>
-    <panel_attributes>Nutzer
-melden</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLUseCase</id>
-    <coordinates>
-      <x>710</x>
-      <y>480</y>
-      <w>120</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>Nutzer
-blockieren</panel_attributes>
+    <panel_attributes>Nutzer bewerten</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -134,9 +110,9 @@ blockieren</panel_attributes>
       <x>460</x>
       <y>310</y>
       <w>270</w>
-      <h>210</h>
+      <h>80</h>
     </coordinates>
     <panel_attributes/>
-    <additional_attributes>10.0;10.0;250.0;190.0</additional_attributes>
+    <additional_attributes>10.0;10.0;250.0;60.0</additional_attributes>
   </element>
 </diagram>

@@ -7,7 +7,7 @@
       <x>690</x>
       <y>190</y>
       <w>350</w>
-      <h>340</h>
+      <h>290</h>
     </coordinates>
     <panel_attributes>BuyLocal
 halign=center</panel_attributes>
@@ -28,22 +28,11 @@ halign=center</panel_attributes>
     <id>UMLUseCase</id>
     <coordinates>
       <x>800</x>
-      <y>440</y>
+      <y>370</y>
       <w>140</w>
       <h>40</h>
     </coordinates>
     <panel_attributes>Bewertung anzeigen</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLUseCase</id>
-    <coordinates>
-      <x>810</x>
-      <y>370</y>
-      <w>120</w>
-      <h>40</h>
-    </coordinates>
-    <panel_attributes>Nutzer bewerten</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
@@ -74,21 +63,10 @@ halign=center</panel_attributes>
       <x>540</x>
       <y>310</y>
       <w>280</w>
-      <h>170</h>
-    </coordinates>
-    <panel_attributes/>
-    <additional_attributes>10.0;10.0;260.0;150.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>540</x>
-      <y>310</y>
-      <w>290</w>
       <h>100</h>
     </coordinates>
     <panel_attributes/>
-    <additional_attributes>10.0;10.0;270.0;80.0</additional_attributes>
+    <additional_attributes>10.0;10.0;260.0;80.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
