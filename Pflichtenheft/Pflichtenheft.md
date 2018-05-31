@@ -78,7 +78,7 @@ Node.JS und MySQL nutzen wir sequelizejs.
 ### Login
 ![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
 ### Register
-![Register](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
+![Register](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Register.png)
 ### Passwort vergessen
 ![Passwort vergessen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/PasswortVergessen.png)
 ### Startseite
@@ -229,7 +229,7 @@ Legende: C - Christopher K - Karl S - Stefan
 ## 4.3 Grober Projektplan
 28.05: SQL-Datenbank erstellt<br />
 31.05: Pflichtenheft Abgabe<br />
-07.06: App - Login, Regestration, Profil anzeigen, Profil ändern<br />
+07.06: App - Login, Registrierung, Profil anzeigen, Profil ändern<br />
 14.06: API + App - Tokens, Login, Regestration, Profil anzeigen, Profil ändern<br />
 21.06: API + App - Angebot erstellen, Angebot ansehen<br />
 28.06: API + App - Nachrichten ansehen, Nachrichten verschicken, Angebot Melden<br />
