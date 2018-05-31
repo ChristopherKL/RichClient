@@ -1,8 +1,82 @@
 # Anforderungs- und Entwurfsspezifikation ("Pflichtenheft")
 
-BuyLocal, Karl Piplies, Stefan Schuck, Christopher Kluck
+## Projekname: BuyLocal
+## Beteiligte Personen: Karl Piplies, Stefan Schuck, Christopher Kluck
 
-(Inhaltsverzeichnis)
+- [1 Einführung](#1-einführung)
+  * [1.1 Beschreibung](#11-beschreibung)
+  * [1.2 Ziele](#12-ziele)
+- [2 Anforderungen](#2-anforderungen)
+  * [2.1 Funktionale Anforderungen](#21-funktionale-anforderungen)
+    + [Authentifizierung](#authentifizierung)
+    + [Suche](#suche)
+    + [Angebote](#angebote)
+    + [Profil](#profil)
+    + [Chat](#chat)
+  * [2.2 Nicht-funktionale Anforderungen](#22-nicht-funktionale-anforderungen)
+    + [2.2.1 Rahmenbedingungen](#221-rahmenbedingungen)
+    + [Sicherheit](#sicherheit)
+    + [2.2.2 Betriebsbedingungen](#222-betriebsbedingungen)
+    + [2.2.3 Qualitätsmerkmale](#223-qualitätsmerkmale)
+  * [2.3 Graphische Benutzerschnittstelle](#23-graphische-benutzerschnittstelle)
+    + [Zustandsdiagramm](#zustandsdiagramm)
+    + [Login](#login)
+    + [Registrierung](#registrierung)
+    + [Passwort vergessen](#passwort-vergessen)
+    + [Startseite](#startseite)
+    + [Startseite mit Dropdown Menü](#startseite-mit-dropdown-menü)
+    + [Neues Angebot](#neues-angebot)
+    + [Neues Angebot mit Dropdown Menü](#neues-angebot-mit-dropdown-menü)
+    + [Angebotsdetailansicht](#angebotsdetailansicht)
+    + [fremdes Nutzerprofil](#fremdes-nutzerprofil)
+    + [eigenes Nutzerprofil](#eigenes-nutzerprofil)
+    + [Profil ändern](#profil-ändern)
+    + [erweiterte Suche](#erweiterte-suche)
+    + [Nutzerbewertungen](#nutzerbewertungen)
+    + [Suchergebnisse](#suchergebnisse)
+    + [Kartenansicht](#kartenansicht)
+    + [Chat](#chat-1)
+    + [Nachrichtenübersicht](#nachrichtenübersicht)
+    + [Nutzer bewerten](#nutzer-bewerten)
+  * [2.4 Anforderungen im Detail](#24-anforderungen-im-detail)
+    + [Authentifizierung](#authentifizierung-1)
+    + [Suche](#suche-1)
+    + [Angebote](#angebote-1)
+    + [Profil](#profil-1)
+    + [Chat](#chat-2)
+- [3 Technische Beschreibung](#3-technische-beschreibung)
+  * [3.1 Systemübersicht](#31-systemübersicht)
+  * [3.2 Softwarearchitektur](#32-softwarearchitektur)
+  * [3.3 Datenmodell](#33-datenmodell)
+    + [Konzeptionelles Analyseklassendiagramm](#konzeptionelles-analyseklassendiagramm)
+    + [ER-Diagramm](#er-diagramm)
+  * [3.4 Abläufe](#34-abläufe)
+    + [Login](#login-1)
+    + [Passwort zurücksetzen](#passwort-zurücksetzen)
+    + [Registrierung](#registrierung-1)
+    + [Angebot suchen](#angebot-suchen)
+    + [neues Angebot](#neues-angebot)
+    + [Suche speichern](#suche-speichern)
+    + [Kartenansicht](#kartenansicht-1)
+    + [Angebot melden](#angebot-melden)
+    + [Profil ändern](#profil-ändern-1)
+    + [Verkäufer kontaktieren](#verkäufer-kontaktieren)
+    + [Nutzer bewerten](#nutzer-bewerten-1)
+    + [Nutzer melden](#nutzer-melden)
+  * [3.5 Entwurf](#35-entwurf)
+    + [Sequenzdiagramm der Chatverschlüsselung](#sequenzdiagramm-der-chatverschlüsselung)
+- [4 Projektorganisation](#4-projektorganisation)
+  * [4.1 Annahmen](#41-annahmen)
+  * [4.2 Verantwortlichkeiten](#42-verantwortlichkeiten)
+  * [4.3 Grober Projektplan](#43-grober-projektplan)
+- [5 Anhänge](#5-anhänge)
+    + [5.1 Glossar](#51-glossar)
+    + [Public Key Verfahren](#public-key-verfahren)
+    + [RSA](#rsa)
+    + [PBKDF2](#pbkdf2)
+    + [SHA512](#sha512)
+  * [5.2 Referenzen](#52-referenzen)
+    + [Datenschutz-Grundverordnung](#datenschutz-grundverordnung)
 
 # 1 Einführung
 
@@ -45,7 +119,8 @@ BuyLocal soll eine sichere Anwendung sein. Die Informationen zwischen Server und
 ## 2.2 Nicht-funktionale Anforderungen
 
 ### 2.2.1 Rahmenbedingungen
-Die App soll durch React Native auf Android funktionieren.
+Wir gehen davon aus, dass die App auf iPhones und beliebigen androidfähigen Smartphones ausgeführt wird. Das bedeutet, dass die App sowohl für verschiedene Betriebssysteme, Betriebssystemversionen und Bildschirmgrößen angepasst werden muss.
+
 ### Sicherheit
 Um Angreifern die Möglichkeit zu nehmen Chatverläufe oder Suchanfragen eines Kunden von unserem Server in Erfahrung zu bringen,
 speichern wir alle den Kunden betreffenden Daten nur verschlüsselt auf unserem Server, darunter speziell zu nennen sind die Chatverläufe.
@@ -59,25 +134,18 @@ Die Suchanfragen die ein Nutzer für sich formuliert hat werden ebenfalls, mit d
 dadurch kann selbst wenn ein Angreifer vom Server Daten stiehlt sichergestellt werden das er keine Informationen aus ihnen gewinnen kann.
 
 
-
 ### 2.2.2 Betriebsbedingungen
-Die App wird mit React Native verwirklicht. Der Server nutzt Node.JS und MySQL um 
-JSON Daten für die App als API-Zugang bereitzustellen. Als ORM-Schicht zwischen 
-Node.JS und MySQL nutzen wir sequelizejs.
+Die App soll auf iOS wie auf Android lauffähig sein. Dafür wird das Framework React Native verwendet. Der API-Server läuft auf Linux mit NodeJS und MySQL. Als ORM-Schicht wird SequelizeJS verwendet. Als IDE wird Mircrosot Visual Studio Code verwendet von allen Entwicklern verwendet, die Versionskrontrolle findet über Github statt. 
 
 ### 2.2.3 Qualitätsmerkmale
-        Die Zuverlässigkeit hängt stark vom Online-Status des Servers ab, sollte dieser
-        nicht erreichbar sein ist die App unbrauchbar. Die Performance der App hängt von der
-        Latenz zum Backend-Server und der Leistung des Smartphones des Nutzers ab.
-        
-        - Externe Qualitätsanforderungen (z.B. Performance, Sicherheit, Zuverlässigkeit, Benutzerfreundlichkeit)
+Die Zuverlässigkeit der App hängt stark von der Verfügbarkeit des Servers ab. Ohne eine Internetverbindung funktioniert die App nicht. Die Kommunikation zwischen Server uund App ist mit SSL (HTTPS) gesichert. Die Authentifizierung findet mit Hilfe von Tokens statt.
 
 ## 2.3 Graphische Benutzerschnittstelle
 ### Zustandsdiagramm
 ![Zustandsdiagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Zustandsdiagramm.jpg)
 ### Login
 ![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
-### Register
+### Registrierung
 ![Register](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Register.png)
 ### Passwort vergessen
 ![Passwort vergessen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/PasswortVergessen.png)
@@ -95,7 +163,7 @@ Node.JS und MySQL nutzen wir sequelizejs.
 ![fremdes Nutzerprofil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nutzerprofil.png)
 ### eigenes Nutzerprofil
 ![eigenes Nutzerprofil](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NutzerprofilEigenesProfil.png)
-### profil ändern
+### Profil ändern
 ![profil aendern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ProfilAendern.png)
 ### erweiterte Suche
 ![erweiterte Suche](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/ErweiterteSuche.png)
@@ -111,10 +179,6 @@ Node.JS und MySQL nutzen wir sequelizejs.
 ![Nachrichtenuebersicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Nachrichtenuebersicht.png)
 ### Nutzer bewerten
 ![Nutzer bewerten](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/NutzerBewerten.png)
-
-
-
-
 
 
 ## 2.4 Anforderungen im Detail
@@ -163,14 +227,10 @@ Node.JS und MySQL nutzen wir sequelizejs.
 
 
 ## 3.1 Systemübersicht
-        - Systemarchitekturdiagramm ("Box-And-Arrow" Diagramm)
-        - Schnittstellenbeschreibung
-        - Kommunikationsprotokolle, Datenformate
-
+![Architekturdiagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Systemarchitektur.jpg)
 
 ## 3.2 Softwarearchitektur
-        - Darstellung von Softwarebausteinen (Module, Schichten, Komponenten)
-
+![Softwarebausteine](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Softwarebausteine.jpg)
 
 ## 3.3 Datenmodell
 
@@ -182,32 +242,56 @@ Node.JS und MySQL nutzen wir sequelizejs.
 
 
 ## 3.4 Abläufe
-        - Aktivitätsdiagramme für relevante Use Cases
-        - Aktivitätsdiagramm für den Ablauf sämtlicher Use Cases
-        
+
 ### Login
 ![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Login.jpg)
 
+### Passwort zurücksetzen
+![Passwort zurücksetzen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Passwort%20zur%C3%BCcksetzen.jpg)
+
+### Registrierung
+![Registrierung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Registrierung.jpg)
+
+### Angebot suchen
+![Angebot suchen](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Angebot%20suchen.jpg)
+
+### neues Angebot
+![neues Angebot](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/neues%20Angebot.jpg)
+
+### Suche speichern
+![Suche speichern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Suche%20speichern.jpg)
+
+### Kartenansicht
+![Kartenansicht](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Kartenansicht.jpg)
+
+### Angebot melden
+![Angebot melden](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Angebot%20melden.jpg)
+
 ### Profil ändern
 ![Profil ändern](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Profil%20%C3%A4ndern.jpg)
+
+### Verkäufer kontaktieren
+![Verkäufer kontaktieren](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Verk%C3%A4ufer%20kontaktieren.jpg)
+
+### Nutzer bewerten
+![Nutzer bewerten](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Nutzer%20bewerten.jpg)
+
+### Nutzer melden
+![Angebot melden](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Activity/Nutzer%20melden.jpg)
 
 
 ## 3.5 Entwurf
 ### Sequenzdiagramm der Chatverschlüsselung
 ![Chatverschluesselung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/SequenzdiagrammChat.jpg)
 
-        - Detaillierte UML-Diagramme für relevante Softwarebausteine
-
 
 # 4 Projektorganisation
 
 
 ## 4.1 Annahmen
-        - Nicht durch den Kunden definierte spezifische Annahmen, Anforderungen und Abhängigkeiten
-        - Verwendete Technologien (Programmiersprache, Frameworks, etc.)
-        - Einschränkungen, Betriebsbedingungen und Faktoren, die die Entwicklung beeinflussen (Betriebssysteme, Entwicklungsumgebung)
-        - Interne Qualitätsanforderungen (z.B. Softwarequalitätsmerkmale wie z.B. Erweiterbarkeit)
+Das Projekt wird mithilfe von React Native in der Entwicklungsumgebung Visual Studio Code umgesetzt. Dem React Native Framework liegt die JavaScript Bibliothek React zugrunde. Die Nutzung dieses Frameworks hätte es uns erlaubt, eine App sowohl für Android als auch iOS Geräte zu entwickeln. Während der Konzeptionierung der App stellte sich allerdings heraus, dass man für eine iOS App einen Rechner benötigt, der macOS als Betriebssystem hat. Da keiner der am Projekt beteiligten Personen Zugang zu so einem Rechner hat, können wir keine iOS App entwickeln. Als Datenbankmanagmentsystem kommt in diesem Projekt MySQL zum Einsatz, das durch die mit SequelizeJS dargestellte ORM-Schicht mit dem NodeJS Server verbunden ist.
 
+An erster Stelle der internen Qualitätsanforderungen steht die Verständlichkeit des Codes. Der Code wird logisch durch gut lesbaren Code aufgebaut, damit jedes Teammitglied schnell und sicher Änderungen umsetzen kann. Das System muss außerdem eine gewisse Veränderbarkeit aufweisen, so dass Veränderungen des einen Teammitglieds an einer bestimmten Stelle sich nicht auf  Teile eines anderen Teammitglieds auswirken. Um den durch die App belegten Speicherplatz so gering wie möglich zu halten, wird darauf geachtet, den Code redundanzfrei zu halten.
 
 ## 4.2 Verantwortlichkeiten
 Legende: C - Christopher K - Karl S - Stefan
@@ -259,12 +343,7 @@ ist von RSA Laboratories entwickelt worden.
 Ist eine Kryptographische Hashfunktion, die den Hashwert eines Eingabewortes als 512 Byte String sichert.
 Gehört zur SHA 2 Familie an Hashfunktionen und ist eine der verbreiteten Funktionen zum rückspeichern von Passwörtern in Datenbanken
 
-    
-        - Definitionen, Abkürzungen, Begriffe
-
 
 ## 5.2 Referenzen
-        - Handbücher, Gesetze
-
-
-## 5.3 Index
+### Datenschutz-Grundverordnung
+https://www.datenschutz-grundverordnung.eu/
