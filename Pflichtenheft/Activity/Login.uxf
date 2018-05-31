@@ -236,18 +236,6 @@ m2=[invalide Daten]</panel_attributes>
     <additional_attributes>27;27;207;27</additional_attributes>
   </element>
   <element>
-    <type>com.baselet.element.old.element.Relation</type>
-    <coordinates>
-      <x>801</x>
-      <y>540</y>
-      <w>83</w>
-      <h>98</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-m2=[valide Daten]</panel_attributes>
-    <additional_attributes>45;81;45;72;45;27</additional_attributes>
-  </element>
-  <element>
     <type>com.baselet.element.old.element.Decision</type>
     <coordinates>
       <x>558</x>
@@ -360,5 +348,17 @@ m2=[Vorgang abbrechen].     </panel_attributes>
 halign=left
 valign=top</panel_attributes>
     <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>837</x>
+      <y>558</y>
+      <w>99</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m2=[valide Daten]</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
   </element>
 </diagram>
