@@ -1,58 +1,70 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+import {Platform, AsyncStorage} from 'react-native';
+import {Navigation} from 'react-native-navigation';
+import {registerScreens, registerScreenVisibilityListener} from './src/navCompReg';
 
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+// screen related book keeping
+registerScreens();
+registerScreenVisibilityListener();
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
+let currentSession = {
+  loggedIn: false,
+  mail: '', 
+  firstname: ''
+};
+
+AsyncStorage.setItem("currentSession", JSON.stringify(currentSession)).then(function() {
+    console.log("Initiated session in storage")
+  }, function() {
+    alert('Error saving session data')
   }
-}
+);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+  
+
+
+
+const tabs = [{
+    label: 'Navigation',
+    screen: 'buylocal.navigationScreen',
+    title: 'Navigation',
+    icon: require('./img/menu.png')
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  {
+    label: 'Home',
+    screen: 'buylocal.homeScreen',
+    title: 'Home',
+    icon: require('./img/home.png')
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  {
+    label: 'Info',
+    screen: 'buylocal.infoScreen',
+    title: 'Info',
+    icon: require('./img/info.png')
+  }
+
+];
+
+// this will start our app
+Navigation.startTabBasedApp({
+  tabs,
+  animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
+  tabsStyle: {
+    tabBarBackgroundColor: '#003a66',
+    tabBarButtonColor: '#ffffff',
+    tabBarSelectedButtonColor: '#ff505c',
+    tabFontFamily: 'BioRhyme-Bold',
   },
+  appStyle: {
+    tabBarBackgroundColor: '#003a66',
+    navBarButtonColor: '#ffffff',
+    tabBarButtonColor: '#ffffff',
+    navBarTextColor: '#ffffff',
+    tabBarSelectedButtonColor: '#ff505c',
+    navigationBarColor: '#003a66',
+    navBarBackgroundColor: '#003a66',
+    statusBarColor: '#002b4c',
+    tabFontFamily: 'BioRhyme-Bold',
+    initialTabIndex: 1
+  }
 });
