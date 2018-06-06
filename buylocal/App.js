@@ -1,4 +1,4 @@
-import {Platform, AsyncStorage} from 'react-native';
+import {Platform} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import {registerScreens, registerScreenVisibilityListener} from './src/navCompReg';
 
@@ -6,22 +6,6 @@ import {registerScreens, registerScreenVisibilityListener} from './src/navCompRe
 // screen related book keeping
 registerScreens();
 registerScreenVisibilityListener();
-
-let currentSession = {
-  loggedIn: false,
-  mail: '', 
-  firstname: ''
-};
-
-AsyncStorage.setItem("currentSession", JSON.stringify(currentSession)).then(function() {
-    console.log("Initiated session in storage")
-  }, function() {
-    alert('Error saving session data')
-  }
-);
-
-  
-
 
 
 const tabs = [{

@@ -4,8 +4,7 @@ import {
     View,
     TextInput,
     StyleSheet,
-    TouchableOpacity,
-    AsyncStorage
+    TouchableOpacity
 } from 'react-native';
 
 
@@ -23,18 +22,6 @@ export default class LoginScreen extends Component {
 
         // check credentials
 
-        let currentSession = {
-            loggedIn: true,
-            mail: this.state.mail, 
-            firstname: 'peter'
-        };
-        AsyncStorage.setItem("currentSession", JSON.stringify(currentSession)).then(function() {
-            console.log("User logged in!")
-          }, function() {
-            alert('Error saving session data')
-          }
-        );
-        
         this.props.navigator.switchToTab({tabIndex: 1});
     }
     
