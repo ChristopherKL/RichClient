@@ -6,11 +6,11 @@ import InfoScreen from './screens/infoScreen';
 import NavigationScreen from './screens/navigationScreen';
 
 
-export function registerScreens() {
-  Navigation.registerComponent('buylocal.loginScreen', () => LoginScreen);
-  Navigation.registerComponent('buylocal.homeScreen', () => HomeScreen);
-  Navigation.registerComponent('buylocal.infoScreen', () => InfoScreen);
-  Navigation.registerComponent('buylocal.navigationScreen', () => NavigationScreen);
+export function registerScreens(store, Provider) {
+  Navigation.registerComponent('buylocal.loginScreen', () => LoginScreen, store, Provider);
+  Navigation.registerComponent('buylocal.homeScreen', () => HomeScreen, store, Provider);
+  Navigation.registerComponent('buylocal.infoScreen', () => InfoScreen, store, Provider);
+  Navigation.registerComponent('buylocal.navigationScreen', () => NavigationScreen, store, Provider);
 
 }
 

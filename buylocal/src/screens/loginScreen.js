@@ -6,9 +6,12 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
+import {loginAction, loginActionCreator} from '../redux/actions/loginAction';
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
 
 
-export default class LoginScreen extends Component {
+export class LoginScreen extends Component {
     constructor(props) {
         super(props);
         this.state = { mail: '', passwd: '' };
@@ -21,7 +24,7 @@ export default class LoginScreen extends Component {
         }
 
         // check credentials
-
+        this.props.loginAction({mail: this.state.mail});
         this.props.navigator.switchToTab({tabIndex: 1});
     }
     
@@ -96,3 +99,19 @@ const styles = StyleSheet.create ({
     }
     
  })
+
+
+ const mapStateToProps = (state) => {
+    return {
+        loggedIn: state.loggedIn,
+        userData: state.userData
+    }
+}
+ 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
+    }
+}
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);

@@ -1,10 +1,14 @@
 import {Platform} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import {registerScreens, registerScreenVisibilityListener} from './src/navCompReg';
+import configureStore from './src/redux/configureStore';
+import { Provider } from 'react-redux';
 
+
+const store = configureStore();
 
 // screen related book keeping
-registerScreens();
+registerScreens(store, Provider);
 registerScreenVisibilityListener();
 
 
