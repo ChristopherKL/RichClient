@@ -5,7 +5,8 @@ import HomeScreen from './screens/homeScreen';
 import InfoScreen from './screens/infoScreen';
 import NavigationScreen from './screens/navigationScreen';
 import ProfileScreen from './screens/profileScreen';
-
+import ResetPasswordScreen from './screens/resetPasswordScreen';
+import RegestrationScreen from './screens/regestrationScreen';
 
 export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.loginScreen', () => LoginScreen, store, Provider);
@@ -13,6 +14,8 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.infoScreen', () => InfoScreen, store, Provider);
   Navigation.registerComponent('buylocal.navigationScreen', () => NavigationScreen, store, Provider);
   Navigation.registerComponent('buylocal.profileScreen', () => ProfileScreen, store, Provider);
+  Navigation.registerComponent('buylocal.resetPasswordScreen', () => ResetPasswordScreen, store, Provider);  
+  Navigation.registerComponent('buylocal.regestrationScreen', () => RegestrationScreen, store, Provider);   
 }
 
 export function registerScreenVisibilityListener() {

@@ -6,15 +6,12 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
-import {loginActionCreator} from '../redux/actions/loginAction';
-import {bindActionCreators} from 'redux';
-import { connect } from 'react-redux';
 
 
-export class LoginScreen extends Component {
+export default class RegestrationScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = { mail: '', passwd: '' };
+        this.state = { username: '', mail: '', password: '', password2: ''};
     }
     
     onPress = () => {
@@ -23,15 +20,23 @@ export class LoginScreen extends Component {
             return
         }
 
-        // check credentials
-        this.props.loginAction({mail: this.state.mail});
+        // send mail
         this.props.navigator.switchToTab({tabIndex: 1});
     }
     
     validateInput = () => {
         let mailRegEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     
-        if(this.state.passwd.length < 1) {
+        if(this.state.username.length < 1) {
+            return false;
+        }
+        if(this.state.password.length < 1) {
+            return false;
+        }
+        if(this.state.password.length < 1) {
+            return false;
+        }
+        if(this.state.password != this.state.password2) {
             return false;
         }
         if(!mailRegEx.test(this.state.mail)) {
@@ -56,12 +61,29 @@ export class LoginScreen extends Component {
                 </View> 
                 <View style={styles.inputContainer}>
                     <TextInput
+                        placeholder={"Ihr Benutzername"}
+                        placeholderColor={'grey'}
+                        style={styles.input}
+                        onChangeText={(text) => this.setState({username   : text})}
+                        value={this.state.username}
+                    />
+                </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
                         placeholder={"Ihr Passwort"}
                         placeholderColor={'grey'}
-                        secureTextEntry={true}
                         style={styles.input}
-                        onChangeText={(text) => this.setState({passwd   : text})}
-                        value={this.state.passwd}
+                        onChangeText={(text) => this.setState({password   : text})}
+                        value={this.state.password}
+                    />
+                </View>
+                <View style={styles.inputContainer}>
+                    <TextInput
+                        placeholder={"Passwort wiederholen"}
+                        placeholderColor={'grey'}
+                        style={styles.input}
+                        onChangeText={(text) => this.setState({password2   : text})}
+                        value={this.state.password2}
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -69,7 +91,7 @@ export class LoginScreen extends Component {
                         style={styles.button}
                         onPress={this.onPress}
                     >
-                        <Text>Login</Text>
+                        <Text>Registrieren</Text>
                     </TouchableOpacity>
                 </View>                            
             </View>
@@ -101,17 +123,4 @@ const styles = StyleSheet.create ({
  })
 
 
- const mapStateToProps = (state) => {
-    return {
-        loggedIn: state.loggedIn,
-        userData: state.userData
-    }
-}
- 
-const mapDispatchToProps = (dispatch) => {
-    return {
-        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
-    }
-}
- 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+

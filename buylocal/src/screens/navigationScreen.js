@@ -9,6 +9,8 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
+import {logoutActionCreator} from '../redux/actions/loginAction';
+
 
 
 export class NavigationScreen extends Component {
@@ -73,7 +75,25 @@ export class NavigationScreen extends Component {
                 title: "Mein Profil"
             });
         }
-        alert(item.title);
+	    else if(item.key == 'logout') {
+            this.props.logoutAction();
+            this.props.navigator.returntoRoot();
+        }
+        else if(item.key == 'resetpassowrd') {
+            this.props.navigator.push({
+                screen: 'buylocal.resetPasswordScreen',
+                title: "Passwort zurücksetzen"
+            });
+        }
+        else if(item.key == 'regestration') {
+            this.props.navigator.push({
+                screen: 'buylocal.regstrationScreen',
+                title: "Registrieren"
+            });
+        }
+        else {
+            alert(item.title);
+        }
     }    
     render() {
         return (
@@ -129,7 +149,7 @@ const mapStateToProps = (state) => {
  
 const mapDispatchToProps = (dispatch) => {
     return {
-        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
+        logoutAction: () => { dispatch(logoutActionCreator()) }
     }
 }
  
