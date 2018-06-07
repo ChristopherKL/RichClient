@@ -4,6 +4,7 @@ import LoginScreen from './screens/loginScreen';
 import HomeScreen from './screens/homeScreen';
 import InfoScreen from './screens/infoScreen';
 import NavigationScreen from './screens/navigationScreen';
+import ProfileScreen from './screens/profileScreen';
 
 
 export function registerScreens(store, Provider) {
@@ -11,7 +12,7 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.homeScreen', () => HomeScreen, store, Provider);
   Navigation.registerComponent('buylocal.infoScreen', () => InfoScreen, store, Provider);
   Navigation.registerComponent('buylocal.navigationScreen', () => NavigationScreen, store, Provider);
-
+  Navigation.registerComponent('buylocal.profileScreen', () => ProfileScreen, store, Provider);
 }
 
 export function registerScreenVisibilityListener() {

@@ -7,12 +7,39 @@ import {
     FlatList,
     Image
 } from 'react-native';
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
 
-export default class NavigationScreen extends Component {
+
+export class NavigationScreen extends Component {
     constructor(props) {
         super(props);
 
-        this.nav_entries = [
+        this.loggedIn_nav_entries = [
+            {
+                title: 'Mein Profil',
+                key: 'profile'
+            },
+            {
+                title: 'Nachrichten',
+                key: 'messages'
+            },
+            {
+                title: 'Suchen',
+                key: 'search'
+            },
+            {
+                title: 'Verkaufen',
+                key: 'sell'
+            },
+            {
+                title: 'Logout',
+                key: 'logout'                
+            }            
+        ];
+
+
+        this.unlogged_nav_entries = [
             {
                 title: 'Login',
                 key: 'login'
@@ -39,13 +66,20 @@ export default class NavigationScreen extends Component {
     };
 
     alertItemName = (item) => {
+        if(item.key == 'profile') {
+            this.props.navigator.push({
+                screen: 'buylocal.profileScreen',
+                passProps: {profile_id: 0},
+                title: "Mein Profil"
+            });
+        }
         alert(item.title);
     }    
     render() {
         return (
             <View> 
                 <FlatList
-                    data={this.nav_entries}
+                    data={ (this.props.loggedIn == true) ? this.loggedIn_nav_entries : this.unlogged_nav_entries}
                     ItemSeparatorComponent={this.renderSeparator}
                     renderItem={({item}) => (
                             <TouchableOpacity
@@ -85,3 +119,18 @@ const styles = StyleSheet.create ({
         alignItems: 'center',
     }
 })
+
+const mapStateToProps = (state) => {
+    return {
+        loggedIn: state.loggedIn,
+        userData: state.userData
+    }
+}
+ 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
+    }
+}
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationScreen);
