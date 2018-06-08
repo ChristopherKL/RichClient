@@ -143,6 +143,9 @@ Die Zuverlässigkeit der App hängt stark von der Verfügbarkeit des Servers ab.
 ## 2.3 Graphische Benutzerschnittstelle
 ### Zustandsdiagramm
 ![Zustandsdiagramm](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Zustandsdiagramm.jpg)
+
+Anmerkung: Der Nutzer kann über die Navigationsleiste von jedem Zustand aus jeden Zustand erreichen, der vom Zustand "Startseite" erreicht werden kann. Aus Gründen der Übersichtlichkeit haben wir uns dafür entschieden, diese Verbindungen der Zustände nicht in das Zustandsdiagramm aufzunehmen.
+
 ### Login
 ![Login](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/Mockups/Login.png)
 ### Registrierung
@@ -289,7 +292,7 @@ Die Zuverlässigkeit der App hängt stark von der Verfügbarkeit des Servers ab.
 
 
 ## 4.1 Annahmen
-Das Projekt wird mithilfe von React Native in der Entwicklungsumgebung Visual Studio Code umgesetzt. Dem React Native Framework liegt die JavaScript Bibliothek React zugrunde. Die Nutzung dieses Frameworks hätte es uns erlaubt, eine App sowohl für Android als auch iOS Geräte zu entwickeln. Während der Konzeptionierung der App stellte sich allerdings heraus, dass man für eine iOS App einen Rechner benötigt, der macOS als Betriebssystem hat. Da keiner der am Projekt beteiligten Personen Zugang zu so einem Rechner hat, können wir keine iOS App entwickeln. Als Datenbankmanagmentsystem kommt in diesem Projekt MySQL zum Einsatz, das durch die mit SequelizeJS dargestellte ORM-Schicht mit dem NodeJS Server verbunden ist.
+Das Projekt wird mithilfe von React Native in der Entwicklungsumgebung Visual Studio Code umgesetzt. Dem React Native Framework liegt die JavaScript Bibliothek React zugrunde. Die Nutzung dieses Frameworks hätte es uns erlaubt, eine App sowohl für Android als auch iOS Geräte zu entwickeln. Während der Konzeptionierung der App stellte sich allerdings heraus, dass man für eine iOS App einen Rechner benötigt, der macOS als Betriebssystem hat. Da keiner der am Projekt beteiligten Personen Zugang zu so einem Rechner hat, können wir keine iOS App entwickeln. Als Datenbankmanagmentsystem kommt in diesem Projekt MySQL zum Einsatz, das durch die mit SequelizeJS dargestellte ORM-Schicht mit dem NodeJS Server verbunden ist. Die Navigation der App wird mit React Native Navigation umgesetzt und als State Container dient React Redux. Damit die App auf die Fotos und Kamera des Nutzers zugreifen kann, verwenden wir die React Native Image Picker Bibliothek.
 
 An erster Stelle der internen Qualitätsanforderungen steht die Verständlichkeit des Codes. Der Code wird logisch durch gut lesbaren Code aufgebaut, damit jedes Teammitglied schnell und sicher Änderungen umsetzen kann. Das System muss außerdem eine gewisse Veränderbarkeit aufweisen, so dass Veränderungen des einen Teammitglieds an einer bestimmten Stelle sich nicht auf  Teile eines anderen Teammitglieds auswirken. Um den durch die App belegten Speicherplatz so gering wie möglich zu halten, wird darauf geachtet, den Code redundanzfrei zu halten.
 
@@ -314,7 +317,7 @@ Legende: C - Christopher K - Karl S - Stefan
 28.05: SQL-Datenbank erstellt<br />
 31.05: Pflichtenheft Abgabe<br />
 07.06: App - Login, Registrierung, Profil anzeigen, Profil ändern<br />
-14.06: API + App - Tokens, Login, Regestration, Profil anzeigen, Profil ändern<br />
+14.06: API + App - Tokens, Login, Registrierung, Profil anzeigen, Profil ändern<br />
 21.06: API + App - Angebot erstellen, Angebot ansehen<br />
 28.06: API + App - Nachrichten ansehen, Nachrichten verschicken, Angebot Melden<br />
 05.07: API + App - Suchanfragen ausführen, Suchanfragen speichern, Push-Nachrichten (Nur App), kontinuierliche Abfragen<br />
