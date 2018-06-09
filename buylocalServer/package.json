@@ -1,0 +1,13 @@
+{
+    "name": "BuyLocalServer",
+    "main": "server.js",
+    "dependencies": {
+        "cryptico": "^1.0.2",
+        "express": "^4.16.3",
+        "jsonwebtoken": "^8.2.2",
+        "mysql2": "^1.5.3",
+        "node-rsa": "^1.0.0",
+        "request": "^2.87.0",
+        "sequelize": "^4.37.10"
+    }
+}
