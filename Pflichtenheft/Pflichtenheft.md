@@ -195,6 +195,16 @@ Node.JS und MySQL nutzen wir sequelizejs.
 ## 3.5 Entwurf
 ### Sequenzdiagramm der Chatverschlüsselung
 ![Chatverschluesselung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/SequenzdiagrammChat.jpg)
+### Sequenzdiagramm der sicheren Registrierung
+    Die bei der Registrierung und dem Login verwendeten 16 Zufallszeichen dienen dazu,
+    den übertragenen Hash so zu verändern, dass selbst ein dazwischengeschalteter Mithörer nach mehrmaligen Mithören, den Hash nicht erraten kann.
+    Das wird erreicht dadurch, dass die übertragenen Daten durch die Zufallszeichen jedes Mal anders aussehen.
+![Chatverschluesselung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/SequenzdiagrammRegister.jpg)
+### Sequenzdiagramm des sicheren Login
+Der beim Login generierte Token ist nur eine gewisse Zeit gültig und wird dann vom Server wieder verändert, während der Gültigkeit des Tokens, kann der Nutzer sich mit diesem Token authentifizieren.
+![Chatverschluesselung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/SequenzdiagrammLogin.jpg)
+### Sequenzdiagramm anderer sicherer Anfragen
+![Chatverschluesselung](https://github.com/ChristopherKL/RichClient/blob/master/Pflichtenheft/SequenzdiagrammAnfragen.jpg)
 
         - Detaillierte UML-Diagramme für relevante Softwarebausteine
 
