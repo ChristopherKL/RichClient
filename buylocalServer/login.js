@@ -5,9 +5,27 @@
     var crypto = require('crypto');
 
 
-    //we require Username or Mail and Passphrase for this function
+    /**
+     * BSP
+     * 
+     * var request = require('request');
+  var neededPasswort = "passwort";
+  var neededMail = "hansel@test.de";
+
+  var rsaKeyGenerator = require("./rsaKeyGenerator");
+  var cryptico = require("cryptico");
+  var neededPublicKey = cryptico.publicKeyString(rsaKeyGenerator(neededPasswort));
+  var login = require('./login');
+  res.end(login(null,neededMail,neededPasswort,neededPublicKey));
+     */
+
+
+
+    //needs the userPassw3ord the PublicKey aqnd Email oder Username to login at the server.
+    //The Password is Hashed as SHA 512 and Send to the Server
+    //The Server sends back a token encrypted with the Personal Public Key
     module.exports = function (givenBenutzerName, givenMail, givenPasswort, givenPublicKey){
-        //erstmal Public Key vom Server beziehen damit man den Hash sicher verschlüsselt übertragen kann.
+        //gives Back the Public Key of the Server
     request.get('http://127.0.0.1:8081/publickey', function(err,httpResponse,body){
         var bodyAsJsonObject = JSON.parse(body);
         var publicKeyFromServer=new NodeRSA();
@@ -17,7 +35,7 @@
         
         var hash=crypto.Hash('sha512');
 
-        var passphraseAsSHA = hash.update(givenPasswort).digest('hex'); //erstellt einen SHA512 Hash aus dem Passwort und gibt in in Hexadezimal wieder
+        var passphraseAsSHA = hash.update(givenPasswort).digest('hex');
         
         var passphraseWithExtra = passphraseAsSHA+randomString;
         var passphraseEncrypted = publicKeyFromServer.encrypt(passphraseWithExtra, 'base64', 'utf-8');
@@ -27,6 +45,7 @@
                 form: {Mail: givenMail, Passwort: passphraseEncrypted, PublicKey: givenPublicKey}
              },function (err, httpResponse,body){
              if(body.success){
+                 //body.token liegt der Token drin
                 //return True
                 }else{
                 //return False
