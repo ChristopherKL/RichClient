@@ -82,7 +82,7 @@ CREATE TABLE `Benutzer` (
   `BenutzerName` varchar(45) NOT NULL,
   `Mail` varchar(45) NOT NULL,
   `Passwort` varchar(128) NOT NULL,
-  `PublicKey` varchar(128) DEFAULT NULL,
+  `PublicKey` varchar(256) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
   `reg_date` datetime NOT NULL,
   PRIMARY KEY (`BenutzerID`),
