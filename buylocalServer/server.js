@@ -41,7 +41,9 @@ const Benutzer= sequelize.define('Benutzer',{
   BenutzerName: Sequelize.STRING,
   Mail: Sequelize.STRING,
   Passwort: Sequelize.STRING,
-  PublicKey: Sequelize.STRING
+  PublicKey: Sequelize.STRING,
+  last_login: Sequelize.DATE,
+  reg_date: Sequelize.DATE,
 },{tableName: 'Benutzer', timestamps:false})
 
 
@@ -92,7 +94,7 @@ api.post('/login', function (req,res){
             //token encryption
             encryptedToken = cryptico.publicKeyFromString(benutzer.PublicKey).encrypt(token);
 
-            res.json({success: true, message: "Ein Token", token: encryptedToken});
+            res.json({success: true, message: "Ein Token", BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
           }else{
             res.json({ success : false, message:"Passwort falsch"});
           }
@@ -121,6 +123,8 @@ api.post('/login', function (req,res){
 
             encryptedToken = cryptico.publicKeyFromString(benutzer.PublicKey).encrypt(token);
 
+            Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
+            
             res.json({success: true, message: "Ein Token", token: encryptedToken});
           }else{
             res.json({ success : false, message:"Passwort falsch"});
@@ -146,7 +150,7 @@ api.post('/register', function (req,res){
 
           var completePassphraseWithExtra = key.decrypt(req.body.Passwort);
           var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
-          Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, Passwort:  completePassphraseWithout}).then(benutzer =>{
+          Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
             if(benutzer){
               res.json({success: true, message: "Nutzer erstellt"});
             }else{

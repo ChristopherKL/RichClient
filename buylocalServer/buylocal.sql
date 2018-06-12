@@ -83,6 +83,8 @@ CREATE TABLE `Benutzer` (
   `Mail` varchar(45) NOT NULL,
   `Passwort` varchar(128) NOT NULL,
   `PublicKey` varchar(128) DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `reg_date` datetime NOT NULL,
   PRIMARY KEY (`BenutzerID`),
   UNIQUE KEY `Mail_UNIQUE` (`Mail`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
