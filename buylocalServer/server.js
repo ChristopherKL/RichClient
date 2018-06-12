@@ -96,7 +96,7 @@ api.post('/login', function (req,res){
 
 
             Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
-            
+
             res.json({success: true, message: "Ein Token", BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
           }else{
             res.json({ success : false, message:"Passwort falsch"});
@@ -128,7 +128,7 @@ api.post('/login', function (req,res){
 
             Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
 
-            res.json({success: true, message: "Ein Token",BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail token: encryptedToken});
+            res.json({success: true, message: "Ein Token",BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
           }else{
             res.json({ success : false, message:"Passwort falsch"});
           }
