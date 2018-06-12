@@ -94,6 +94,9 @@ api.post('/login', function (req,res){
             //token encryption
             encryptedToken = cryptico.publicKeyFromString(benutzer.PublicKey).encrypt(token);
 
+
+            Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
+            
             res.json({success: true, message: "Ein Token", BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
           }else{
             res.json({ success : false, message:"Passwort falsch"});
@@ -124,8 +127,8 @@ api.post('/login', function (req,res){
             encryptedToken = cryptico.publicKeyFromString(benutzer.PublicKey).encrypt(token);
 
             Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
-            
-            res.json({success: true, message: "Ein Token", token: encryptedToken});
+
+            res.json({success: true, message: "Ein Token",BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail token: encryptedToken});
           }else{
             res.json({ success : false, message:"Passwort falsch"});
           }
