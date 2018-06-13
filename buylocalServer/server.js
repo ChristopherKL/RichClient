@@ -213,7 +213,7 @@ api.post('/register', function (req,res){
           if(benutzer){
             res.json({ success : false, message:"Mail schon vorhanden"});
           }else{
-            try{
+            //try{
               var completePassphraseWithExtra = key.decrypt(req.body.Passwort);
               var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
               Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
@@ -223,9 +223,9 @@ api.post('/register', function (req,res){
                 res.json({ success : false, message:"Fehler beim Erstellen des Nutzers"});
               }
             })
-          }catch{
-            res.json({success:false,message:"Fehler beim entschlüsseln"});
-          }
+         // }catch{
+           // res.json({success:false,message:"Fehler beim entschlüsseln"});
+          //}
         }
       })
     }
