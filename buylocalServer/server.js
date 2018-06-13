@@ -7,7 +7,7 @@ const NodeRSA = require('node-rsa');
 const secret = require('crypto').randomBytes(64).toString('hex').substring(0,16);
 
 
-const key = new NodeRSA({b: 512}); //512 bit RSA Schlüsselpaar
+const key = new NodeRSA({b: 2048}); //512 bit RSA Schlüsselpaar
 key.setOptions({encryptionScheme: 'pkcs1'});
 
 var bodyParser  = require('body-parser');
@@ -90,7 +90,7 @@ api.get('/user/:BenutzerID/:Token', function (req,res){
         res.json({success:false, message:"Token falsch"});
       }
     }catch {
-      res.json({success:false, message:"Token nicht entschlüsselbar"})
+      res.json({success:false, message:"Token nicht entschlüsselb ar"})
     }
   }else{
     res.json({success:false,message:"Fehlerhafte Anfrage"});
