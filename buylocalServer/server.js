@@ -1,9 +1,11 @@
 var express = require('express');
 var api = express();
 var fs = require('fs');
+var jwt    = require('jsonwebtoken');
 const NodeRSA = require('node-rsa');
 
-var cryptico=require("cryptico");
+const secret = require('crypto').randomBytes(64).toString('hex').substring(0,16);
+
 
 const key = new NodeRSA({b: 512}); //512 bit RSA Schlüsselpaar
 key.setOptions({encryptionScheme: 'pkcs1'});
@@ -66,8 +68,61 @@ api.get('/testlogin', function (req,res){
 
 //Gives back the public RSA key part of the server
 api.get('/publicKey', function(req,res){
-  res.json({success: true, publicKey: key.exportKey("public",'pkcs1')});
+  res.json({success: true, publicKey: key.exportKey("components-public-pem")});
 })
+
+api.get('/user/:BenutzerID/:Token', function (req,res){
+  if(req.params.Token&&req.params.BenutzerID){
+    try{
+      var decryptedTokenWithExtra = key.decrypt(req.params.Token);
+      var decryptedToken=decryptedTokenWithExtra.toString().substring(0, decryptedTokenWithExtra.toString().length -16);
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now/1000;
+      if(decrpytedToken.exp>current_time){
+        Benutzer.findOne({where: {BenutzerID:req.params.BenutzerID}}).then(benutzer =>{
+          if(benutzer){
+            res.json({success:true, BenutzerName: benutzer.BenutzerName,Mail : benutzer.Mail, last_login:benutzer.last_login, reg_date: benutzer.reg_date});
+          }else{
+            res.json({success:false, message:"Nutzer nicht vorhanden"});
+          }
+        });
+      }else{
+        res.json({success:false, message:"Token falsch"});
+      }
+    }catch {
+      res.json({success:false, message:"Token nicht entschlüsselbar"})
+    }
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
+
+ 
+//Post needs Token BenutzerID, BenutzerName, Mail in Body of request
+api.post('/changeuser', function (req,res){
+  if(req.body.Token&&req.body.BenutzerID&&req.body.BenutzerName&&req.body.Mail){
+    try{
+      var decryptedTokenWithExtra = key.decrypt(req.body.Token);
+      var decryptedToken=decryptedTokenWithExtra.toString().substring(0, decryptedTokenWithExtra.toString().length -16);
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now/1000;
+      if(decryptedToken.exp>current_time ){
+        if(decryptedToken.payload.BenutzerID == reg.body.BenutzerID){
+          Benutzer.update({BenutzerName:req.body.Benutzername, Mail:req.body.Mail},{ where: {BenutzerID:req.body.BenutzerID}});
+          res.json({succes:true, message:"Werte geändert"});
+        }else{
+          res.json({success:false, message:"falsche BenutzerID"})
+        }
+      }else{
+        res.json({success:false, message:"Token abgelaufen"})
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
+  }else{
+    res.json({success:false, message:"Fehlerhafte Anfrage"});
+  }
+}) 
 
 /**
  * req.body.name übergebener USername oder Emailadresse
@@ -75,95 +130,109 @@ api.get('/publicKey', function(req,res){
  */
 //code für den Login hier einfügen
 api.post('/login', function (req,res){
-  if (req.body.Mail){
-    Benutzer.findOne({
-      where: {Mail: req.body.Mail}}).then(benutzer =>{
-        if (benutzer){
-          completePassphraseWithExtra = key.decrypt(req.body.Passwort);
-          var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
-          if(benutzer.Passwort==completePassphraseWithout){
-            //no Public KEy before first login... at first login.. add public key
-            if(!benutzer.PublicKey){
-              Benutzer.update({PublicKey:req.body.PublicKey},{where :{BenutzerID:benutzer.BenutzerID}});
-              benutzer.PublicKey=req.body.PublicKey;
-            }
-            //token generation
-            var tokenGenerator = require('./server/ownModules/tokenGenerator.js');
-            token= tokenGenerator(benutzer.BenutzerID);
+  if((req.body.Mail||req.body.Username)&&req.body.Passwort){
+    if (req.body.Mail){
+      Benutzer.findOne({
+        where: {Mail: req.body.Mail}}).then(benutzer =>{
+          if (benutzer){
+            completePassphraseWithExtra = key.decrypt(req.body.Passwort);
+            var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
+            if(benutzer.Passwort==completePassphraseWithout){
+              //no Public KEy before first login... at first login.. add public key
+              if(!benutzer.PublicKey){
+                Benutzer.update({PublicKey:req.body.PublicKey},{where :{BenutzerID:benutzer.BenutzerID}});
+                benutzer.PublicKey=req.body.PublicKey;
+              }
+              //token generation
+              var tokenGenerator = require('./server/ownModules/tokenGenerator.js');
+              token= tokenGenerator(benutzer.BenutzerID,secret);
             
-            //token encryption
-            encryptedToken = cryptico.publicKeyFromString(benutzer.PublicKey).encrypt(token);
+              //token encryption
+              var keyFromUser= new NodeRSA();
+              keyFromUser.importKey(benutzer.publicKey);
+              encryptedToken = keyFromUser.encrypt(token);
 
 
-            Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
+              Benutzer.update({last_login:Date.now()},{where:{BenutzerID:benutzer.BenutzerID}});
 
-            res.json({success: true, message: "Ein Token", BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
-          }else{
-            res.json({ success : false, message:"Passwort falsch"});
-          }
-        }else{
-          res.json({ success : false, message:"Kein Nutzer mit der Mail"});
-        }
-      })
-  }else{
-    Benutzer.findOne({
-      where: {BenutzerName : req.body.BenutzerName}}).then(benutzer =>{
-        if(benutzer){
-
-          completePassphraseWithExtra = key.decrypt(req.body.Passwort);
-          var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
-          if(benutzer.Passwort==completePassphraseWithout){
-            //no Public KEy before first login... at first login.. add public key
-            if(!benutzer.PublicKey){
-              Benutzer.update({PublicKey:req.body.PublicKey},{BenutzerID:benutzer.BenutzerID});
-              benutzer.PublicKey=req.body.PublicKey;
+              res.json({success: true, message: "Ein Token", BenutzerId:benutzer.BenutzerID, BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
+            }else{
+              res.json({ success : false, message:"Passwort falsch"});
             }
-            //token generation
-            var tokenGenerator = require('./server/ownModules/tokenGenerator.js');
-            token= tokenGenerator(benutzer.BenutzerID);
-            
-            //token encryption
-
-            encryptedToken = cryptico.publicKeyFromString(benutzer.PublicKey).encrypt(token);
-
-            Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
-
-            res.json({success: true, message: "Ein Token",BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
           }else{
-            res.json({ success : false, message:"Passwort falsch"});
+            res.json({ success : false, message:"Kein Nutzer mit der Mail"});
           }
-        }else{
-          res.json({ success : false, message:"Kein Nutzer mit dem Benutzernamen"});
-        }
+        })
+    }else{
+      Benutzer.findOne({
+        where: {BenutzerName : req.body.BenutzerName}}).then(benutzer =>{
+          if(benutzer){
+
+            completePassphraseWithExtra = key.decrypt(req.body.Passwort);
+            var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
+            if(benutzer.Passwort==completePassphraseWithout){
+              //no Public KEy before first login... at first login.. add public key
+              if(!benutzer.PublicKey){
+                Benutzer.update({PublicKey:req.body.PublicKey},{where:{BenutzerID:benutzer.BenutzerID}});
+                benutzer.PublicKey=req.body.PublicKey;
+              }
+              //token generation
+              var tokenGenerator = require('./server/ownModules/tokenGenerator.js');
+              token= tokenGenerator(benutzer.BenutzerID,secret);
+            
+              //token encryption
+              var keyFromUser= new NodeRSA();
+              keyFromUser.importKey(benutzer.publicKey);
+              encryptedToken = keyFromUser.encrypt(token);
+
+              Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
+
+              res.json({success: true, message: "Ein Token",BenutzerId:benutzer.BenutzerID, BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
+            }else{
+              res.json({ success : false, message:"Passwort falsch"});
+            }
+          }else{
+            res.json({ success : false, message:"Kein Nutzer mit dem Benutzernamen"});
+          }
       })
   }
+}else{
+  res.json({success:false,message:"Fehlerhafte Anfrage"});
+}
 })
 
 // code für die Registrierung hier einfügen
 // Request muss übergeben werden mit BenutzerName,Mail und Passwort( mit 16 Zufallszeichen) verschlüsslet mit dem öffentlichen Schlüssel im Body
 api.post('/register', function (req,res){
-  Benutzer.findOne({where:{BenutzerName: req.body.BenutzerName}}).then(benutzer =>{
-    if (benutzer){
-      res.json({ success : false, message:"Benutzer schon vorhanden"});
-    }else{
-      Benutzer.findOne({where:{Mail: req.body.Mail}}).then(benutzer =>{
-        if(benutzer){
-          res.json({ success : false, message:"Mail schon vorhanden"});
-        }else{
-
-          var completePassphraseWithExtra = key.decrypt(req.body.Passwort);
-          var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
-          Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
-            if(benutzer){
-              res.json({success: true, message: "Nutzer erstellt"});
-            }else{
-              res.json({ success : false, message:"Fehler beim Erstellen des Nutzers"});
-            }
-          })
+  if(req.body.BenutzerName&&req.body.Mail&&req.body.Passwort){
+    Benutzer.findOne({where:{BenutzerName: req.body.BenutzerName}}).then(benutzer =>{
+      if (benutzer){
+        res.json({ success : false, message:"Benutzer schon vorhanden"});
+      }else{
+        Benutzer.findOne({where:{Mail: req.body.Mail}}).then(benutzer =>{
+          if(benutzer){
+            res.json({ success : false, message:"Mail schon vorhanden"});
+          }else{
+            try{
+              var completePassphraseWithExtra = key.decrypt(req.body.Passwort);
+              var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
+              Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
+              if(benutzer){
+                res.json({success: true, message: "Nutzer erstellt"});
+              }else{
+                res.json({ success : false, message:"Fehler beim Erstellen des Nutzers"});
+              }
+            })
+          }catch{
+            res.json({success:false,message:"Fehler beim entschlüsseln"});
+          }
         }
       })
     }
   })
+}else{
+  res.json({success:false,message:"Fehlerhafte Anfrage"})
+}
 })
 
 //erstellt den Server auf Port 8081 des Localhost
