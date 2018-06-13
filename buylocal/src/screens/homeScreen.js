@@ -24,7 +24,7 @@ export class HomeScreen extends Component {
     }
     renderLoggedInScreen() {
         return (
-            <Text>Logged in as {this.props.userData.mail}</Text>
+            <Text>Logged in as {this.props.userData.username}</Text>
         )
     }
 }

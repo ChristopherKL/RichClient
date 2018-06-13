@@ -68,32 +68,45 @@ export class NavigationScreen extends Component {
     };
 
     alertItemName = (item) => {
-        if(item.key == 'profile') {
-            this.props.navigator.push({
-                screen: 'buylocal.profileScreen',
-                passProps: {profile_id: 0},
-                title: "Mein Profil"
-            });
-        }
-	    else if(item.key == 'logout') {
-            this.props.logoutAction();
-            this.props.navigator.returntoRoot();
-        }
-        else if(item.key == 'resetpassowrd') {
-            this.props.navigator.push({
-                screen: 'buylocal.resetPasswordScreen',
-                title: "Passwort zurücksetzen"
-            });
-        }
-        else if(item.key == 'regestration') {
-            this.props.navigator.push({
-                screen: 'buylocal.regstrationScreen',
-                title: "Registrieren"
-            });
+        if(this.props.loggedIn) {
+            switch(item.key) {
+                case 'profile':
+                    this.props.navigator.push({
+                        screen: 'buylocal.profileScreen',
+                        passProps: {profile_id: 0},
+                        title: "Mein Profil"
+                    });
+                    break;
+                case 'logout':
+                    this.props.logoutAction();
+                    this.props.navigator.returntoRoot();
+                    break;
+                default:
+                    alert(item.title);
+                    break;
+            }
         }
         else {
-            alert(item.title);
+            switch(item.key) {
+                case 'resetpasswd':
+                    this.props.navigator.push({
+                        screen: 'buylocal.resetPasswordScreen',
+                        title: "Passwort zurücksetzen"
+                    });
+                    break;
+                case 'registration':
+                    this.props.navigator.push({
+                        screen: 'buylocal.registrationScreen',
+                        title: "Registrieren"
+                    });
+                    break;
+                default:
+                    alert(item.title);
+                    break;
+                
+            }
         }
+
     }    
     render() {
         return (
@@ -107,15 +120,15 @@ export class NavigationScreen extends Component {
                                 style = {styles.container}
                                 onPress = {() => this.alertItemName(item)}>
                         
-                            <Text style = {styles.text}>
-                                {item.title}
-                            </Text>
-                            <View style={styles.rightContainer}>
-                                <Image
-                                    style={{width: 50, height: 35, alignSelf: 'flex-end'}}
-                                    source={require('./../../img/pfeil.png')}
-                                />
-                            </View>
+                                <Text style = {styles.text}>
+                                    {item.title}
+                                </Text>
+                                <View style={styles.rightContainer}>
+                                    <Image
+                                        style={{width: 50, height: 35, alignSelf: 'flex-end'}}
+                                        source={require('./../../img/pfeil.png')}
+                                    />
+                                </View>
                         </TouchableOpacity>
                     )}
                 />

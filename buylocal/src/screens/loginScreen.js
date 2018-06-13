@@ -9,34 +9,56 @@ import {
 import {loginActionCreator} from '../redux/actions/loginAction';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
+import { initAPIConnActionCreator } from '../redux/actions/initAPIConnAction';
+import APIConnector from '../APIConnector.js';
 
 
 export class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = { mail: '', passwd: '' };
+        this.state = { inputUserOrMail: '', inputPasswd: '' };
     }
     
+
+    componentDidMount() {
+        if(this.APIConn == null) {
+            var newAPIConn = new APIConnector("http://karlpi:8081");
+            newAPIConn.getServerPublicKey();
+            this.props.APIConnAction(newAPIConn);
+
+        }
+    }
+
     onPress = () => {
         if(!this.validateInput()) {
             alert("Überprüfen Sie Ihre Eingaben!")
             return
         }
 
+
+
         // check credentials
-        this.props.loginAction({mail: this.state.mail});
+        this.props.loginAction({mail: "xx@abc.de", username: "abc"});
         this.props.navigator.switchToTab({tabIndex: 1});
     }
     
     validateInput = () => {
         let mailRegEx = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
     
-        if(this.state.passwd.length < 1) {
+        if(this.state.inputPasswd.length < 1) {
             return false;
         }
-        if(!mailRegEx.test(this.state.mail)) {
-            return false;
+        if(this.state.inputUserOrMail.indexOf("@") != -1) {
+            if(!mailRegEx.test(this.state.inputUserOrMail)) {
+                return false;
+            }
         }
+        else {
+            if(this.state.inputUserOrMail.length < 1) {
+                return false;
+            }            
+        }     
+
 
         return true;
     }
@@ -46,12 +68,12 @@ export class LoginScreen extends Component {
             <View>
                 <View style={styles.inputContainer}>
                     <TextInput
-                        placeholder={"Ihre E-Mail Adresse"}
+                        placeholder={"Benutzername / E-Mail"}
                         placeholderColor={'grey'}
                         keyboardType={'email-address'}
                         style={styles.input}
-                        onChangeText={(text) => this.setState({mail: text})}
-                        value={this.state.mail}
+                        onChangeText={(text) => this.setState({inputUserOrMail: text})}
+                        value={this.state.inputUserOrMail}
                     />
                 </View> 
                 <View style={styles.inputContainer}>
@@ -60,8 +82,8 @@ export class LoginScreen extends Component {
                         placeholderColor={'grey'}
                         secureTextEntry={true}
                         style={styles.input}
-                        onChangeText={(text) => this.setState({passwd   : text})}
-                        value={this.state.passwd}
+                        onChangeText={(text) => this.setState({inputPasswd   : text})}
+                        value={this.state.inputPasswd}
                     />
                 </View>
                 <View style={styles.inputContainer}>
@@ -104,13 +126,15 @@ const styles = StyleSheet.create ({
  const mapStateToProps = (state) => {
     return {
         loggedIn: state.loggedIn,
-        userData: state.userData
+        userData: state.userData,
+        APIConn: state.APIConn
     }
 }
  
 const mapDispatchToProps = (dispatch) => {
     return {
-        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
+        loginAction: (userData) => { dispatch(loginActionCreator(userData)) },
+        APIConnAction: (APIConn) => { dispatch(initAPIConnActionCreator(APIConn))}
     }
 }
  

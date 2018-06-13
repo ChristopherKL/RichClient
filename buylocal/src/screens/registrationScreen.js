@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 
-export default class RegestrationScreen extends Component {
+export default class RegistrationScreen extends Component {
     constructor(props) {
         super(props);
         this.state = { username: '', mail: '', password: '', password2: ''};
