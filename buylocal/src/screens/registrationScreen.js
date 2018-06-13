@@ -6,9 +6,15 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { initAPIConnActionCreator } from '../redux/actions/initAPIConnAction';
+import APIConnector from '../APIConnector.js';
 
 
-export default class RegistrationScreen extends Component {
+
+
+export class RegistrationScreen extends Component {
     constructor(props) {
         super(props);
         this.state = { username: '', mail: '', password: '', password2: ''};
@@ -33,7 +39,7 @@ export default class RegistrationScreen extends Component {
         if(this.state.password.length < 1) {
             return false;
         }
-        if(this.state.password.length < 1) {
+        if(this.state.password2.length < 1) {
             return false;
         }
         if(this.state.password != this.state.password2) {
@@ -124,3 +130,15 @@ const styles = StyleSheet.create ({
 
 
 
+ const mapStateToProps = (state) => {
+    return {
+        APIConn: state.APIConn
+    }
+}
+ 
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+}
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationScreen);
