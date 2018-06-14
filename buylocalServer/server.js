@@ -111,19 +111,16 @@ api.post('/changeuser', function (req,res){
   }
 }) 
 
-/**
- * req.body.name übergebener USername oder Emailadresse
- * req.body.passwort übergebener Hashwert des Passwortes
- */
-//code für den Login hier einfügen
+
+//Login need Username or Mail and Passwort and PublicKey
 api.post('/login', function (req,res){
-  if((req.body.Mail||req.body.Username)&&req.body.Passwort){
+  if((req.body.Mail||req.body.BenutzerName)&&req.body.Passwort&&req.body.PublicKey){
     if (req.body.Mail){
       Benutzer.findOne({
         where: {Mail: req.body.Mail}}).then(benutzer =>{
           if (benutzer){
             completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort,key);
-            var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
+            var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
             if(benutzer.Passwort==completePassphraseWithout){
               //no Public KEy before first login... at first login.. add public key
               if(!benutzer.PublicKey){
@@ -135,7 +132,7 @@ api.post('/login', function (req,res){
               token= tokenGenerator(benutzer.BenutzerID,secret);
             
               //token encryption
-              encryptedToken = cryptico.encrypt(token,benutzer.publicKey);
+              encryptedToken = cryptico.encrypt(token,benutzer.PublicKey).cipher;
 
 
               Benutzer.update({last_login:Date.now()},{where:{BenutzerID:benutzer.BenutzerID}});
@@ -153,8 +150,8 @@ api.post('/login', function (req,res){
         where: {BenutzerName : req.body.BenutzerName}}).then(benutzer =>{
           if(benutzer){
 
-            completePassphraseWithExtra = key.decrypt(req.body.Passwort);
-            var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
+            completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort,key);
+            var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
             if(benutzer.Passwort==completePassphraseWithout){
               //no Public KEy before first login... at first login.. add public key
               if(!benutzer.PublicKey){
@@ -166,9 +163,9 @@ api.post('/login', function (req,res){
               token= tokenGenerator(benutzer.BenutzerID,secret);
             
               //token encryption
-              encryptedToken = cryptico.encrypt(token,benutzer.publicKey);
+              encryptedToken = cryptico.encrypt(token,benutzer.PublicKey).cipher;
 
-              Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
+              Benutzer.update({last_login:Date.now()},{where:{BenutzerID:benutzer.BenutzerID}});
 
               res.json({success: true, message: "Ein Token",BenutzerId:benutzer.BenutzerID, BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
             }else{
@@ -196,11 +193,9 @@ api.post('/register', function (req,res){
           if(benutzer){
             res.json({ success : false, message:"Mail schon vorhanden"});
           }else{
-            //try{
+            try{
               var completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort, key);
               var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
-              console.log(completePassphraseWithout)
-              console.log(completePassphraseWithExtra)
               Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
               if(benutzer){
                 res.json({success: true, message: "Nutzer erstellt"});
@@ -208,9 +203,9 @@ api.post('/register', function (req,res){
                 res.json({ success : false, message:"Fehler beim Erstellen des Nutzers"});
               }
             })
-         // }catch{
-           // res.json({success:false,message:"Fehler beim entschlüsseln"});
-          //}
+          }catch{
+            res.json({success:false,message:"Fehler beim entschlüsseln"});
+          }
         }
       })
     }
