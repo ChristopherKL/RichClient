@@ -22,12 +22,17 @@ describe('/GET publickey', () => {
               res.body.publicKey.exists;
               var NodeRSA = require('node-rsa');
               var key = new NodeRSA();
-              consloe.log(res.body.publicKey);
-              key.importKey(res.body.publicKey,"components");
+              key.importKey(res.body.publicKey,"public");
               key.isEmpty.isFalse;
-
-
             done();
           });
     });
+});
+describe("/POST register", () =>{
+  it('it should register an user using the public key encrypted Password')
+  .post("/register")
+  .send()
+  .end((err, res) =>{
+    done();
+  });
 });

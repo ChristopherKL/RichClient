@@ -8,7 +8,6 @@ const secret = require('crypto').randomBytes(64).toString('hex').substring(0,16)
 
 
 const key = new NodeRSA({b: 2048}); //512 bit RSA Schlüsselpaar
-key.setOptions({encryptionScheme: 'pkcs1'});
 
 var bodyParser  = require('body-parser');
 
@@ -68,7 +67,7 @@ api.get('/testlogin', function (req,res){
 
 //Gives back the public RSA key part of the server
 api.get('/publicKey', function(req,res){
-  res.json({success: true, publicKey: key.exportKey("components-public-pem")});
+  res.json({success: true, publicKey: key.exportKey("public")});
 })
 
 api.get('/user/:BenutzerID/:Token', function (req,res){
