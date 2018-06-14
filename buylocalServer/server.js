@@ -198,7 +198,9 @@ api.post('/register', function (req,res){
           }else{
             //try{
               var completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort, key);
-              var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
+              var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
+              console.log(completePassphraseWithout)
+              console.log(completePassphraseWithExtra)
               Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
               if(benutzer){
                 res.json({success: true, message: "Nutzer erstellt"});
