@@ -1,21 +1,14 @@
 
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize('mysql://buylocalAPI:buyl0cal@localhost:3306/buylocal');
 
-//User model für Sequelize***********************
-const benutzer = sequelize.define('Benutzer', {
-    EMail: {
-      type: Sequelize.STRING
-    },
-    Passwort: {
-      type: Sequelize.STRING
-    }
-  });
-  
-   // force: true will drop the table if it already exists
-  benutzer.sync({force: true}).then(() => {
-    // Table created
-    return benutzer.create({
-      firstName: 'John',
-      lastName: 'Hancock'
-    });
-  });
-  //*********************************************
+ const Benutzer= sequelize.define('Benutzer',{
+  BenutzerID: {type: Sequelize.INTEGER, primaryKey:true},
+  BenutzerName: Sequelize.STRING,
+  Mail: Sequelize.STRING,
+  Passwort: Sequelize.STRING,
+  PublicKey: Sequelize.STRING,
+  last_login: Sequelize.DATE,
+  reg_date: Sequelize.DATE,
+},{tableName: 'Benutzer', timestamps:false});
+module.exports = Benutzer;

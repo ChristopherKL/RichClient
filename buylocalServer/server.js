@@ -10,7 +10,7 @@ var randomString = require('crypto').randomBytes(64).toString('hex');
 const key = cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüsselpaar
 
 var bodyParser  = require('body-parser');
-
+var Benutzer = require("./server/models/benutzer");
 
 
 
@@ -21,7 +21,6 @@ api.use(bodyParser.json());
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize('mysql://buylocalAPI:buyl0cal@localhost:3306/buylocal');
 
-//var benutzer = require('./server/models/benutzer')
 
 //wird weggeworfen testet connection zur DB
 api.get('/testconnection', function (req,res){
@@ -36,18 +35,6 @@ api.get('/testconnection', function (req,res){
     res.end("Connection to DB failed");
   });
 })
-
-//definition of Benutzer Model in DB
-const Benutzer= sequelize.define('Benutzer',{
-  BenutzerID: {type: Sequelize.INTEGER, primaryKey:true},
-  BenutzerName: Sequelize.STRING,
-  Mail: Sequelize.STRING,
-  Passwort: Sequelize.STRING,
-  PublicKey: Sequelize.STRING,
-  last_login: Sequelize.DATE,
-  reg_date: Sequelize.DATE,
-},{tableName: 'Benutzer', timestamps:false})
-
 
 api.get('/testregister', function (req,res){
   var register = require('./register.js');
@@ -210,7 +197,7 @@ api.post('/register', function (req,res){
             res.json({ success : false, message:"Mail schon vorhanden"});
           }else{
             //try{
-              var completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort.cipher, key);
+              var completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort, key);
               var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
               Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
               if(benutzer){
