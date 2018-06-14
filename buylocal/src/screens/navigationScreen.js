@@ -161,8 +161,8 @@ const styles = StyleSheet.create ({
 
 const mapStateToProps = (state) => {
     return {
-        loggedIn: state.loggedIn,
-        userData: state.userData
+        loggedIn: state.loginReducer.loggedIn,
+        userData: state.loginReducer.userData
     }
 }
  

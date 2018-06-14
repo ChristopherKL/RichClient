@@ -11,6 +11,7 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import { serverKeyActionCreator } from '../redux/actions/serverKeyAction';
 import getServerKey from '../apiCom/getServerKey';
+import login from '../apiCom/login';
 
 
 export class LoginScreen extends Component {
@@ -35,10 +36,20 @@ export class LoginScreen extends Component {
         }
 
 
+        login(this.state.inputUserOrMail, this.state.inputPasswd, this.props.serverPublicKey).then(
+            (res) => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+res);
+                }
+                else {
+                    this.props.loginAction(res);
+                    this.props.navigator.switchToTab({tabIndex: 1});
+                }
+            }
+        )
 
-        // check credentials
-        this.props.loginAction({mail: "xx@abc.de", username: "abc"});
-        this.props.navigator.switchToTab({tabIndex: 1});
+        
+        
     }
     
     validateInput = () => {
@@ -124,9 +135,9 @@ const styles = StyleSheet.create ({
 
  const mapStateToProps = (state) => {
     return {
-        loggedIn: state.loggedIn,
-        userData: state.userData,
-        serverPublicKey: state.serverPublicKey
+        loggedIn: state.loginReducer.loggedIn,
+        userData: state.loginReducer.userData,
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey
     }
 }
  

@@ -25,13 +25,17 @@ export class RegistrationScreen extends Component {
             return
         }
         
-        if((regRes = register(this.state.username, this.state.mail, this.state.password, this.props.serverPublicKey)) == true) {
-            alert("Registration erfolgreich!");
-            this.props.navigator.switchToTab({tabIndex: 1});
-        }
-        else {
-            alert("Fehler: "+ regRes);
-        }
+        register(this.state.username, this.state.mail, this.state.password, this.props.serverPublicKey).then(
+            (res) => {
+                if(res != true) {
+                    alert("Fehler: "+ res);
+                }
+                else {
+                    alert("Registration erfolgreich!");
+                    this.props.navigator.switchToTab({tabIndex: 1});
+                }
+            }
+        )
         
     }
     
@@ -137,7 +141,7 @@ const styles = StyleSheet.create ({
 
  const mapStateToProps = (state) => {
     return {
-        serverPublicKey: state.serverPublicKey
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey
     }
 }
  
