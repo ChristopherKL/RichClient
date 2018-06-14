@@ -1,6 +1,6 @@
 
 const Sequelize = require('sequelize');
-const sequelize = new Sequelize('mysql://buylocalAPI:buyl0cal@localhost:3306/buylocal');
+const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'localhost', dialect:"mysql",logging: false});
 
  const Benutzer= sequelize.define('Benutzer',{
   BenutzerID: {type: Sequelize.INTEGER, primaryKey:true},

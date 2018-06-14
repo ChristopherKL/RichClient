@@ -17,42 +17,6 @@ var Benutzer = require("./server/models/benutzer");
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(bodyParser.json());
 
-//fügt sequelize connection
-const Sequelize = require('sequelize');
-const sequelize = new Sequelize('mysql://buylocalAPI:buyl0cal@localhost:3306/buylocal');
-
-
-//wird weggeworfen testet connection zur DB
-api.get('/testconnection', function (req,res){
-  sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.');
-    res.end("Connection to DB established");
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-    res.end("Connection to DB failed");
-  });
-})
-
-api.get('/testregister', function (req,res){
-  var register = require('./register.js');
-  res.end(register("hansel","hansel@test.de","passwort"));
-})
-
-api.get('/testlogin', function (req,res){
-  var request = require('request');
-  var neededPasswort = "passwort";
-  var neededMail = "hansel@test.de";
-
-  var rsaKeyGenerator = require("./rsaKeyGenerator");
-  var cryptico = require("cryptico");
-  var neededPublicKey = cryptico.publicKeyString(rsaKeyGenerator(neededPasswort));
-  var login = require('./login');
-  res.end(login(null,neededMail,neededPasswort,neededPublicKey));
-})
-
 //Gives back the public RSA key part of the server
 api.get('/publicKey', function(req,res){
   res.json({success: true, publicKey: cryptico.publicKeyString(key)});
@@ -60,12 +24,15 @@ api.get('/publicKey', function(req,res){
 
 api.get('/user/:BenutzerID/:Token', function (req,res){
   if(req.params.Token&&req.params.BenutzerID){
-    try{
-      var decryptedTokenWithExtra = cryptico.decrypt(req.params.Token,key);
-      var decryptedToken=decryptedTokenWithExtra.toString().substring(0, decryptedTokenWithExtra.toString().length -16);
-      decryptedToken = jwt.verify(decryptedToken,secret);
-      var current_time = Date.now/1000;
-      if(decrpytedToken.exp>current_time){
+    var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+      try{
+        decryptedToken = jwt.verify(decryptedToken,secret);
+      
+
+      var current_time = Date.now() /1000;
+
+      if(decryptedToken.exp>current_time){
         Benutzer.findOne({where: {BenutzerID:req.params.BenutzerID}}).then(benutzer =>{
           if(benutzer){
             res.json({success:true, BenutzerName: benutzer.BenutzerName,Mail : benutzer.Mail, last_login:benutzer.last_login, reg_date: benutzer.reg_date});
@@ -76,30 +43,27 @@ api.get('/user/:BenutzerID/:Token', function (req,res){
       }else{
         res.json({success:false, message:"Token falsch"});
       }
-    }catch {
-      res.json({success:false, message:"Token nicht entschlüsselb ar"})
+    }catch{
+      res.json({success:false, message:"Token falsch"});
     }
+    
   }else{
     res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 })
 
  
-//Post needs Token BenutzerID, BenutzerName, Mail in Body of request
+//Post needs Token  BenutzerName, Mail in Body of request
 api.post('/changeuser', function (req,res){
-  if(req.body.Token&&req.body.BenutzerID&&req.body.BenutzerName&&req.body.Mail){
+  if(req.body.Token&&req.body.BenutzerName&&req.body.Mail){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     try{
-      var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key);
-      var decryptedToken=decryptedTokenWithExtra.toString().substring(0, decryptedTokenWithExtra.toString().length -16);
       decryptedToken = jwt.verify(decryptedToken,secret);
-      var current_time = Date.now/1000;
+      var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
-        if(decryptedToken.payload.BenutzerID == reg.body.BenutzerID){
-          Benutzer.update({BenutzerName:req.body.Benutzername, Mail:req.body.Mail},{ where: {BenutzerID:req.body.BenutzerID}});
-          res.json({succes:true, message:"Werte geändert"});
-        }else{
-          res.json({success:false, message:"falsche BenutzerID"})
-        }
+        Benutzer.update({BenutzerName:req.body.BenutzerName, Mail:req.body.Mail},{ where: {BenutzerID:decryptedToken.BenutzerID}});
+        res.json({success:true, message:"Werte geändert",BenutzerName:req.body.BenutzerName, Mail:req.body.Mail});
       }else{
         res.json({success:false, message:"Token abgelaufen"})
       }
