@@ -1,11 +1,18 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import loginReducer from './reducers/loginReducer';
-import APIConnReducer from './reducers/APIConnReducer'
+import ServerKeyReducer from './reducers/serverKeyReducer'
 import thunk from 'redux-thunk';
 
+
+
+
 export default function configureStore() {
+        const rootReducer = combineReducers({
+                loginReducer, ServerKeyReducer
+        });
+
         return createStore(
-        combineReducers({ loginReducer, APIConnReducer}),
-        applyMiddleware(thunk)
+                rootReducer,
+                applyMiddleware(thunk)
 	);
 }

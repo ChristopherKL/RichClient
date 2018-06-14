@@ -74,8 +74,8 @@ export class ProfileScreen extends Component {
     renderOffer = ({item}) => (
         <View style={styles.offerContainer}>
             <Image
-            style={{width: 40, height: 40}}
-            source={{uri: item.img_uri}}
+                style={{width: 40, height: 40}}
+                source={{uri: item.img_uri}}
             />
             <Text>{item.name}</Text>
             <Text>{item.price}</Text>

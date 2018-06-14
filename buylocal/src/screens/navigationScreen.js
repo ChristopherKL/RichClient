@@ -100,6 +100,12 @@ export class NavigationScreen extends Component {
                         title: "Registrieren"
                     });
                     break;
+                case 'login':
+                    this.props.navigator.push({
+                        screen: 'buylocal.loginScreen',
+                        title: "Login"
+                    });
+                    break;
                 default:
                     alert(item.title);
                     break;

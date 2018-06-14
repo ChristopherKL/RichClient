@@ -8,9 +8,7 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import { initAPIConnActionCreator } from '../redux/actions/initAPIConnAction';
-import APIConnector from '../APIConnector.js';
-
+import register from '../apiCom/register'
 
 
 
@@ -21,13 +19,20 @@ export class RegistrationScreen extends Component {
     }
     
     onPress = () => {
+        console.log("key: " + this.props.serverPublicKey);
         if(!this.validateInput()) {
             alert("Überprüfen Sie Ihre Eingaben!")
             return
         }
-
-        // send mail
-        this.props.navigator.switchToTab({tabIndex: 1});
+        
+        if((regRes = register(this.state.username, this.state.mail, this.state.password, this.props.serverPublicKey)) == true) {
+            alert("Registration erfolgreich!");
+            this.props.navigator.switchToTab({tabIndex: 1});
+        }
+        else {
+            alert("Fehler: "+ regRes);
+        }
+        
     }
     
     validateInput = () => {
@@ -132,7 +137,7 @@ const styles = StyleSheet.create ({
 
  const mapStateToProps = (state) => {
     return {
-        APIConn: state.APIConn
+        serverPublicKey: state.serverPublicKey
     }
 }
  

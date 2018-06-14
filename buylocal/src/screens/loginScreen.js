@@ -9,8 +9,8 @@ import {
 import {loginActionCreator} from '../redux/actions/loginAction';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import { initAPIConnActionCreator } from '../redux/actions/initAPIConnAction';
-import APIConnector from '../APIConnector.js';
+import { serverKeyActionCreator } from '../redux/actions/serverKeyAction';
+import getServerKey from '../apiCom/getServerKey';
 
 
 export class LoginScreen extends Component {
@@ -21,10 +21,9 @@ export class LoginScreen extends Component {
     
 
     componentDidMount() {
-        if(this.APIConn == null) {
-            var newAPIConn = new APIConnector("http://karlpi:8081");
-            newAPIConn.getServerPublicKey();
-            this.props.APIConnAction(newAPIConn);
+        if(this.props.serverPublicKey == null) {
+            getServerKey().then((res) => { this.props.serverKeyAction(res); });
+            
 
         }
     }
@@ -127,14 +126,14 @@ const styles = StyleSheet.create ({
     return {
         loggedIn: state.loggedIn,
         userData: state.userData,
-        APIConn: state.APIConn
+        serverPublicKey: state.serverPublicKey
     }
 }
  
 const mapDispatchToProps = (dispatch) => {
     return {
         loginAction: (userData) => { dispatch(loginActionCreator(userData)) },
-        APIConnAction: (APIConn) => { dispatch(initAPIConnActionCreator(APIConn))}
+        serverKeyAction: (serverPublicKey) => { dispatch(serverKeyActionCreator(serverPublicKey))}
     }
 }
  
