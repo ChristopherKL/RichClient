@@ -2,14 +2,15 @@ var express = require('express');
 var api = express();
 var fs = require('fs');
 var jwt    = require('jsonwebtoken');
-const NodeRSA = require('node-rsa');
+const cryptico = require('cryptico');
 
 const secret = require('crypto').randomBytes(64).toString('hex').substring(0,16);
 
-
-const key = new NodeRSA({b: 2048}); //512 bit RSA Schlüsselpaar
+var randomString = require('crypto').randomBytes(64).toString('hex');
+const key = cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüsselpaar
 
 var bodyParser  = require('body-parser');
+
 
 
 
@@ -67,13 +68,13 @@ api.get('/testlogin', function (req,res){
 
 //Gives back the public RSA key part of the server
 api.get('/publicKey', function(req,res){
-  res.json({success: true, publicKey: key.exportKey("public")});
+  res.json({success: true, publicKey: cryptico.publicKeyString(key)});
 })
 
 api.get('/user/:BenutzerID/:Token', function (req,res){
   if(req.params.Token&&req.params.BenutzerID){
     try{
-      var decryptedTokenWithExtra = key.decrypt(req.params.Token);
+      var decryptedTokenWithExtra = cryptico.decrypt(req.params.Token,key);
       var decryptedToken=decryptedTokenWithExtra.toString().substring(0, decryptedTokenWithExtra.toString().length -16);
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now/1000;
@@ -101,7 +102,7 @@ api.get('/user/:BenutzerID/:Token', function (req,res){
 api.post('/changeuser', function (req,res){
   if(req.body.Token&&req.body.BenutzerID&&req.body.BenutzerName&&req.body.Mail){
     try{
-      var decryptedTokenWithExtra = key.decrypt(req.body.Token);
+      var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key);
       var decryptedToken=decryptedTokenWithExtra.toString().substring(0, decryptedTokenWithExtra.toString().length -16);
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now/1000;
@@ -134,7 +135,7 @@ api.post('/login', function (req,res){
       Benutzer.findOne({
         where: {Mail: req.body.Mail}}).then(benutzer =>{
           if (benutzer){
-            completePassphraseWithExtra = key.decrypt(req.body.Passwort);
+            completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort,key);
             var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
             if(benutzer.Passwort==completePassphraseWithout){
               //no Public KEy before first login... at first login.. add public key
@@ -147,9 +148,7 @@ api.post('/login', function (req,res){
               token= tokenGenerator(benutzer.BenutzerID,secret);
             
               //token encryption
-              var keyFromUser= new NodeRSA();
-              keyFromUser.importKey(benutzer.publicKey);
-              encryptedToken = keyFromUser.encrypt(token);
+              encryptedToken = cryptico.encrypt(token,benutzer.publicKey);
 
 
               Benutzer.update({last_login:Date.now()},{where:{BenutzerID:benutzer.BenutzerID}});
@@ -180,9 +179,7 @@ api.post('/login', function (req,res){
               token= tokenGenerator(benutzer.BenutzerID,secret);
             
               //token encryption
-              var keyFromUser= new NodeRSA();
-              keyFromUser.importKey(benutzer.publicKey);
-              encryptedToken = keyFromUser.encrypt(token);
+              encryptedToken = cryptico.encrypt(token,benutzer.publicKey);
 
               Benutzer.update({last_login:Date.now()},{BenutzerID:benutzer.BenutzerID});
 
@@ -213,7 +210,7 @@ api.post('/register', function (req,res){
             res.json({ success : false, message:"Mail schon vorhanden"});
           }else{
             //try{
-              var completePassphraseWithExtra = key.decrypt(req.body.Passwort);
+              var completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort.cipher, key);
               var completePassphraseWithout= completePassphraseWithExtra.toString().substring(0, completePassphraseWithExtra.toString().length -16);//deletes last 16 chars (the random signs)
               Benutzer.create({ BenutzerName: req.body.BenutzerName, Mail: req.body.Mail, reg_date: Date.now(), Passwort:  completePassphraseWithout}).then(benutzer =>{
               if(benutzer){
