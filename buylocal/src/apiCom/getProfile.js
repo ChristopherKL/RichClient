@@ -2,7 +2,7 @@ var cryptico = require('../crypto/cryptico');
 var sha256 = require('../crypto/shaHash');
 
 
-export default async function getProfile(token, id, serverPublicKey) {
+export default async function getProfile(token, id) {
     try {
         let response = await fetch(
             'http://karlpi:8081/user/'+id+"/"+encodeURIComponent(token)

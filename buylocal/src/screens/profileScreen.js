@@ -19,7 +19,7 @@ export class ProfileScreen extends Component {
         this.state = {profile_username: null};
     }
     componentDidMount() {
-        getProfile(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.profile_id,  this.props.serverPublicKey).then(
+        getProfile(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.profile_id).then(
             (res) => {
                 if(typeof res == "string") {
                     alert("Fehler: "+ res);
@@ -42,15 +42,19 @@ export class ProfileScreen extends Component {
     }
     onPress = () => {
         this.props.navigator.push({
-            screen: 'buylocal.resetPasswordScreen',
-            title: "Passwort zurücksetzen"
+            screen: 'buylocal.editProfileScreen',
+            title: "Profil bearbeiten"
         });
     }
     render() {
         return (
             <View>
                 <View style={styles.headlineContainer}>
-                    <Text style={styles.headline}>{this.state.profile_username}</Text>
+                    {
+                    (this.props.profile_id == this.props.userData.id) ? 
+                        <Text style={styles.headline}>{this.props.userData.username}</Text> :
+                        <Text style={styles.headline}>{this.state.profile_username}</Text>
+                    }
                     { (this.props.profile_id == this.props.userData.id) && this.renderEditProfileButton() }
                 </View>
                 <View style={styles.dateContainer}>
