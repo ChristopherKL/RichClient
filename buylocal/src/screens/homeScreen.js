@@ -14,6 +14,7 @@ export class HomeScreen extends Component {
     }
 
     render() {
+        console.log("render "+this.props.userData);
         return (this.props.loggedIn) ? this.renderLoggedInScreen() : this.renderLoginScreen();
     }
 
@@ -40,7 +41,6 @@ const mapStateToProps = (state) => {
  
 const mapDispatchToProps = (dispatch) => {
     return {
-        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
     }
 }
  

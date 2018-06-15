@@ -73,13 +73,13 @@ export class NavigationScreen extends Component {
                 case 'profile':
                     this.props.navigator.push({
                         screen: 'buylocal.profileScreen',
-                        passProps: {profile_id: 0},
+                        passProps: {profile_id: this.props.userData.id},
                         title: "Mein Profil"
                     });
                     break;
                 case 'logout':
                     this.props.logoutAction();
-                    this.props.navigator.returntoRoot();
+                    this.props.navigator.switchToTab({tabIndex: 1});
                     break;
                 default:
                     alert(item.title);
@@ -101,10 +101,7 @@ export class NavigationScreen extends Component {
                     });
                     break;
                 case 'login':
-                    this.props.navigator.push({
-                        screen: 'buylocal.loginScreen',
-                        title: "Login"
-                    });
+                    this.props.navigator.switchToTab({tabIndex: 1});
                     break;
                 default:
                     alert(item.title);

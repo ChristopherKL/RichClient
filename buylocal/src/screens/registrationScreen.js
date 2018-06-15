@@ -4,12 +4,12 @@ import {
     View,
     TextInput,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
+    ScrollView
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import register from '../apiCom/register'
-
 
 
 export class RegistrationScreen extends Component {
@@ -63,53 +63,55 @@ export class RegistrationScreen extends Component {
 
     render() {
         return (
-            <View>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        placeholder={"Ihre E-Mail Adresse"}
-                        placeholderColor={'grey'}
-                        keyboardType={'email-address'}
-                        style={styles.input}
-                        onChangeText={(text) => this.setState({mail: text})}
-                        value={this.state.mail}
-                    />
-                </View> 
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        placeholder={"Ihr Benutzername"}
-                        placeholderColor={'grey'}
-                        style={styles.input}
-                        onChangeText={(text) => this.setState({username   : text})}
-                        value={this.state.username}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        placeholder={"Ihr Passwort"}
-                        placeholderColor={'grey'}
-                        style={styles.input}
-                        onChangeText={(text) => this.setState({password   : text})}
-                        value={this.state.password}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <TextInput
-                        placeholder={"Passwort wiederholen"}
-                        placeholderColor={'grey'}
-                        style={styles.input}
-                        onChangeText={(text) => this.setState({password2   : text})}
-                        value={this.state.password2}
-                    />
-                </View>
-                <View style={styles.inputContainer}>
-                    <TouchableOpacity
-                        style={styles.button}
-                        onPress={this.onPress}
-                    >
-                        <Text>Registrieren</Text>
-                    </TouchableOpacity>
-                </View>                            
-            </View>
+            <ScrollView>
+
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder={"Ihre E-Mail Adresse"}
+                            placeholderColor={'grey'}
+                            keyboardType={'email-address'}
+                            style={styles.input}
+                            onChangeText={(text) => this.setState({mail: text})}
+                            value={this.state.mail}
+                        />
+                    </View> 
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder={"Ihr Benutzername"}
+                            placeholderColor={'grey'}
+                            style={styles.input}
+                            onChangeText={(text) => this.setState({username   : text})}
+                            value={this.state.username}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder={"Ihr Passwort"}
+                            placeholderColor={'grey'}
+                            style={styles.input}
+                            onChangeText={(text) => this.setState({password   : text})}
+                            value={this.state.password}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder={"Passwort wiederholen"}
+                            placeholderColor={'grey'}
+                            style={styles.input}
+                            onChangeText={(text) => this.setState({password2   : text})}
+                            value={this.state.password2}
+                        />
+                    </View>
+                    <View style={styles.inputContainer}>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={this.onPress}
+                        >
+                            <Text>Registrieren</Text>
+                        </TouchableOpacity>
+                    </View>                            
+
+            </ScrollView>
         );
     }
 }

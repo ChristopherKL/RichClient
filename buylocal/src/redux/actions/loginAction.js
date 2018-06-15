@@ -10,6 +10,6 @@ export function loginActionCreator(userData) {
   }
 export function logoutActionCreator() {
     return {
-      type: ACTION_LOGIN
+      type: ACTION_LOGOUT
     }
   }

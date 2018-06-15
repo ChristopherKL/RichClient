@@ -8,8 +8,6 @@ export default async function login(usernameOrEmail, passwd, serverPublicKey) {
     let encPasswd = cryptico.encrypt(passhash+randomString, serverPublicKey);
     let myKeyPair = cryptico.generateRSAKey(passwd, 512);
 
-    console.log("logging");
-
     let formData = {
         BenutzerName: usernameOrEmail,
         Passwort: encPasswd.cipher,
@@ -23,7 +21,6 @@ export default async function login(usernameOrEmail, passwd, serverPublicKey) {
         };
     }
     try {
-        console.log("logging");
 
         let response = await fetch(
           'http://karlpi:8081/login',
@@ -36,7 +33,6 @@ export default async function login(usernameOrEmail, passwd, serverPublicKey) {
             body: JSON.stringify(formData)
           }
         );
-        console.log("got res");
   
         let responseJson = await response.json();
         console.log(JSON.stringify(responseJson)); 
@@ -44,7 +40,7 @@ export default async function login(usernameOrEmail, passwd, serverPublicKey) {
           return responseJson.message;
         }
         let decToken = cryptico.decrypt(responseJson.token, myKeyPair).plaintext;
-        let resObj = {id: responseJson.BenutzerID, username: responseJson.BenutzerName, mail: responseJson.Mail, token: decToken,
+        let resObj = {id: responseJson.BenutzerId, username: responseJson.BenutzerName, mail: responseJson.Mail, token: decToken,
                         keyPair: myKeyPair};
         return resObj;
       } catch (error) {

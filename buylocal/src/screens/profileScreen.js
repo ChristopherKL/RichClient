@@ -9,6 +9,9 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import createToken from '../apiCom/createToken';
+import getProfile from '../apiCom/getProfile';
+
 
 export class ProfileScreen extends Component {
     constructor(props) {
@@ -16,11 +19,21 @@ export class ProfileScreen extends Component {
         this.state = {profile_username: null};
     }
     componentDidMount() {
-        // Abrufen
-        this.setState({ profile_username: "abc", 
+        getProfile(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.profile_id,  this.props.serverPublicKey).then(
+            (res) => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+ res);
+                    this.props.navigator.pop();
+                }
+                else {
+                    this.setState({ profile_username: res.BenutzerName, 
                         review_score: 3.5, 
-                        registrate_date: "27.01.2018",
-                        last_login: "02.02.2018 14:20"});
+                        registrate_date: res.reg_date,
+                        last_login: res.last_login});
+                }
+            }
+
+        )
         this.setState({ offers: [{  id: "2221",
                                     name: "Endgeiler Schuh",
                                     img_uri: "https://i.otto.de/i/otto/18723170/woodstone-kids-trekking-schuh-rot.jpg",
@@ -38,7 +51,7 @@ export class ProfileScreen extends Component {
             <View>
                 <View style={styles.headlineContainer}>
                     <Text style={styles.headline}>{this.state.profile_username}</Text>
-                    { (this.props.profile_id == 0) ? this.renderEditProfileButton() : "" }
+                    { (this.props.profile_id == this.props.userData.id) && this.renderEditProfileButton() }
                 </View>
                 <View style={styles.dateContainer}>
                     <Text>Zuletzt Online: {this.state.last_login}</Text>
@@ -188,13 +201,13 @@ const styles = StyleSheet.create ({
 const mapStateToProps = (state) => {
     return {
         loggedIn: state.loginReducer.loggedIn,
-        userData: state.loginReducer.userData
+        userData: state.loginReducer.userData,
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey
     }
 }
  
 const mapDispatchToProps = (dispatch) => {
     return {
-        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
     }
 }
  
