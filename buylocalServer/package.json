@@ -8,7 +8,8 @@
         "mysql2": "^1.5.3",
         "node-rsa": "^1.0.0",
         "request": "^2.87.0",
-        "sequelize": "^4.37.10"
+        "sequelize": "^4.37.10",
+        "sleep": "^5.1.1"
     },
     "devDependencies": {
         "chai": "^4.1.2",

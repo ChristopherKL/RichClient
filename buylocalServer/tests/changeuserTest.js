@@ -8,7 +8,7 @@ const cryptico = require("cryptico");
 chai.use(chaiHttp);
 
 describe("/POSt changeuser",function() {
-    this.timeout(0);
+    this.timeout(10000);
     var token;
     var keyFromServerAsString;
     var keyFromUser;
@@ -57,7 +57,7 @@ describe("/POSt changeuser",function() {
             where:{BenutzerName:"TestuserChangeuserChanged",Mail:"testchangechanged@test.de"}
           });
       });
-    it('alter Username and Mail',(done) => {
+    it('alter Username and Mail',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
         var encryptedToken=cryptico.encrypt(token+randomString, keyFromServerAsString).cipher;
         var requestChange={
@@ -72,22 +72,18 @@ describe("/POSt changeuser",function() {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
-                chai.assert.isTrue(res.body.success);
+                res.body.success.should.be.true;
                 res.body.should.have.property("BenutzerName");
-                chai.assert.equal("TestuserChangeuserChanged",res.body.BenutzerName);
+                res.body.BenutzerName.should.equal("TestuserChangeuserChanged");
                 var Benutzer = require("../server/models/benutzer")
                 Benutzer.findOne({
                     where: {Mail: "testchangechanged@test.de"}}).then(benutzer =>{
-                        if(benutzer){
-                            done();
-                        }else{
-                            chai.assert.fail();
-                            done();
-                        }
-                    });
+                        should.exist(benutzer);
+                });
+                done();
             });
     });
-    it('try alter with wrong Token',(done) => {
+    it('try alter with wrong Token',function(done){
         var encryptedToken=cryptico.encrypt(token,keyFromServerAsString).cipher;
         var requestChange={
             Token:encryptedToken,
@@ -101,13 +97,13 @@ describe("/POSt changeuser",function() {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
-                chai.assert.isNotTrue(res.body.success);
+                res.body.success.should.not.be.true;
                 res.body.should.have.property("message");
-                chai.assert.equal("Token nicht entschlüsselbar",res.body.message);
+                res.body.message.should.equal("Token nicht entschlüsselbar");
                 done();
             });
     });
-    it('try alter with wrong Parameters',(done) => {
+    it('try alter with wrong Parameters',function(done){
         var encryptedToken=cryptico.encrypt(token,keyFromServerAsString).cipher;
         var requestChange={
             Token:encryptedToken,
@@ -120,9 +116,9 @@ describe("/POSt changeuser",function() {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
-                chai.assert.isNotTrue(res.body.success);
+                res.body.success.should.not.be.true;
                 res.body.should.have.property("message");
-                chai.assert.equal("Fehlerhafte Anfrage",res.body.message);
+                res.body.message.should.equal("Fehlerhafte Anfrage");
                 done();
             });
 

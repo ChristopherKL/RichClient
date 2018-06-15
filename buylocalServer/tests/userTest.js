@@ -8,7 +8,7 @@ const cryptico = require("cryptico");
 chai.use(chaiHttp);
 
 describe("/Get User",function() {
-    this.timeout(0);
+    this.timeout(10000);
     var token;
     var keyFromServerAsString;
     var keyFromUser;
@@ -47,13 +47,14 @@ describe("/Get User",function() {
                 });
         });
     });
-    after(function(){
+    after(function(done){
         var Benutzer = require("../server/models/benutzer")
         Benutzer.destroy({
           where:{BenutzerName:"TestuserUser",Mail:"testUser@test.de"}
         });
+        done();
       });
-    it('request info of own User',(done) => {
+    it('request info of own User',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
         var encryptedToken=encodeURIComponent(cryptico.encrypt(token+randomString,keyFromServerAsString).cipher);
         chai.request("http://localhost:8081")
@@ -62,13 +63,13 @@ describe("/Get User",function() {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
-                chai.assert.isTrue(res.body.success);
+                res.body.success.should.be.true;
                 res.body.should.have.property("BenutzerName");
-                chai.assert.equal("TestuserUser",res.body.BenutzerName);
+                res.body.BenutzerName.should.equal("TestuserUser");
                 done();
             });
     });
-    it('request info about not defined User',(done) => {
+    it('request info about not defined User',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
         var encryptedToken=encodeURIComponent(cryptico.encrypt(token+randomString,keyFromServerAsString).cipher);
         chai.request("http://localhost:8081")
@@ -77,12 +78,12 @@ describe("/Get User",function() {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
-                chai.assert.isNotTrue(res.body.success);
-                chai.assert.equal("Nutzer nicht vorhanden",res.body.message);
+                res.body.success.should.not.be.true;
+                res.body.message.should.equal("Nutzer nicht vorhanden");
                 done();
             });
     });
-    it('request info about User with false Token',(done) => {
+    it('request info about User with false Token',function(done){
         var encryptedToken=encodeURIComponent(cryptico.encrypt(token,keyFromServerAsString).cipher);
         chai.request("http://localhost:8081")
             .get("/user/"+eigeneId+"/"+encryptedToken)
@@ -90,8 +91,8 @@ describe("/Get User",function() {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
-                chai.assert.isNotTrue(res.body.success);
-                chai.assert.equal("Token falsch",res.body.message);
+                res.body.success.should.not.be.true;
+                res.body.message.should.equal("Token falsch");
                 done();
             });
     });

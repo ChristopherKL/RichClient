@@ -23,16 +23,22 @@ DROP TABLE IF EXISTS `Angebot`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Angebot` (
-  `AngebotID` int(11) NOT NULL,
-  `Name` varchar(45) DEFAULT NULL,
-  `Preis` decimal(5,2) DEFAULT NULL,
-  `Beschreibung` varchar(200) DEFAULT NULL,
-  `Bild` varchar(200) DEFAULT NULL,
-  `Anschrift` varchar(200) DEFAULT NULL,
-  `Anbieter` int(11) DEFAULT NULL,
+  `AngebotID` int(11) NOT NULL AUTO_INCREMENT,
+  `Titel` varchar(45) NOT NULL,
+  `Preis` decimal(10,2) DEFAULT NULL,
+  `Beschreibung` varchar(512) DEFAULT NULL,
+  `Bild1` LONGTEXT NOT NULL,
+  `Bild2` LONGTEXT DEFAULT NULL,
+  `Bild3` LONGTEXT DEFAULT NULL,
+  `Bild4` LONGTEXT DEFAULT NULL,
+  `Bild5` LONGTEXT DEFAULT NULL,
+  `Straße` varchar(128) NOT NULL,
+  `Hausnummer` varchar(10) NOT NULL,
+  `BenutzerID` int(11) NOT NULL,
+  `reg_date` datetime NOT NULL,
   PRIMARY KEY (`AngebotID`),
-  KEY `fk_Angebot_1_idx` (`Anbieter`),
-  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`Anbieter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_Angebot_1_idx` (`BenutzerID`),
+  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -44,9 +50,10 @@ DROP TABLE IF EXISTS `AngebotHashtag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AngebotHashtag` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
   `AngebotID` int(11) NOT NULL,
-  `HashtagName` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`AngebotID`),
+  `HashtagName` varchar(45) NOT NULL,
+  PRIMARY KEY (`ID`),
   KEY `fk_AngebotHashtag_2_idx` (`HashtagName`),
   CONSTRAINT `fk_AngebotHashtag_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_AngebotHashtag_2` FOREIGN KEY (`HashtagName`) REFERENCES `Hashtag` (`Name`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -62,7 +69,7 @@ DROP TABLE IF EXISTS `AngebotKategorie`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `AngebotKategorie` (
   `AngebotID` int(11) NOT NULL,
-  `KategorieID` int(11) DEFAULT NULL,
+  `KategorieID` int(11) NOT NULL,
   PRIMARY KEY (`AngebotID`),
   KEY `fk_AngebotKategorie_2_idx` (`KategorieID`),
   CONSTRAINT `fk_AngebotKategorie_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION,
@@ -135,7 +142,7 @@ DROP TABLE IF EXISTS `Kategorie`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Kategorie` (
   `KategorieID` int(11) NOT NULL,
-  `Name` varchar(45) DEFAULT NULL,
+  `Name` varchar(45) NOT NULL,
   `UeberKategorie` int(11) DEFAULT NULL,
   PRIMARY KEY (`KategorieID`),
   KEY `fk_Kategorie_1_idx` (`UeberKategorie`),
