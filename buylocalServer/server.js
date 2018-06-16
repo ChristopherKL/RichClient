@@ -163,6 +163,73 @@ api.post('/login', function (req,res){
   res.json({success:false,message:"Fehlerhafte Anfrage"});
 }
 })
+
+//Requires ID of requested Angebot and a valid Token+16random Signs encrypted with Public Key of Server urlencoded
+//returned Hashtags Kategorie Bild 1 bis 5, reg_date, Titel, Preis, Beschreibung falls vorhanden, Straße, Hausnummer, BenutzerName und BenutzerID
+//
+api.get("/angebot/:AngebotID/:Token",function (req,res){
+  if(req.params.Token&&req.params.AngebotID){
+    var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now() /1000;
+      if(decryptedToken.exp>current_time){
+
+        var kategorieOfAngebot;
+        var hashtagsOfAngebot;
+        var foundAngebot
+        Angebot.findOne({where: {AngebotID:req.params.AngebotID}}).then(angebot =>{
+          if(angebot){
+            foundAngebot=angebot;
+            AngebotKategorie.findOne({where:{AngebotID:angebot.AngebotID}}).then(angebotKategorie=>{
+              Kategorie.findOne({where:{KategorieID:angebotKategorie.KategorieID}}).then(kategorie=>{
+                kategorieOfAngebot=kategorie;
+                AngebotHashtag.findAll({where:{AngebotID:foundAngebot.AngebotID}}).then(angebothashtag=>{
+                  for(var i = 0;i<angebothashtag;i++){
+                    hashtagsOfAngebot[i]=arrayOfHashtagsOfAngebot[i].HashtagName;
+                  }
+                  var benutzer=Benutzer.findOne({where:{BenutzerID:foundAngebot.BenutzerID}}).then(benutzer=>{
+                    res.json({
+                      success:true,
+                      Hashtags: hashtagsOfAngebot,
+                      Kategorie : kategorieOfAngebot.Name,
+                      Bild1: foundAngebot.Bild1,
+                      Bild2: foundAngebot.Bild2,
+                      Bild3: foundAngebot.Bild3,
+                      Bild4: foundAngebot.Bild4,
+                      Bild5: foundAngebot.Bild5,
+                      reg_date: foundAngebot.reg_date,
+                      Titel: foundAngebot.Titel,
+                      Preis: foundAngebot.Preis,
+                      Beschreibung: foundAngebot.Beschreibung,
+                      Straße:foundAngebot.Straße,
+                      Hausnummer:foundAngebot.Hausnummer,
+                      BenutzerID: benutzer.BenutzerID,
+                      BenutzerName: benutzer.BenutzerName
+      
+
+                })
+              })
+            })
+            
+              });
+            });
+          }else{
+            res.json({success:false, message:"Angebot nicht vorhanden"});
+          }
+        });
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false, message:"Token falsch"});
+    }
+
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
 //Requires Titel, Preis, Bild1, Straße,Kategorie, Hausnummer and a Token+16 random chars encrypted with public Key of Server
 //alternative Input Bild2,Bild3,Bild4,Bild5, Beschreibung, Hashtags
 //returns if it fails success:false and a message, else success:true, message and AngebotID
