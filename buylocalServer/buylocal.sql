@@ -91,7 +91,7 @@ CREATE TABLE `Benutzer` (
   `Passwort` varchar(64) NOT NULL,
   `PublicKey` varchar(512) DEFAULT NULL,
   `last_login` datetime DEFAULT NULL,
-  `reg_date` datetime NOT NULL,
+  `reg_date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`BenutzerID`),
   UNIQUE KEY `Mail_UNIQUE` (`Mail`),
   UNIQUE KEY `BenutzerName_UNIQUE` (`BenutzerName`)
