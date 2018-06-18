@@ -4,8 +4,8 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
 
  const Benutzer= sequelize.define('Benutzer',{
   BenutzerID: {type: Sequelize.INTEGER, primaryKey:true},
-  BenutzerName: Sequelize.STRING,
-  Mail: Sequelize.STRING,
+  BenutzerName: {type: Sequelize.STRING, unique:true},
+  Mail: {type: Sequelize.STRING, unique:true},
   Passwort: Sequelize.STRING,
   PublicKey: Sequelize.STRING,
   last_login: Sequelize.DATE,

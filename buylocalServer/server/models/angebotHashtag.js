@@ -4,6 +4,6 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
  const AngebotHashtag= sequelize.define('AngebotHashtag',{
   ID: {type: Sequelize.INTEGER, primaryKey:true},
   AngebotID: Sequelize.INTEGER,
-  HashtagName: Sequelize.STRING,
+  HashtagName: {type: Sequelize.STRING, unique:true},
 },{tableName: 'AngebotHashtag', timestamps:false});
 module.exports = AngebotHashtag;

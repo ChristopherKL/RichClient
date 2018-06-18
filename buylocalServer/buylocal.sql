@@ -93,7 +93,8 @@ CREATE TABLE `Benutzer` (
   `last_login` datetime DEFAULT NULL,
   `reg_date` datetime NOT NULL,
   PRIMARY KEY (`BenutzerID`),
-  UNIQUE KEY `Mail_UNIQUE` (`Mail`)
+  UNIQUE KEY `Mail_UNIQUE` (`Mail`),
+  UNIQUE KEY `BenutzerName_UNIQUE` (`BenutzerName`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

@@ -10,8 +10,8 @@ const Op = Sequelize.Op;
 const cryptico = require("cryptico");
 chai.use(chaiHttp);
 
-describe("/Get angebot",function() {
-    this.timeout(10000);
+describe("/post deleteangebot",function() {
+    this.timeout(100000);
     var token;
     var keyFromServerAsString;
     var keyFromUser;
@@ -19,7 +19,7 @@ describe("/Get angebot",function() {
     var eigeneAngebotID;
     before(function(done) {
         var Kategorie = require("../server/models/kategorie");
-        Kategorie.create({KategorieID:778, Name:"testkategorieAngebot" });
+        Kategorie.create({KategorieID:779, Name:"testkategorieDeleteAngebot" });
         
         keyFromUser = cryptico.generateRSAKey("Testpasswort", 2048);
         chai.request("http://localhost:8081")
@@ -30,8 +30,8 @@ describe("/Get angebot",function() {
           var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
           var pw = cryptico.encrypt(pwAsHash+randomString, keyFromServerAsString);
           let request= {
-            BenutzerName:"TestuserAngebot",
-            Mail:"testAngebot@test.de",
+            BenutzerName:"TestuserDeleteAngebot",
+            Mail:"testDeleteAngebot@test.de",
             Passwort:pw.cipher
            }
           chai.request("http://localhost:8081")
@@ -39,7 +39,7 @@ describe("/Get angebot",function() {
               .send(request)
               .end((err, res) =>{
                 let request2= {
-                    BenutzerName:"TestuserAngebot",
+                    BenutzerName:"TestuserDeleteAngebot",
                     Passwort:pw.cipher,
                     PublicKey:cryptico.publicKeyString(keyFromUser)
                    }
@@ -52,13 +52,13 @@ describe("/Get angebot",function() {
                         eigeneId=res.body.BenutzerId;
                         var requestCreateAngebot={
                             Token:encryptedToken,
-                            Titel:"AngebotAngebot",
+                            Titel:"AngebotDeleteAngebot",
                             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
                             Preis:99.99,
                             Straße:"Traumallee",
                             Hausnummer:"11",
-                            Kategorie:"testkategorieAngebot",
-                            Hashtags:["testkategorieAngebot1","testkategorieAngebot2"]
+                            Kategorie:"testkategorieDeleteAngebot",
+                            Hashtags:["testkategorieDeleteAngebot1","testkategorieDeleteAngebot2"]
                         }
                         chai.request("http://localhost:8081")
                             .post("/createangebot")
@@ -80,14 +80,14 @@ describe("/Get angebot",function() {
         var Kategorie = require("../server/models/kategorie");
         var Benutzer = require("../server/models/benutzer");
 
-        AngebotKategorie.destroy({where:{KategorieID:778}}).then(a=>{
-            AngebotHashtag.destroy({where:{[Op.or]:[{HashtagName:"testkategorieAngebot1"},{HashtagName:"testkategorieAngebot2"}]}}).then(a=>{
-                Angebot.destroy({where:{Titel:"AngebotAngebot"}}).then(a=>{
-                    Kategorie.destroy({where:{KategorieID:778}}).then(a=>{
-                        Hashtag.destroy({where: {[Op.or]:[{Name:"testkategorieAngebot1"},{Name:"testkategorieAngebot2"}]}}).then(a=>{
+        AngebotKategorie.destroy({where:{KategorieID:779}}).then(a=>{
+            AngebotHashtag.destroy({where:{[Op.or]:[{HashtagName:"testkategorieDeleteAngebot1"},{HashtagName:"testkategorieDeleteAngebot2"}]}}).then(a=>{
+                Angebot.destroy({where:{Titel:"AngebotDeleteAngebot"}}).then(a=>{
+                    Kategorie.destroy({where:{KategorieID:779}}).then(a=>{
+                        Hashtag.destroy({where: {[Op.or]:[{Name:"testkategorieDeleteAngebot1"},{Name:"testkategorieDeleteAngebot2"}]}}).then(a=>{
 
                             Benutzer.destroy({
-                                where:{BenutzerName:"TestuserAngebot"}
+                                where:{BenutzerName:"TestuserDeleteAngebot"}
                             }).then(a=>{done()});
 
                             });
@@ -100,33 +100,40 @@ describe("/Get angebot",function() {
 
         });
       });
-    it('request info about Angebot',function(done){
+    it('delete an Angebot',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
         var encryptedToken=encodeURIComponent(cryptico.encrypt(token+randomString,keyFromServerAsString).cipher);
+        let request={
+            AngebotID:eigeneAngebotID,
+            Token:encryptedToken
+        }
         chai.request("http://localhost:8081")
-            .get("/angebot/"+eigeneAngebotID+"/"+encryptedToken)
+            .post("/deleteangebot")
+            .send(request)
             .end((err, res) =>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
                 res.body.success.should.be.true;
-                res.body.should.have.property("BenutzerName");
-                res.body.BenutzerName.should.equal("TestuserAngebot");
-                res.body.should.have.property("Kategorie");
-                res.body.Kategorie.should.equal("testkategorieAngebot");
-                res.body.should.have.property("Titel");
-                res.body.Titel.should.equal("AngebotAngebot");
-                res.body.should.have.property("Hashtags");
-                ("testkategorieAngebot1"==res.body.Hashtags[0]|| "testkategorieAngebot2"==res.body.Hashtags[0]).should.be.true;
-                ("testkategorieAngebot1"==res.body.Hashtags[1]|| "testkategorieAngebot2"==res.body.Hashtags[1]).should.be.true;
-                done();
+                res.body.should.have.property("message");
+                res.body.message.should.equal("Angebot entfernt");
+                var Angebot = require("../server/models/angebot");
+                Angebot.findOne({where:{AngebotID:eigeneAngebotID}}).then(angebot=>{
+                    should.not.exist(angebot);
+                    done();
+                });
             });
     });
-    it('request info about not existent Angebot',function(done){
+    it('deleting non existend Angebot',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
         var encryptedToken=encodeURIComponent(cryptico.encrypt(token+randomString,keyFromServerAsString).cipher);
+        let request={
+            AngebotID:9999999,
+            Token:encryptedToken
+        }
         chai.request("http://localhost:8081")
-            .get("/angebot/"+9999999+"/"+encryptedToken)
+            .post("/deleteangebot")
+            .send(request)
             .end((err, res) =>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');
@@ -136,10 +143,15 @@ describe("/Get angebot",function() {
                 done();
             });
     });
-    it('request info about Angebot with false Token',function(done){
+    it('try deleting with wrong Token',function(done){
         var encryptedToken=encodeURIComponent(cryptico.encrypt(token,keyFromServerAsString).cipher);
+        let request={
+            AngebotID:eigeneAngebotID,
+            Token:encryptedToken
+        }
         chai.request("http://localhost:8081")
-            .get("/angebot/"+eigeneAngebotID+"/"+encryptedToken)
+            .post("/deleteangebot")
+            .send(request)
             .end((err, res) =>{
                 res.should.have.status(200);
                 res.body.should.be.a('object');

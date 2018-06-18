@@ -23,6 +23,8 @@ var AngebotHashtag = require("./server/models/angebotHashtag");
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(bodyParser.json());
 
+api.post('/deleteuser', function(req,res){
+})
 //Returns the Public Key of the Server
 api.get('/publicKey', function(req,res){
   res.json({success: true, publicKey: cryptico.publicKeyString(key)});
@@ -164,6 +166,65 @@ api.post('/login', function (req,res){
 }
 })
 
+
+//Requires Token+16 random chars and the AngebotID
+api.post('/deleteangebot', function(req,res){
+  if(req.body.Token&&req.body.AngebotID){
+    var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.body.Token),key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now() /1000;
+      if(decryptedToken.exp>current_time){
+        Angebot.findOne({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
+          if(angebot){
+            AngebotHashtag.findAll({where:{AngebotID:angebot.AngebotID}}).then(angebotHashtagArray=>{
+              for(var i = 0;i<angebotHashtagArray.length;i++){
+                if(i==angebotHashtagArray.length-1){
+                  AngebotHashtag.destroy({where:{AngebotID:angebot.AngebotID,HashtagName:angebotHashtagArray[i].get(0).HashtagName}});
+                    Hashtag.findOne({where:{Name:angebotHashtagArray[i].get(0).HashtagName}}).then(hashtag=>{
+                      if(hashtag.NutzungsAnz<=1){
+                        Hashtag.destroy({where:{Name:hashtag.Name}}).then(hashtag=>{
+                          Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
+                            res.json({success:true, message:"Angebot entfernt"});
+                          });
+                        });
+                      }else{
+                        Hashtag.update({NutzungsAnz:hashtag.NutzungsAnz-1},{where:{Name:hashtag.Name}}).then(hashtag=>{
+                          Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
+                            res.json({success:true, message:"Angebot entfernt"});
+                          });
+                        });
+                      }
+                    });
+                }else{
+                  AngebotHashtag.destroy({where:{AngebotID:angebot.AngebotID,HashtagName:angebotHashtagArray[i].get(0).HashtagName}});
+                  Hashtag.findOne({where:{Name:angebotHashtagArray[i].get(0).HashtagName}}).then(hashtag=>{
+                    if(hashtag.NutzungsAnz<=1){
+                      Hashtag.destroy({where:{Name:hashtag.Name}});
+                    }else{
+                      Hashtag.update({NutzungsAnz:hashtag.NutzungsAnz-1},{where:{Name:hashtag.Name}});
+                    }
+                  });
+                }
+              
+              }
+            });
+          }else{
+            res.json({success:false, message:"Angebot nicht vorhanden"});
+          }
+        });
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false, message:"Token falsch"});
+    }
+  }else{
+    res.json({success:false, message:"Fehlerhafte Anfrage"});
+  }
+});
+
 //Requires ID of requested Angebot and a valid Token+16random Signs encrypted with Public Key of Server urlencoded
 //returned Hashtags Kategorie Bild 1 bis 5, reg_date, Titel, Preis, Beschreibung falls vorhanden, Straße, Hausnummer, BenutzerName und BenutzerID
 //
@@ -177,7 +238,7 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
       if(decryptedToken.exp>current_time){
 
         var kategorieOfAngebot;
-        var hashtagsOfAngebot;
+        var hashtagsOfAngebot={};
         var foundAngebot
         Angebot.findOne({where: {AngebotID:req.params.AngebotID}}).then(angebot =>{
           if(angebot){
@@ -186,8 +247,8 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
               Kategorie.findOne({where:{KategorieID:angebotKategorie.KategorieID}}).then(kategorie=>{
                 kategorieOfAngebot=kategorie;
                 AngebotHashtag.findAll({where:{AngebotID:foundAngebot.AngebotID}}).then(angebothashtag=>{
-                  for(var i = 0;i<angebothashtag;i++){
-                    hashtagsOfAngebot[i]=arrayOfHashtagsOfAngebot[i].HashtagName;
+                  for(var i = 0;i<angebothashtag.length;i++){
+                    hashtagsOfAngebot[i]=angebothashtag[i].get(0).HashtagName;
                   }
                   var benutzer=Benutzer.findOne({where:{BenutzerID:foundAngebot.BenutzerID}}).then(benutzer=>{
                     res.json({
@@ -317,11 +378,11 @@ api.post('/createangebot', function (req,res){
 // Returns if failed success:false and message else return success:true and message
 api.post('/register', function (req,res){
   if(req.body.BenutzerName&&req.body.Mail&&req.body.Passwort){
-    Benutzer.findOne({where:{BenutzerName: req.body.BenutzerName}}).then(benutzer =>{
+    Benutzer.find({where:{BenutzerName: req.body.BenutzerName}}).then(benutzer =>{
       if (benutzer){
         res.json({ success : false, message:"Benutzer schon vorhanden"});
       }else{
-        Benutzer.findOne({where:{Mail: req.body.Mail}}).then(benutzer =>{
+        Benutzer.find({where:{Mail: req.body.Mail}}).then(benutzer =>{
           if(benutzer){
             res.json({ success : false, message:"Mail schon vorhanden"});
           }else{
@@ -334,14 +395,14 @@ api.post('/register', function (req,res){
               }else{
                 res.json({ success : false, message:"Fehler beim Erstellen des Nutzers"});
               }
-            })
+            });
           }catch{
             res.json({success:false,message:"Fehler beim entschlüsseln"});
           }
         }
-      })
+      });
     }
-  })
+  });
 }else{
   res.json({success:false,message:"Fehlerhafte Anfrage"})
 }
