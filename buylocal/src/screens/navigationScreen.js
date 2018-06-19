@@ -77,6 +77,13 @@ export class NavigationScreen extends Component {
                         title: "Mein Profil"
                     });
                     break;
+                case 'sell':
+                    this.props.navigator.push({
+                        screen: 'buylocal.newOfferScreen',
+                        passProps: {profile_id: this.props.userData.id},
+                        title: "Neues Angebot"
+                    });
+                    break;
                 case 'logout':
                     this.props.logoutAction();
                     this.props.navigator.switchToTab({tabIndex: 1});
