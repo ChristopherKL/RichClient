@@ -16,7 +16,6 @@ import getProfile from '../apiCom/getProfile';
 export class ProfileScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = {profile_username: null};
     }
     componentDidMount() {
         getProfile(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.profile_id).then(
@@ -62,10 +61,9 @@ export class ProfileScreen extends Component {
                     <Text>Regestriert am: {this.state.registrate_date}</Text>
                 </View>
                 {this.renderReviewStars()}
-                <View style={{padding: 10}}>
+                <View>
                     <TouchableOpacity
                             style={styles.button}
-                            onPress={this.onPress}
                     >
                         <Text>Bewertungen anzeigen</Text>
                     </TouchableOpacity>
@@ -144,10 +142,15 @@ export class ProfileScreen extends Component {
     renderEditProfileButton = () => {
         return (
             <View style={styles.rightContainer}>
-                <Image
-                    style={{width: 35, height: 35, alignSelf: 'flex-end'}}
-                    source={require('./../../img/edit.png')}
-                />
+                <TouchableOpacity
+                        style={styles.button}
+                        onPress={this.onPress}
+                >                
+                    <Image
+                        style={{width: 35, height: 35, alignSelf: 'flex-end'}}
+                        source={require('./../../img/edit.png')}
+                    />
+                </TouchableOpacity>
             </View>
         );
     }
