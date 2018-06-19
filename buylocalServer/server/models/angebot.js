@@ -7,6 +7,7 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
   Titel: Sequelize.STRING,
   Preis: Sequelize.DOUBLE,
   Beschreibung: Sequelize.STRING,
+  PLZ:Sequelize.STRING,
   Bild1: Sequelize.STRING,
   Bild2: Sequelize.STRING,
   Bild3: Sequelize.STRING,

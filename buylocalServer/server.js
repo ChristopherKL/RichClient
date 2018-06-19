@@ -260,6 +260,7 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
                       Bild3: foundAngebot.Bild3,
                       Bild4: foundAngebot.Bild4,
                       Bild5: foundAngebot.Bild5,
+                      PLZ: foundAngebot.PLZ,
                       reg_date: foundAngebot.reg_date,
                       Titel: foundAngebot.Titel,
                       Preis: foundAngebot.Preis,
@@ -291,11 +292,11 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
     res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 })
-//Requires Titel, Preis, Bild1, Straße,Kategorie, Hausnummer and a Token+16 random chars encrypted with public Key of Server
-//alternative Input Bild2,Bild3,Bild4,Bild5, Beschreibung, Hashtags
+//Requires Titel, Preis, Bild1, PLZ,Kategorie and a Token+16 random chars encrypted with public Key of Server
+//alternative Input Bild2,Bild3,Bild4,Bild5, Beschreibung, Hashtags, Straße, Hausnummer
 //returns if it fails success:false and a message, else success:true, message and AngebotID
 api.post('/createangebot', function (req,res){
-  if(req.body.Titel&&req.body.Preis&&req.body.Bild1&&req.body.Straße&&req.body.Hausnummer&&req.body.Token&&req.body.Kategorie){
+  if(req.body.Titel&&req.body.Preis&&req.body.Bild1&&req.body.PLZ&&req.body.Token&&req.body.Kategorie){
     var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
     var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     try{
@@ -312,6 +313,7 @@ api.post('/createangebot', function (req,res){
           Bild3:req.body.Bild3,
           Bild4:req.body.Bild4,
           Bild5:req.body.Bild5,
+          PLZ:req.body.Straße,
           Straße:req.body.Straße,
           Hausnummer:req.body.Hausnummer,
           Beschreibung:req.body.Beschreibung,
