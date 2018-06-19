@@ -53,6 +53,7 @@ describe("/Get angebot",function() {
                         var requestCreateAngebot={
                             Token:encryptedToken,
                             Titel:"AngebotAngebot",
+                            PLZ:"47228",
                             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
                             Preis:99.99,
                             Straße:"Traumallee",

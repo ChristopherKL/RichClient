@@ -55,6 +55,7 @@ describe("/post deleteangebot",function() {
                             Titel:"AngebotDeleteAngebot",
                             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
                             Preis:99.99,
+                            PLZ:"47228",
                             Straße:"Traumallee",
                             Hausnummer:"11",
                             Kategorie:"testkategorieDeleteAngebot",
