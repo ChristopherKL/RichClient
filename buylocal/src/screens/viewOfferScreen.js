@@ -19,19 +19,19 @@ export class ViewOfferScreen extends Component {
         this.state = {imgs: [], hashtags: []};
     }
     componentDidMount() {
+        getOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.offerId).then(
+            (res) => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+ res);
+                    this.props.navigator.pop();
+                }
+                else {
+                    this.setState(res);
+                }
+            }
 
-        this.setState({             id: "2221",
-                                    name: "Endgeiler Schuh",
-                                    imgs: [ "https://i.otto.de/i/otto/18723170/woodstone-kids-trekking-schuh-rot.jpg",
-                                            "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/600px-Smiley.svg.png"],
-                                    price: "121321€",
-                                    desc: "mega gut ja",
-                                    zipcode: '11111',
-                                    insertDate: "27.01.2018",
-                                    insertUser: "BenutzerName",
-                                    insertUserid: "1",
-                                    hashtags: [ "#aaa", "#bbbb" ]
-                                    });
+        )
+
     }
     renderSeparator = () => {
         return (
@@ -111,7 +111,7 @@ export class ViewOfferScreen extends Component {
                 >
                         <Image
                             style={{width: 70, height: 70, marginRight: 4}}
-                            source={{uri: value}}
+                            source={{uri: `data:image/gif;base64,${value}`}}
                         />
                 </TouchableOpacity>
                 )

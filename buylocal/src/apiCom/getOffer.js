@@ -19,7 +19,7 @@ export default async function getOffer(token, id) {
             imgs: [responseJson.Bild1, responseJson.Bild2, responseJson.Bild3, responseJson.Bild4, responseJson.Bild5],
             price: responseJson.Preis,
             desc: responseJson.Beschreibung,
-            zipcode: "1111",
+            zipcode: responseJson.PLZ,
             insertDate: responseJson.reg_date,
             insertUser: responseJson.BenutzerName,
             insertUserid: responseJson.BenutzerID,
@@ -30,6 +30,7 @@ export default async function getOffer(token, id) {
         for(let key in responseJson.hashtags) {
             res.hashtags.push(responseJson[key]);
         }
+
         return res;
       } catch (error) {
         console.error(error);

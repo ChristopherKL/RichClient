@@ -17,7 +17,7 @@ export default class ShowImageScreen extends Component {
         return (
             <View>
                 <FitImage
-                    source={{ uri: this.props.imgUrl }}
+                    source={{ uri: `data:image/gif;base64,${this.props.imgUrl}` }}
                     style={styles.fitImage}
                 />
             </View>
