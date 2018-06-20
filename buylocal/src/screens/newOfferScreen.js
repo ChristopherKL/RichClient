@@ -87,7 +87,7 @@ export default class NewOfferScreen extends Component {
 			price: '',
 			category: '',
 			subcategory: '',
-			tag: '',
+			hashtag: '',
 			dropdownOptions: []
 		};
 		this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
@@ -214,9 +214,9 @@ onPress = () => {
 renderScrollViewImage(imageNumber){
     return(
 		<TouchableOpacity onPress={() => this.selectPhotoTapped(imageNumber)}>
-			<View style={[styles.avatar, styles.avatarContainer, {marginBottom: 20}]}>
+			<View style={[styles.imageField, styles.imageContainer, {marginBottom: 20}]}>
 			{ this.state.images[imageNumber] === null ? <Text>Foto wählen</Text> :
-				<Image style={styles.avatar} source={this.state.images[imageNumber]} />
+				<Image style={styles.imageField} source={this.state.images[imageNumber]} />
 			}
 			</View>
 		</TouchableOpacity>
@@ -283,7 +283,7 @@ renderScrollViewImage(imageNumber){
 					value={this.state.street}
 					maxLength={128}
 					underlineColorAndroid='transparent'
-					width={190}
+					width={200}
 				/>
 				<TextInput
 					style={styles.flowInput}
@@ -292,7 +292,19 @@ renderScrollViewImage(imageNumber){
 					value={this.state.streetNr}
 					maxLength={10}
 					underlineColorAndroid='transparent'
-					width={55}
+					width={75}
+				/>
+				
+			</View>
+			<View style={styles.flowContainer}>
+				<TextInput
+					style={styles.flowInput}
+					placeholder={"Hashtag"}
+					onChangeText={(text) => this.setState({hashtag: text})}
+					value={this.state.hashtag}
+					maxLength={45}
+					underlineColorAndroid='transparent'
+					width={200}
 				/>
 				<TextInput
 					style={styles.flowInput}
@@ -301,7 +313,7 @@ renderScrollViewImage(imageNumber){
 					value={this.state.plz}
 					maxLength={5}
 					underlineColorAndroid='transparent'
-					width={100}
+					width={75}
 				/>
 			</View>
 			<View style={styles.inputContainer}>
@@ -317,14 +329,11 @@ renderScrollViewImage(imageNumber){
 }
 
 const styles = StyleSheet.create({
-	inputContainer: {
-		padding: 10
-	},
 	flowContainer: {
 		flex: 1,
 		flexDirection: 'row',
 		padding: 10,
-		justifyContent: 'space-evenly'
+		justifyContent: 'space-between'
 	},
 	flowInput: {
 		padding: 10,
@@ -333,24 +342,28 @@ const styles = StyleSheet.create({
 		textAlignVertical: 'top',
 		height: 40
 	},
+	inputContainer: {
+		padding: 10
+	},
 	input: {
 		padding: 10,
 		borderColor: 'black',
 		borderWidth: 1,
 		textAlignVertical: 'top'
 	},
-  	avatarContainer: {
+  	imageContainer: {
     	borderColor: 'black',
     	borderWidth: 1 / PixelRatio.get(),
     	justifyContent: 'center',
     	alignItems: 'center'
   	},
-  	avatar: {
+  	imageField: {
 		borderRadius: 75,
   		width: 150,
   		height: 150
 	},
 	dropdown: {
+		marginLeft: 10,
     	alignSelf: 'flex-start',
     	width: 150,
     	right: 8,
@@ -376,6 +389,6 @@ const styles = StyleSheet.create({
 	button: {
 	  	alignItems: 'center',
 	  	backgroundColor: '#DDDDDD',
-	  	padding: 10
+		padding: 10
 	}
 });
