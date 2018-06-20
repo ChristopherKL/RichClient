@@ -20,7 +20,7 @@ const tabs = [{
   },
   {
     label: 'Home',
-    screen: 'buylocal.homeScreen',
+    screen: 'buylocal.viewOfferScreen',
     title: 'Home',
     icon: require('./img/home.png')
   },

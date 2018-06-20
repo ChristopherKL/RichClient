@@ -73,7 +73,7 @@ export class NavigationScreen extends Component {
                 case 'profile':
                     this.props.navigator.push({
                         screen: 'buylocal.profileScreen',
-                        passProps: {profile_id: this.props.userData.id},
+                        passProps: {profileId: this.props.userData.id},
                         title: "Mein Profil"
                     });
                     break;

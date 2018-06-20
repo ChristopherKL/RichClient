@@ -8,6 +8,9 @@ import ProfileScreen from './screens/profileScreen';
 import ResetPasswordScreen from './screens/resetPasswordScreen';
 import RegistrationScreen from './screens/registrationScreen';
 import EditProfileScreen from './screens/editProfileScreen';
+import ViewOfferScreen from './screens/viewOfferScreen';
+import ShowImageScreen from './screens/showImageScreen';
+
 
 export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.loginScreen', () => LoginScreen, store, Provider);
@@ -17,7 +20,9 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.profileScreen', () => ProfileScreen, store, Provider);
   Navigation.registerComponent('buylocal.resetPasswordScreen', () => ResetPasswordScreen, store, Provider);  
   Navigation.registerComponent('buylocal.registrationScreen', () => RegistrationScreen, store, Provider);  
-  Navigation.registerComponent('buylocal.editProfileScreen', () => EditProfileScreen, store, Provider);  
+  Navigation.registerComponent('buylocal.editProfileScreen', () => EditProfileScreen, store, Provider);
+  Navigation.registerComponent('buylocal.viewOfferScreen', () => ViewOfferScreen, store, Provider);
+  Navigation.registerComponent('buylocal.showImageScreen', () => ShowImageScreen, store, Provider);      
 }
 
 export function registerScreenVisibilityListener() {

@@ -16,49 +16,65 @@ import getProfile from '../apiCom/getProfile';
 export class ProfileScreen extends Component {
     constructor(props) {
         super(props)
+        this.state = ({isLoading: true});
     }
     componentDidMount() {
-        getProfile(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.profile_id).then(
+        getProfile(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.profileId).then(
             (res) => {
                 if(typeof res == "string") {
                     alert("Fehler: "+ res);
                     this.props.navigator.pop();
                 }
                 else {
-                    this.setState({ profile_username: res.BenutzerName, 
-                        review_score: 3.5, 
-                        registrate_date: res.reg_date,
-                        last_login: res.last_login});
+                    this.setState({ profileUsername: res.BenutzerName, 
+                        reviewScore: 3.5, 
+                        regDate: res.reg_date,
+                        lastLogin: res.last_login,
+                        isLoading: false});
                 }
             }
 
         )
-        this.setState({ offers: [{  id: "2221",
+        this.setState({ offers: [{  id: "666",
                                     name: "Endgeiler Schuh",
                                     img_uri: "https://i.otto.de/i/otto/18723170/woodstone-kids-trekking-schuh-rot.jpg",
                                     price: "121321€"
                                     }]});
     }
-    onPress = () => {
+    onEditPress = () => {
         this.props.navigator.push({
             screen: 'buylocal.editProfileScreen',
             title: "Profil bearbeiten"
         });
     }
+    onOfferPress = (id) => {
+        this.props.navigator.push({
+            screen: 'buylocal.viewOfferScreen',
+            passProps: {offerId: id},
+            title: "Angebot"
+        });
+    }
     render() {
+        if(this.state.isLoading) {
+            return (
+                <View>
+                    <Text>Loading...</Text>
+                </View>
+            )
+        }
         return (
             <View>
                 <View style={styles.headlineContainer}>
                     {
-                    (this.props.profile_id == this.props.userData.id) ? 
+                    (this.props.profileId == this.props.userData.id) ? 
                         <Text style={styles.headline}>{this.props.userData.username}</Text> :
-                        <Text style={styles.headline}>{this.state.profile_username}</Text>
+                        <Text style={styles.headline}>{this.state.profileUsername}</Text>
                     }
-                    { (this.props.profile_id == this.props.userData.id) && this.renderEditProfileButton() }
+                    { (this.props.profileId == this.props.userData.id) && this.renderEditProfileButton() }
                 </View>
                 <View style={styles.dateContainer}>
-                    <Text>Zuletzt Online: {this.state.last_login}</Text>
-                    <Text>Regestriert am: {this.state.registrate_date}</Text>
+                    <Text>Zuletzt Online: {this.state.lastLogin}</Text>
+                    <Text>Regestriert am: {this.state.regDate}</Text>
                 </View>
                 {this.renderReviewStars()}
                 <View>
@@ -87,14 +103,18 @@ export class ProfileScreen extends Component {
         )
     }
     renderOffer = ({item}) => (
-        <View style={styles.offerContainer}>
-            <Image
-                style={{width: 40, height: 40}}
-                source={{uri: item.img_uri}}
-            />
-            <Text>{item.name}</Text>
-            <Text>{item.price}</Text>
-        </View>
+        <TouchableOpacity
+            onPress={() => this.onOfferPress(item.id)}
+        >
+            <View style={styles.offerContainer}>
+                <Image
+                    style={{width: 40, height: 40}}
+                    source={{uri: item.img_uri}}
+                />
+                <Text>{item.name}</Text>
+                <Text>{item.price}</Text>
+            </View>
+        </TouchableOpacity>
     )
     renderSeparator = () => {
         return (
@@ -109,13 +129,13 @@ export class ProfileScreen extends Component {
     
     renderReviewStars = () => {
         starImgs = []
-        fullNum = Math.trunc(this.state.review_score);
+        fullNum = Math.trunc(this.state.reviewScore);
 
 
         for(fullCount = 0; fullCount < fullNum; fullCount++) {
             starImgs.push(require("./../../img/full.png"));
         }
-        if(this.state.review_score % 1 == 0.5) {
+        if(this.state.reviewScore % 1 == 0.5) {
             starImgs.push(require("./../../img/half.png"));
         }
 
@@ -143,8 +163,7 @@ export class ProfileScreen extends Component {
         return (
             <View style={styles.rightContainer}>
                 <TouchableOpacity
-                        style={styles.button}
-                        onPress={this.onPress}
+                        onPress={this.onEditPress}
                 >                
                     <Image
                         style={{width: 35, height: 35, alignSelf: 'flex-end'}}
