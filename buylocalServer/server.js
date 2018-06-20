@@ -11,19 +11,108 @@ const key = cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüss
 
 var bodyParser  = require('body-parser');
 
+const Sequelize=require("sequelize");
 var Benutzer = require("./server/models/benutzer");
 var Angebot = require("./server/models/angebot");
 var Kategorie = require("./server/models/kategorie");
 var AngebotKategorie = require("./server/models/angebotKategorie");
 var Hashtag = require("./server/models/hashtag");
 var AngebotHashtag = require("./server/models/angebotHashtag");
-
+var Nachricht = require("./server/models/nachricht");
 
 
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(bodyParser.json());
 
 api.post('/deleteuser', function(req,res){
+
+})
+//needs Valid Token of a User+16 random Chars encrypted with the public Key of Server, BenutzerID, new Password+16 random chars encrypted, and new PublicKey
+//Optional SchlüsselArray=  an Array with All the Keys newly encrypted with the same structure as in /keys {Status,Schlüssel,NachrichtID}
+//returns success:true if done
+api.post('/changePassword', function(req,res){
+  if(req.body.BenutzerID&&req.body.Token&&req.body.Passwort&&req.body.PublicKey){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        if(req.body.BenutzerID==decryptedToken.BenutzerID){
+          for(var i=0;i<req.body.SchlüsselArray.length;i++){
+            if(i==req.body.SchlüsselArray.length-1){
+              if(req.body.SchlüsselArray[i].Status=="Absender"){
+                var completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort, key);
+                var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);
+                 Nachricht.update({AbsenderSchlüssel:req.body.SchlüsselArray[i].Schlüssel},{where:{Absender:decryptedToken.BenutzerID,NachrichtID:req.body.SchlüsselArray[i].NachrichtID}}).then(nachricht=>{
+                  Benutzer.update({Passwort:completePassphraseWithout, PublicKey:req.body.PublicKey},{where:{BenutzerID:decryptedToken.ID}}).then(benutzer=>{
+                    res.json({success:true,message:"Passwort geändert"});
+                  });
+                });
+              }else{
+                Nachricht.update({EmpfängerSchlüssel:req.body.SchlüsselArray[i].Schlüssel},{where:{Empfänger:decryptedToken.BenutzerID,NachrichtID:req.body.SchlüsselArray[i].NachrichtID}}).then(nachricht=>{
+                  Benutzer.update({Passwort:completePassphraseWithout, PublicKey:req.body.PublicKey},{where:{BenutzerID:decryptedToken.ID}}).then(benutzer=>{
+                    res.json({success:true,message:"Passwort geändert"});
+                  });
+                }) ;
+              }
+            }else{
+              if(req.body.SchlüsselArray[i].Status=="Absender"){
+                Nachricht.update({AbsenderSchlüssel:req.body.SchlüsselArray[i].Schlüssel},{where:{Absender:decryptedToken.BenutzerID,NachrichtID:req.body.SchlüsselArray[i].NachrichtID}})
+              }else{
+                Nachricht.update({EmpfängerSchlüssel:req.body.SchlüsselArray[i].Schlüssel},{where:{Empfänger:decryptedToken.BenutzerID,NachrichtID:req.body.SchlüsselArray[i].NachrichtID}})
+              }
+            }
+          }
+        }else{
+          res.json({success:false,message:"IDs stimmen nicht überein"});
+        }
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
+
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+});
+//needs Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//returns an Array contaaing {Status:Empfänger||Absender,NachrichtID,Schlüssel} of all Keys a User has registered in the Nachricht Table
+api.get('/keys/:Token', function (req,res){
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      var neeededArray={};
+      Nachricht.findAll({where:{[Sequelize.Op.or]:[{Absender:decryptedToken.BenutzerID},{Empfänger:decryptedToken.BenutzerID}]}}).then(nachrichtArray=>{
+        for(var i = 0;i<nachrichtArray.length;i++){
+          if(nachrichtArray[i].get(0).Absender==decryptedToken.BenutzerID){
+            neededArray[i]={Status:"Absender",NachrichtID:nachrichtArray[i].get(0).NachrichtID,Schlüssel:nachrichtArray[i].get(0).AbsenderSchlüssel};
+          }else{
+            neededArray[i]={Status:"Empfänger",NachrichtID:nachrichtArray[i].get(0).NachrichtID,Schlüssel:nachrichtArray[i].get(0).EmpfängerSchlüssel};
+          }
+        }
+        res.json({success:true,SchlüsselArray:neededArray});
+      });
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+})
+api.get('Nachricht/:NachrichtID/:Token', function (req,res){
+
+})
+api.get('Nachrichtenofuser/:Token', function (req,res){
+
+});
+api.post('writenachricht', function(req,res){
+
 })
 //Returns the Public Key of the Server
 api.get('/publicKey', function(req,res){
