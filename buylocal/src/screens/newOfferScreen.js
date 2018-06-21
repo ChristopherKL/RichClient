@@ -13,6 +13,7 @@ import {
 
 import { showImagePicker } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
+import newOffer from '../apiCom/newOffer';
 
 const DROPDOWN_CATEGORIES = ['Auto, Rad & Boot', 'Dienstleistungen', 'Eintrittskarten & Tickets', 'Elektronik',
 'Familie, Kind & Babie', 'Freizeit, Hobby & Nachbarschaft', 'Haus & Garten', 'Haustiere', 'Immobilien', 'Jobs',
@@ -20,7 +21,7 @@ const DROPDOWN_CATEGORIES = ['Auto, Rad & Boot', 'Dienstleistungen', 'Eintrittsk
 
 //Auto, Rad & Boot
 const SUBCATEGORIES0 = ['Autos','Autoteile & Reifen','Boote & Bootszubehör','Fahrräder & Zubehör','Motorräder & Motorroller',
-'Motoradteile & Zubehör','Nutzfahrzeuge & Anhänger','Reperaturen & Dienstleistungen','Wohnwagen & -mobile','Weiteres'];
+'Motoradteile & Zubehör','Nutzfahrzeuge & Anhänger','Wohnwagen & -mobile','Weiteres'];
 
 //Dienstleistungen
 const SUBCATEGORIES1 = ['Altenpflege','Auto, Rad & Boot','Babysitter & Kinderbetreuung','Elektronik','Haus & Garten','Künstler & Musiker',
@@ -30,12 +31,12 @@ const SUBCATEGORIES1 = ['Altenpflege','Auto, Rad & Boot','Babysitter & Kinderbet
 const SUBCATEGORIES2 = ['Bahn & ÖPNV','Comedy & Kabarett','Gutscheine','Kinder','Konzerte','Sport','Theater & Musical','Weitere'];
 
 //Elektronik
-const SUBCATEGORIES3 = ['Audio & Hifi','Dienstleistungen Elektronik','Foto','Handy & Telefon','Haushaltsgeräte','Konsolen',
+const SUBCATEGORIES3 = ['Audio & Hifi','Foto','Handy & Telefon','Haushaltsgeräte','Konsolen',
 'Notebooks','PCs','PC-Zubehör & Software','Tablets & Reader','TV & Video','Videospiele','Weiteres'];
 
 //Familie, Kind & Baby
-const SUBCATEGORIES4 = ['Altenpflege','Baby- & Kinderbekleidung','Baby- & Kinderschuhe','Baby-Ausstattung',
-'Babyschalen & Kindersitze','Babysitter & Kinderbetreuung','Kinderwagen & Buggys','Kinderzimmermöbel','Spielzeug','Weiteres'];
+const SUBCATEGORIES4 = ['Baby- & Kinderbekleidung','Baby- & Kinderschuhe','Baby-Ausstattung',
+'Babyschalen & Kindersitze','Kinderwagen & Buggys','Kinderzimmermöbel','Spielzeug','Weiteres'];
 
 //Freizeit, Hobby & Nachbarschaft
 const SUBCATEGORIES5 = ['Esoterik & Spirituelles','Essen & Trinken','Freizeitaktivitäten','Handarbeit, Basteln & Kunsthandwerk',
@@ -43,16 +44,15 @@ const SUBCATEGORIES5 = ['Esoterik & Spirituelles','Essen & Trinken','Freizeitakt
 'Verloren & Gefunden', 'Weiteres'];
 
 //Haus & Garten
-const SUBCATEGORIES6 = ['Badezimmer','Büro','Dekorationen','Dienstleistungen Haus & Garten','Gartenzubehör & Pflanzen',
-'Heimtextilien','Heimwerken','Küche & Esszimmer','Lampen & Licht','Schlafzimmer','Wohnzimmer','Weiteres'];
+const SUBCATEGORIES6 = ['Badezimmer','Büro','Dekorationen','Gartenzubehör & Pflanzen','Heimtextilien'
+,'Heimwerken','Küche & Esszimmer','Lampen & Licht','Schlafzimmer','Wohnzimmer','Weiteres'];
 
 //Haustiere
-const SUBCATEGORIES7 = ['Fische','Hunde','Katzen','Kleintiere','Pferde','Reptilien','Tierbetreuung & Training',
-'Vermisste Tiere','Vögel','Zubehör','Weiteres'];
+const SUBCATEGORIES7 = ['Fische','Hunde','Katzen','Kleintiere','Pferde','Reptilien','Vermisste Tiere','Vögel','Zubehör','Weiteres'];
 
 //Immobilien
 const SUBCATEGORIES8 = ['Auf Zeit & WG','Eigentumswohnungen','Ferien- & Auslandsimmobilien','Garagen & Stellplätze',
-'Gewerbeimmobilien','Grundstücke & Gärten','Häuser zum Kauf','Häuser zur Miete','Mietwohnungen','Umzug & Transport','Weitere'];
+'Gewerbeimmobilien','Grundstücke & Gärten','Häuser zum Kauf','Häuser zur Miete','Mietwohnungen','Weitere'];
 
 //Jobs
 const SUBCATEGORIES9 = ['Ausbildung','Bau, Handwerk & Produktion','Büroarbeit & Verwaltung','Gastronomie & Tourismus',
@@ -189,13 +189,16 @@ dropdownOnSelectSub(value){
 
 validateInput(){
 	var alertmessage = '';
-	if(this.state.titleText.length == 0){alertmessage += '-Titel fehlt \n';}
+	if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
 	if(this.state.images[0] == null){alertmessage +='-Bild fehlt \n';}
-	var testDescription = this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"");
-	if(testDescription.length == 0){alertmessage +='-Beschreibung fehlt \n';}
+	if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
 	if(this.state.category.length == 0){alertmessage +='-Kategorie fehlt \n';}
 	if(this.state.subcategory.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
-	if(this.state.plz.length != 5){alertmessage += '-PLZ ist fehlerhaft \n';}
+	if(this.state.street.length != 0 && this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlerhaft \n';}
+	if(this.state.streetNr.length != 0 && this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlerhaft \n';}
+	if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}
+	if(this.state.hashtag.length != 0 && this.state.hashtag.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hashtag fehlerhaft \n';}
+	if(this.state.price.length == 0 || this.state.price.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/)===null){alertmessage +='-Preis fehlerhaft';}
 	return alertmessage;
 }
 
@@ -208,6 +211,21 @@ onPress = () => {
 		);
 	} else {
 		//TODO: API REQUEST
+		newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
+		this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
+            (res) => {
+                if(res != true) {
+                    alert("Fehler: "+ res);
+                }
+                else {
+                    
+                    alert("Änderung erfolgreich!");
+                    this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
+                    this.props.navigator.pop();
+                    
+                }
+            }
+        )
 	}
 }
 
@@ -293,6 +311,7 @@ renderScrollViewImage(imageNumber){
 					maxLength={10}
 					underlineColorAndroid='transparent'
 					width={75}
+					keyboardType='numeric'
 				/>
 				
 			</View>
@@ -314,6 +333,19 @@ renderScrollViewImage(imageNumber){
 					maxLength={5}
 					underlineColorAndroid='transparent'
 					width={75}
+					keyboardType='numeric'
+				/>
+			</View>
+			<View  style={styles.inputContainer}>
+				<TextInput
+					style={styles.flowInput}
+					placeholder={"Preis"}
+					onChangeText={(text) => this.setState({price: text})}
+					value={this.state.price}
+					maxLength={13}
+					underlineColorAndroid='transparent'
+					width={120}
+					keyboardType='numeric'
 				/>
 			</View>
 			<View style={styles.inputContainer}>
