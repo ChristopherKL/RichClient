@@ -14,65 +14,8 @@ import {
 import { showImagePicker } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import newOffer from '../apiCom/newOffer';
+import * as categories from '../categories';
 
-const DROPDOWN_CATEGORIES = ['Auto, Rad & Boot', 'Dienstleistungen', 'Eintrittskarten & Tickets', 'Elektronik',
-'Familie, Kind & Babie', 'Freizeit, Hobby & Nachbarschaft', 'Haus & Garten', 'Haustiere', 'Immobilien', 'Jobs',
-'Mode & Beauty', 'Musik, Filme & Bücher', 'Unterricht & Kurse', 'Zu veschenken & Tauschen'];
-
-//Auto, Rad & Boot
-const SUBCATEGORIES0 = ['Autos','Autoteile & Reifen','Boote & Bootszubehör','Fahrräder & Zubehör','Motorräder & Motorroller',
-'Motoradteile & Zubehör','Nutzfahrzeuge & Anhänger','Wohnwagen & -mobile','Weiteres'];
-
-//Dienstleistungen
-const SUBCATEGORIES1 = ['Altenpflege','Auto, Rad & Boot','Babysitter & Kinderbetreuung','Elektronik','Haus & Garten','Künstler & Musiker',
-'Reise & Event','Tierbetreuung & Training','Umzug & Transport','Weitere'];
-
-//Eintrittskarten & Tickets
-const SUBCATEGORIES2 = ['Bahn & ÖPNV','Comedy & Kabarett','Gutscheine','Kinder','Konzerte','Sport','Theater & Musical','Weitere'];
-
-//Elektronik
-const SUBCATEGORIES3 = ['Audio & Hifi','Foto','Handy & Telefon','Haushaltsgeräte','Konsolen',
-'Notebooks','PCs','PC-Zubehör & Software','Tablets & Reader','TV & Video','Videospiele','Weiteres'];
-
-//Familie, Kind & Baby
-const SUBCATEGORIES4 = ['Baby- & Kinderbekleidung','Baby- & Kinderschuhe','Baby-Ausstattung',
-'Babyschalen & Kindersitze','Kinderwagen & Buggys','Kinderzimmermöbel','Spielzeug','Weiteres'];
-
-//Freizeit, Hobby & Nachbarschaft
-const SUBCATEGORIES5 = ['Esoterik & Spirituelles','Essen & Trinken','Freizeitaktivitäten','Handarbeit, Basteln & Kunsthandwerk',
-'Kunst & Antiquitäten','Künstler & Musiker','Modellbau','Reise & Eventservices','Sammeln','Sport & Camping','Trödel',
-'Verloren & Gefunden', 'Weiteres'];
-
-//Haus & Garten
-const SUBCATEGORIES6 = ['Badezimmer','Büro','Dekorationen','Gartenzubehör & Pflanzen','Heimtextilien'
-,'Heimwerken','Küche & Esszimmer','Lampen & Licht','Schlafzimmer','Wohnzimmer','Weiteres'];
-
-//Haustiere
-const SUBCATEGORIES7 = ['Fische','Hunde','Katzen','Kleintiere','Pferde','Reptilien','Vermisste Tiere','Vögel','Zubehör','Weiteres'];
-
-//Immobilien
-const SUBCATEGORIES8 = ['Auf Zeit & WG','Eigentumswohnungen','Ferien- & Auslandsimmobilien','Garagen & Stellplätze',
-'Gewerbeimmobilien','Grundstücke & Gärten','Häuser zum Kauf','Häuser zur Miete','Mietwohnungen','Weitere'];
-
-//Jobs
-const SUBCATEGORIES9 = ['Ausbildung','Bau, Handwerk & Produktion','Büroarbeit & Verwaltung','Gastronomie & Tourismus',
-'Kundenservice & Call Center','Mini- & Nebenjobs','Praktika','Sozialer Sektor & Pflege','Transport, Logistik & Verkehr',
-'Vertrieb, Einkauf & Verkauf','Weitere'];
-
-//Mode & Beauty
-const SUBCATEGORIES10 = ['Accessoires & Schmuck','Beauty & Gesundheit','Damenbekleidung','Damenschuhe','Herrenbekleidung',
-'Herrenschuhe','Weiteres'];
-
-//Musik, Filme & Bücher
-const SUBCATEGORIES11 = ['Bücher & Zeitschriften','Büro & Schreibwaren','Comics','Fachbücher, Schule & Studium','Film & DVD',
-'Musik & CDs','Musikinstrumente','Weitere'];
-
-//Unterricht & Kurse
-const SUBCATEGORIES12 = ['Beauty & Gesundheit','Computerkurse','Esoterik & Spirituelles','Kochen & Backen','Kunst & Gestaltung',
-'Musik & Gesang','Sportkurse','Sprachkurse','Tanzkurse','Weiterbildung','Weitere'];
-
-//Zu veschenken & Tauschen
-const SUBCATEGORIES13 = ['Tauschen', 'Verleihen', 'Zu verschenken'];
 export default class NewOfferScreen extends Component {
 
 	constructor(props){
@@ -210,7 +153,7 @@ onPress = () => {
 			alertmessage
 		);
 	} else {
-		//TODO: API REQUEST
+		var subcategoryid = categories.subcategorieToID(this.state.category,this.state.subcategory);
 		newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
 		this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
             (res) => {
@@ -218,11 +161,9 @@ onPress = () => {
                     alert("Fehler: "+ res);
                 }
                 else {
-                    
-                    alert("Änderung erfolgreich!");
+                    alert("Angebot erstellt!");
                     this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
                     this.props.navigator.pop();
-                    
                 }
             }
         )
@@ -280,7 +221,7 @@ renderScrollViewImage(imageNumber){
 					style={styles.dropdown}
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
-					options={DROPDOWN_CATEGORIES}
+					options={categories.CATEGORIES}
 					onSelect={(idx, value) => this.dropdownOnSelect(idx,value)}
 					defaultValue={'Kategorie'}
 				/>
@@ -288,7 +229,7 @@ renderScrollViewImage(imageNumber){
 					style={styles.dropdown}
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
-					options={SUBCATEGORIES0}
+					options={categories.SUBCATEGORIES0}
 					onSelect={(idx, value) => this.dropdownOnSelectSub(value)}
 					defaultValue={'Unterkategorie'}
 				/>
