@@ -77,51 +77,50 @@ export default class NewOfferScreen extends Component {
 			category: value
 		});
 		
-		/*
 		switch (idx) {
 			case 0:
-				this.setState({dropdownOptions: SUBCATEGORIES0});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES0});
 				break;
 			case 1:
-				this.setState({dropdownOptions: SUBCATEGORIES1});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES1});
 				break;
 			case 2:
-				this.setState({dropdownOptions: SUBCATEGORIES2});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES2});
 				break;
 			case 3:
-				this.setState({dropdownOptions: SUBCATEGORIES3});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES3});
 				break;
 			case 4:
-				this.setState({dropdownOptions: SUBCATEGORIES4});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES4});
 				break;
 			case 5:
-				this.setState({dropdownOptions: SUBCATEGORIES5});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES5});
 				break;
 			case 6:
-				this.setState({dropdownOptions: SUBCATEGORIES6});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES6});
 				break;
 			case 7:
-				this.setState({dropdownOptions: SUBCATEGORIES7});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES7});
 				break;
 			case 8:
-				this.setState({dropdownOptions: SUBCATEGORIES8});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES8});
 				break;
 			case 9:
-				this.setState({dropdownOptions: SUBCATEGORIES9});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES9});
 				break;
 			case 10:
-				this.setState({dropdownOptions: SUBCATEGORIES10});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES10});
 				break;
 			case 11:
-				this.setState({dropdownOptions: SUBCATEGORIES11});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES11});
 				break;
 			case 12:
-				this.setState({dropdownOptions: SUBCATEGORIES12});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES12});
 				break;
 			case 13:
-				this.setState({dropdownOptions: SUBCATEGORIES13});
+				this.setState({dropdownOptions: categories.SUBCATEGORIES13});
 				break;
-		}*/
+		}
 	}
 
 dropdownOnSelectSub(value){
@@ -229,7 +228,7 @@ renderScrollViewImage(imageNumber){
 					style={styles.dropdown}
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
-					options={categories.SUBCATEGORIES0}
+					options={this.state.dropdownOptions}
 					onSelect={(idx, value) => this.dropdownOnSelectSub(value)}
 					defaultValue={'Unterkategorie'}
 				/>
@@ -328,7 +327,8 @@ const styles = StyleSheet.create({
     	borderColor: 'black',
     	borderWidth: 1 / PixelRatio.get(),
     	justifyContent: 'center',
-    	alignItems: 'center'
+		alignItems: 'center',
+		margin : 3
   	},
   	imageField: {
 		borderRadius: 75,
