@@ -31,7 +31,7 @@ export default class NewOfferScreen extends Component {
 			category: '',
 			subcategory: '',
 			hashtag: '',
-			dropdownOptions: []
+			dropdownOptions: ['']
 		};
 		this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
 	}
@@ -76,49 +76,63 @@ export default class NewOfferScreen extends Component {
 		this.setState({
 			category: value
 		});
-		
+
 		switch (idx) {
-			case 0:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES0});
+			case '0':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES0,
+					subcategory: ''});
 				break;
-			case 1:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES1});
+			case '1':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES1,
+					subcategory: ''});
 				break;
-			case 2:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES2});
+			case '2':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES2,
+					subcategory: ''});
 				break;
-			case 3:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES3});
+			case '3':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES3,
+					subcategory: ''});
 				break;
-			case 4:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES4});
+			case '4':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES4,
+					subcategory: ''});
 				break;
-			case 5:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES5});
+			case '5':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES5,
+					subcategory: ''});
 				break;
-			case 6:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES6});
+			case '6':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES6,
+					subcategory: ''});
 				break;
-			case 7:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES7});
+			case '7':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES7,
+					subcategory: ''});
 				break;
-			case 8:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES8});
+			case '8':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES8,
+					subcategory: ''});
 				break;
-			case 9:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES9});
+			case '9':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES9,
+					subcategory: ''});
 				break;
-			case 10:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES10});
+			case '10':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES10,
+					subcategory: ''});
 				break;
-			case 11:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES11});
+			case '11':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES11,
+					subcategory: ''});
 				break;
-			case 12:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES12});
+			case '12':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES12,
+					subcategory: ''});
 				break;
-			case 13:
-				this.setState({dropdownOptions: categories.SUBCATEGORIES13});
+			case '13':
+				this.setState({dropdownOptions: categories.SUBCATEGORIES13,
+					subcategory: ''});
 				break;
 		}
 	}
