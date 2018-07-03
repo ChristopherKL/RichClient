@@ -84,6 +84,13 @@ export class NavigationScreen extends Component {
                         title: "Neues Angebot"
                     });
                     break;
+                case 'messages':
+                    this.props.navigator.push({
+                        screen: 'buylocal.negotiationListScreen',
+                        passProps: {profile_id: this.props.userData.id},
+                        title: "Nachrichten"
+                    });
+                    break;
                 case 'logout':
                     this.props.logoutAction();
                     this.props.navigator.switchToTab({tabIndex: 1});
