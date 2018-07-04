@@ -11,6 +11,8 @@ import EditProfileScreen from './screens/editProfileScreen';
 import ViewOfferScreen from './screens/viewOfferScreen';
 import ShowImageScreen from './screens/showImageScreen';
 import NegotiationScreen from './screens/negotiationScreen';
+import NewMessageScreen from './screens/newMessage';
+import RateUserScreen from './screens/rateUser';
 
 
 export function registerScreens(store, Provider) {
@@ -24,7 +26,9 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.editProfileScreen', () => EditProfileScreen, store, Provider);
   Navigation.registerComponent('buylocal.viewOfferScreen', () => ViewOfferScreen, store, Provider);
   Navigation.registerComponent('buylocal.showImageScreen', () => ShowImageScreen, store, Provider); 
-  Navigation.registerComponent('buylocal.negotiationScreen', () => NegotiationScreen, store, Provider);   
+  Navigation.registerComponent('buylocal.negotiationScreen', () => NegotiationScreen, store, Provider);
+  Navigation.registerComponent('buylocal.newMessageScreen', () => NewMessageScreen, store, Provider);    
+  Navigation.registerComponent('buylocal.rateUserScreen', () => RateUserScreen, store, Provider);  
 }
 
 export function registerScreenVisibilityListener() {
