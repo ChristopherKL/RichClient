@@ -3,13 +3,9 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
 
  const Nachricht= sequelize.define('Nachricht',{
   NachrichtID: {type: Sequelize.INTEGER, primaryKey:true, autoIncrement:true},
-  Betreff: Sequelize.STRING,
+  VerhandlungID: Sequelize.INTEGER,
   Text: Sequelize.STRING,
-  PLZ:Sequelize.STRING,
   Absender: Sequelize.INTEGER,
-  Empfänger: Sequelize.INTEGER,
-  AbsenderSchlüssel: Sequelize.STRING,
-  EmpfängerSchlüssel: Sequelize.STRING,
   Gelesen:Sequelize.DATE,
   Datum: Sequelize.DATE,
 },{tableName: 'Nachricht', timestamps:false});

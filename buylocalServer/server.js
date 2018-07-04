@@ -19,6 +19,8 @@ var AngebotKategorie = require("./server/models/angebotKategorie");
 var Hashtag = require("./server/models/hashtag");
 var AngebotHashtag = require("./server/models/angebotHashtag");
 var Nachricht = require("./server/models/nachricht");
+var Bewertung = require("./server/models/bewertung");
+var Verhandlung = require("./server/models/verhandlung");
 
 const Op = Sequelize.Op;
 
@@ -106,14 +108,128 @@ api.get('/keys/:Token', function (req,res){
     res.json({success:false, message:"Token falsch"});
   }
 })
-api.get('Nachricht/:NachrichtID/:Token', function (req,res){
-
+//needs Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//returns an Array with every Verhandlung as Empfänger and an Array with every Verhandlung as Absender
+api.get("/verhandlungen/:Token", function (req,res){
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      Verhandlung.findAll({where:{Empfänger:decryptedToken.BenutzerID}}).then(empfängerVerhandlungen=>{
+        var empfängerArray=[];
+        for(var i=0;i<empfängerVerhandlungen.length;i++){
+          empfängerArray.push(empfängerVerhandlungen[i].get(0));
+        }
+        Verhandlung.findAll({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlungen=>{
+          var absenderArray=[];
+          for(var j=0;j<absenderVerhandlungen.length;j++){
+            absenderArray.push(absenderVerhandlungen[j].get(0));
+          }
+          res.json({success:true,VerhandlungenAbsender:absenderArray,VerhandlungenEmpfänger:empfängerArray})
+      })
+    })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
 })
-api.get('Nachrichtenofuser/:Token', function (req,res){
+//needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//returns an Array with every send Nachricht of the Verhandlung
+api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      Nachricht.findAll({order: [['Datum', 'DESC']],where:{VerhandungID:VerhandlungID}}).then(nachrichten=>{
+        if(nachrichten){
+          nachrichtenArray=[];
+          for(var i=0;i<nachrichten.length;i++){
+            nachrichtenArray.push(nachrichten[i].get(0));
+          }
+          res.json({success:true, Nachrichten:nachrichtenArray});
+        }else{
+          res.json({success:false, message:"Verhandlung nicht vorhanden"});
+        }
+      })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+})
+//needs Empfänger,Betreff,AbsenderSchlüssel,EmpfängerSchlüssel, Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//returns Id of the Verhandlung
+api.post('/beginverhandlung', function(req,res){
+  if(req.body.Empfänger&&req.body.Token&&req.body.Betreff&&req.body.EmpfängerSchlüssel&&req.body.AbsenderSchlüssel){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        Verhandlung.create({
+          Betreff:req.body.Betreff,
+          Absender:decryptedToken.BenutzerID,
+          Empfänger:req.body.Empfänger,
+          AbsenderSchlüssel:req.body.AbsenderSchlüssel,
+          EmpfängerSchlüssel:req.body.EmpfängerSchlüssel
+        }).then(verhandlung=>{
+          if(verhandlung){
+            res.json({success:true, VerhandlungID:verhandlung.VerhandlungID})
+          }else{
+            res.json({success:false, message:"Verhandlung konnte nicht erstellt werden"});
+          }
+        })
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
 
-});
-api.post('writenachricht', function(req,res){
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
+//needs VerhandlungID,Text, Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//returns Id of Nachricht
+api.post('/writenachricht', function(req,res){
+  if(req.body.VerhandlungID&&req.body.Token&&req.body.Text){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        Nachricht.create({
+          VerhandlungID: req.body.VerhandlungID,
+          Text: req.body.Text,
+          Absender: decryptedToken.BenutzerID,
+          Datum: Date.now()
+        }).then(nachricht=>{
+          if(nachricht){
+            res.json({success:true,NachrichtID:nachricht.NachrichtID})
+          }else{
+            res.json({success:false, message:"Nachricht konnte nicht erstellt werden"});
+          }
+        })
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
 
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
 })
 //Returns the Public Key of the Server
 api.get('/publicKey', function(req,res){
@@ -133,8 +249,28 @@ api.get('/user/:BenutzerID/:Token', function (req,res){
       if(decryptedToken.exp>current_time){
         Benutzer.findOne({where: {BenutzerID:req.params.BenutzerID}}).then(benutzer =>{
           if(benutzer){
-            res.json({success:true, BenutzerName: benutzer.BenutzerName,Mail : benutzer.Mail, last_login:benutzer.last_login, reg_date: benutzer.reg_date});
-          }else{
+            returnBenutzerName=benutzer.BenutzerName;
+            returnMail=benutzer.Mail;
+            returnLastLogin=benutzer.last_login;
+            returnRegDate=benutzer.reg_date;
+            Bewertung.findAll({where:{Bewerteter:req.params.BenutzerID}}).then(bewertungen=>{
+              var gesamtScore=0;
+              var bewertungsCount=bewertungen.length;
+              for(var i=0;i<bewertungen.length;i++){
+                gesamtScore=gesamtScore+bewertung[i].get(0).Sterne;
+              }
+              if(!gesamtScore==0){
+                gesamtScore=gesamtScore/bewertungen.length;
+              }
+              Angebot.findAll({where:{BenutzerID:req.params.BenutzerID}}).then(angebote=>{
+                var angebotsArray=[]
+                for(var j=0;j<angebote.length;j++){
+                  angebotsArray.push({AngebotID:angebote[j].get(0).AngebotID,Titel:angebote[j].get(0).Titel,Bild1:angebote[j].get(0).Bild1,Preis:angebote[j].get(0).Preis});
+                }
+                res.json({success:true,PublicKey:benutzer.PublicKey, BenutzerName: benutzer.BenutzerName,Mail : benutzer.Mail, last_login:benutzer.last_login, reg_date: benutzer.reg_date, Bewertung:gesamtScore, Bewertungsanzahl:bewertungsCount, Angebote:angebotsArray});
+              })
+            })
+            }else{
             res.json({success:false, message:"Nutzer nicht vorhanden"});
           }
         });
@@ -211,7 +347,7 @@ api.post('/login', function (req,res){
 
 
               Benutzer.update({last_login:Date.now()},{where:{BenutzerID:benutzer.BenutzerID}});
-
+              
               res.json({success: true, message: "Ein Token", BenutzerId:benutzer.BenutzerID, BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
             }else{
               res.json({ success : false, message:"Passwort falsch"});

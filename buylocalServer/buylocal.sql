@@ -136,7 +136,7 @@ DROP TABLE IF EXISTS `Bewertung`;
 CREATE TABLE `Bewertung` (
   `BewertungID` int(11) NOT NULL AUTO_INCREMENT,
   `Datum` datetime DEFAULT NULL,
-  `Sterne` int(11) DEFAULT NULL,
+  `Sterne` double(3,1) DEFAULT NULL,
   `Bewerter` int(11) DEFAULT NULL,
   `Bewerteter` int(11) DEFAULT NULL,
   `Text` varchar(200) DEFAULT NULL,
