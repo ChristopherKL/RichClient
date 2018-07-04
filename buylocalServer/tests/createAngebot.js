@@ -90,7 +90,7 @@ describe("/POSt createangebot",function() {
             Preis:99.99,
             Straße:"Traumallee",
             Hausnummer:"11",
-            Kategorie:"testkategorie"
+            KategorieID:777
         }
         chai.request("http://localhost:8081")
             .post("/createangebot")
@@ -110,7 +110,6 @@ describe("/POSt createangebot",function() {
                     where:{AngebotID:res.body.AngebotID}
                 }).then(angebot =>{
                     angebot.Titel.should.equal("Angebot 1");
-                    angebot.Bild1.should.equal("LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL");
                     angebot.Preis.should.equal("99.99");
                     angebot.Straße.should.equal("Traumallee");
                     angebot.Hausnummer.should.equal("11");
@@ -133,7 +132,7 @@ describe("/POSt createangebot",function() {
             Preis:99.99,
             Straße:"Traumallee",
             Hausnummer:"11",
-            Kategorie:"testkategorie",
+            KategorieID:777,
             Hashtags:["testhashtag1"]
         }
         chai.request("http://localhost:8081")
@@ -155,7 +154,6 @@ describe("/POSt createangebot",function() {
                     where:{AngebotID:res.body.AngebotID}
                 }).then(angebot =>{
                     angebot.Titel.should.equal("Angebot 1");
-                    angebot.Bild1.should.equal("LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL");
                     angebot.Preis.should.equal("99.99");
                     angebot.Straße.should.equal("Traumallee");
                     angebot.Hausnummer.should.equal("11");
@@ -184,7 +182,7 @@ describe("/POSt createangebot",function() {
             PLZ:"47228",
             Straße:"Traumallee",
             Hausnummer:"11",
-            Kategorie:"testkategorie",
+            KategorieID:777,
             Hashtags:["testhashtag1","testhashtag2","testhashtag3"]
         }
         chai.request("http://localhost:8081")
@@ -206,7 +204,6 @@ describe("/POSt createangebot",function() {
                     where:{AngebotID:res.body.AngebotID}
                 }).then(angebot =>{
                     angebot.Titel.should.equal("Angebot 1");
-                    angebot.Bild1.should.equal("LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL");
                     angebot.Preis.should.equal("99.99");
                     angebot.Straße.should.equal("Traumallee");
                     angebot.Hausnummer.should.equal("11");
@@ -271,7 +268,7 @@ describe("/POSt createangebot",function() {
             PLZ:"47228",
             Straße:"Traumallee",
             Hausnummer:"11",
-            Kategorie:"testkategorie",
+            KategorieID:777
         }
         chai.request("http://localhost:8081")
             .post("/createangebot")

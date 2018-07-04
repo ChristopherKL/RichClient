@@ -20,6 +20,7 @@ var Hashtag = require("./server/models/hashtag");
 var AngebotHashtag = require("./server/models/angebotHashtag");
 var Nachricht = require("./server/models/nachricht");
 
+const Op = Sequelize.Op;
 
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(bodyParser.json());
@@ -314,8 +315,25 @@ api.post('/deleteangebot', function(req,res){
   }
 });
 
+//returns the kategorien
+//UeberKategorien,UnterKategorien
+api.get("/kategorie",function( req,res){
+  Kategorie.findAll({where:{UeberKategorie:null}}).then(ueberKategorien =>{
+    var returnarrayUeberKategorien=[];
+    for(var i=0;i<ueberKategorien.length;i++){
+      returnarrayUeberKategorien.push(ueberKategorien[i].get(0));
+    }
+    Kategorie.findAll({order: [['UeberKategorie', 'ASC']],where:{UeberKategorie:{[Op.ne]: null}}}).then(unterKategorien=>{
+      var returnarrayUnterKategorien=[];
+      for(var i=0;i<unterKategorien.length;i++){
+        returnarrayUnterKategorien.push(unterKategorien[i].get(0));
+      }
+      res.json({success:true,UeberKategorien:returnarrayUeberKategorien,unterKategorien:returnarrayUnterKategorien});
+    });
+  })
+})
 //Requires ID of requested Angebot and a valid Token+16random Signs encrypted with Public Key of Server urlencoded
-//returned Hashtags Kategorie Bild 1 bis 5, reg_date, Titel, Preis, Beschreibung falls vorhanden, Straße, Hausnummer, BenutzerName und BenutzerID
+//returned Hashtags KategorieID Bild 1 bis 5, reg_date, Titel, Preis, Beschreibung falls vorhanden, Straße, Hausnummer, BenutzerName und BenutzerID
 //
 api.get("/angebot/:AngebotID/:Token",function (req,res){
   if(req.params.Token&&req.params.AngebotID){
@@ -326,44 +344,39 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
       var current_time = Date.now() /1000;
       if(decryptedToken.exp>current_time){
 
-        var kategorieOfAngebot;
         var hashtagsOfAngebot={};
+        var foundKategorie;
         var foundAngebot
         Angebot.findOne({where: {AngebotID:req.params.AngebotID}}).then(angebot =>{
           if(angebot){
             foundAngebot=angebot;
             AngebotKategorie.findOne({where:{AngebotID:angebot.AngebotID}}).then(angebotKategorie=>{
-              Kategorie.findOne({where:{KategorieID:angebotKategorie.KategorieID}}).then(kategorie=>{
-                kategorieOfAngebot=kategorie;
-                AngebotHashtag.findAll({where:{AngebotID:foundAngebot.AngebotID}}).then(angebothashtag=>{
-                  for(var i = 0;i<angebothashtag.length;i++){
-                    hashtagsOfAngebot[i]=angebothashtag[i].get(0).HashtagName;
-                  }
-                  var benutzer=Benutzer.findOne({where:{BenutzerID:foundAngebot.BenutzerID}}).then(benutzer=>{
-                    res.json({
-                      success:true,
-                      Hashtags: hashtagsOfAngebot,
-                      Kategorie : kategorieOfAngebot.Name,
-                      Bild1: foundAngebot.Bild1,
-                      Bild2: foundAngebot.Bild2,
-                      Bild3: foundAngebot.Bild3,
-                      Bild4: foundAngebot.Bild4,
-                      Bild5: foundAngebot.Bild5,
-                      PLZ: foundAngebot.PLZ,
-                      reg_date: foundAngebot.reg_date,
-                      Titel: foundAngebot.Titel,
-                      Preis: foundAngebot.Preis,
-                      Beschreibung: foundAngebot.Beschreibung,
-                      Straße:foundAngebot.Straße,
-                      Hausnummer:foundAngebot.Hausnummer,
-                      BenutzerID: benutzer.BenutzerID,
-                      BenutzerName: benutzer.BenutzerName
-      
-
+              foundKategorie=angebotKategorie;
+              AngebotHashtag.findAll({where:{AngebotID:foundAngebot.AngebotID}}).then(angebothashtag=>{
+                for(var i = 0;i<angebothashtag.length;i++){
+                  hashtagsOfAngebot[i]=angebothashtag[i].get(0).HashtagName;
+                }
+                var benutzer=Benutzer.findOne({where:{BenutzerID:foundAngebot.BenutzerID}}).then(benutzer=>{
+                  res.json({
+                    success:true,
+                    Hashtags: hashtagsOfAngebot,
+                    KategorieID : foundKategorie.KategorieID,
+                    Bild1: foundAngebot.Bild1,
+                    Bild2: foundAngebot.Bild2,
+                    Bild3: foundAngebot.Bild3,
+                    Bild4: foundAngebot.Bild4,
+                    Bild5: foundAngebot.Bild5,
+                    PLZ: foundAngebot.PLZ,
+                    reg_date: foundAngebot.reg_date,
+                    Titel: foundAngebot.Titel,
+                    Preis: foundAngebot.Preis,
+                    Beschreibung: foundAngebot.Beschreibung,
+                    Straße:foundAngebot.Straße,
+                    Hausnummer:foundAngebot.Hausnummer,
+                    BenutzerID: benutzer.BenutzerID,
+                    BenutzerName: benutzer.BenutzerName
+                  })
                 })
-              })
-            })
-            
               });
             });
           }else{
@@ -381,11 +394,11 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
     res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 })
-//Requires Titel, Preis, Bild1, PLZ,Kategorie and a Token+16 random chars encrypted with public Key of Server
+//Requires Titel, Preis, Bild1, PLZ,KategorieID and a Token+16 random chars encrypted with public Key of Server
 //alternative Input Bild2,Bild3,Bild4,Bild5, Beschreibung, Hashtags, Straße, Hausnummer
 //returns if it fails success:false and a message, else success:true, message and AngebotID
 api.post('/createangebot', function (req,res){
-  if(req.body.Titel&&req.body.Preis&&req.body.Bild1&&req.body.PLZ&&req.body.Token&&req.body.Kategorie){
+  if(req.body.Titel&&req.body.Preis&&req.body.Bild1&&req.body.PLZ&&req.body.Token&&req.body.KategorieID){
     var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
     var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     try{
@@ -393,68 +406,68 @@ api.post('/createangebot', function (req,res){
       var current_time = Date.now()/1000;
       var finalAngebot;
       if(decryptedToken.exp>current_time ){
-        Angebot.create({
-          BenutzerID:decryptedToken.BenutzerID,
-          Titel:req.body.Titel,
-          Preis:req.body.Preis,
-          Bild1:req.body.Bild1,
-          Bild2:req.body.Bild2,
-          Bild3:req.body.Bild3,
-          Bild4:req.body.Bild4,
-          Bild5:req.body.Bild5,
-          PLZ:req.body.Straße,
-          Straße:req.body.Straße,
-          Hausnummer:req.body.Hausnummer,
-          Beschreibung:req.body.Beschreibung,
-          reg_date: Date.now()
-        }).then(angebot=>{
-          if(angebot){
-            finalAngebot=angebot;
-            Kategorie.findOne({
-              where:{Name:req.body.Kategorie}
-            }).then(kategorie =>{
-              AngebotKategorie.create({
-                AngebotID:angebot.AngebotID,
-                KategorieID:kategorie.KategorieID
-              }).then(angebotKategorie=>{
-                if(!req.body.Hashtags){
-                  res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
-                }
+          Angebot.create({
+            BenutzerID:decryptedToken.BenutzerID,
+            Titel:req.body.Titel,
+            Preis:req.body.Preis,
+            Bild1:req.body.Bild1,
+            Bild2:req.body.Bild2,
+            Bild3:req.body.Bild3,
+            Bild4:req.body.Bild4,
+            Bild5:req.body.Bild5,
+            PLZ:req.body.Straße,
+            Straße:req.body.Straße,
+            Hausnummer:req.body.Hausnummer,
+            Beschreibung:req.body.Beschreibung,
+            reg_date: Date.now()
+          }).then(angebot=>{
+            if(angebot){
+              finalAngebot=angebot;
+              Kategorie.findOne({
+                where:{KategorieID:req.body.KategorieID}
+              }).then(kategorie =>{
+                AngebotKategorie.create({
+                  AngebotID:angebot.AngebotID,
+                  KategorieID:kategorie.KategorieID
+                }).then(angebotKategorie=>{
+                  if(!req.body.Hashtags){
+                    res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
+                  }
+                });
               });
-            });
-            if(req.body.Hashtags){
-              for(var i=0;i<req.body.Hashtags.length;i++){
-                  var selectedHashtag=req.body.Hashtags[i];
-                  Hashtag.findOrCreate({
-                    where:{Name:selectedHashtag}
-                  }).then(hashtag=>{
-                    if(!hashtag[1]){
-                      Hashtag.update({NutzungsAnz:hashtag[0].NutzungsAnz+1},{where:{Name:hashtag[0].Name}});
-                        if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
-                          AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
-                            res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
-                          })
-                        }else{
-                        AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
-                        }
+              if(req.body.Hashtags){
+                for(var i=0;i<req.body.Hashtags.length;i++){
+                    var selectedHashtag=req.body.Hashtags[i];
+                    Hashtag.findOrCreate({
+                      where:{Name:selectedHashtag}
+                    }).then(hashtag=>{
+                      if(!hashtag[1]){
+                        Hashtag.update({NutzungsAnz:hashtag[0].NutzungsAnz+1},{where:{Name:hashtag[0].Name}});
+                          if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
+                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
+                              res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
+                            })
+                          }else{
+                          AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
+                          }
                         
-                    }else{
-                      Hashtag.update({NutzungsAnz:1},{where:{Name:hashtag[0] .Name}});
-                        if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
-                          AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
-                            res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
-                          })
-                        }else{
-                        AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
-                        }
-                    }
-                  });
+                      }else{
+                        Hashtag.update({NutzungsAnz:1},{where:{Name:hashtag[0] .Name}});
+                          if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
+                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
+                              res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
+                            })
+                          }else{
+                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
+                          }
+                      }
+                    });
+                }
               }
+            }else{
+              res.json({success:false,message:"Angebot konnte nicht erstellt werden"});
             }
-          }else{
-            res.json({success:false,message:"Angebot konnte nicht erstellt werden"});
-          }
-        })
+          })
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }

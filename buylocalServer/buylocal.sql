@@ -41,6 +41,7 @@ CREATE TABLE `Angebot` (
   KEY `fk_Angebot_1_idx` (`BenutzerID`),
   CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,6 +101,32 @@ CREATE TABLE `Benutzer` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `Verhandlung`
+--
+
+DROP TABLE IF EXISTS `Verhandlung`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+/*,
+  CONSTRAINT `fk_Verhandlung_1` FOREIGN KEY (`Empfänger`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Verhandlung_2` FOREIGN KEY (`Absender`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION
+  WILL NICHT*/
+CREATE TABLE `Verhandlung` (
+  `VerhandlungID` int(11) NOT NULL AUTO_INCREMENT,
+  `Betreff` varchar(45) NOT NULL,
+  `Absender` int(11) NOT NULL,
+  `Empfänger` int(11) NOT NULL,
+  `EmpfängerCheck` boolean DEFAULT NULL,
+  `AbsenderCheck` boolean DEFAULT NULL,
+  `AbsenderSchlüssel` varchar(1000) NOT NULL,
+  `EmpfängerSchlüssel` varchar(1000) NOT NULL,
+  PRIMARY KEY (`VerhandlungID`),
+  KEY `fk_Verhandlung_2_idx` (`Empfänger`),
+  KEY `fk_Verhandlung_1_idx` (`Absender`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Bewertung`
 --
 
@@ -113,9 +140,11 @@ CREATE TABLE `Bewertung` (
   `Bewerter` int(11) DEFAULT NULL,
   `Bewerteter` int(11) DEFAULT NULL,
   `Text` varchar(200) DEFAULT NULL,
+  `VerhandlungID` int(11) NOT NULL,
   PRIMARY KEY (`BewertungID`),
   KEY `fk_Bewertung_1_idx` (`Bewerter`),
   KEY `fk_Bewertung_2_idx` (`Bewerteter`),
+  CONSTRAINT `fk_Verhandlung` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Bewertung_1` FOREIGN KEY (`Bewerter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_Bewertung_2` FOREIGN KEY (`Bewerteter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -150,6 +179,18 @@ CREATE TABLE `Kategorie` (
   KEY `fk_Kategorie_1_idx` (`UeberKategorie`),
   CONSTRAINT `fk_Kategorie_1` FOREIGN KEY (`UeberKategorie`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (1,"Elektronik");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (2,"Haustiere");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (3,"Haus & Garten");
+
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (4,"Handy & Telefon",1);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (5,"Haushaltsgeräte",1);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (6,"Hunde",2);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (7,"Katzen",2);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (8,"Küche & Esszimmer",3);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (9,"Wohnzimmer",3);
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -171,6 +212,7 @@ CREATE TABLE `Meldung` (
   CONSTRAINT `fk_Meldung_1` FOREIGN KEY (`Melder`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
   CONSTRAINT `fk_Meldung_2` FOREIGN KEY (`Angebot`) REFERENCES `Angebot` (`AngebotID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,20 +223,14 @@ DROP TABLE IF EXISTS `Nachricht`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Nachricht` (
-  `NachrichtID` int(11) NOT NULL,
+  `NachrichtID` int(11) NOT NULL AUTO_INCREMENT,
+  `VerhandlungID` int(11) NOT NULL,
   `Datum` datetime NOT NULL,
-  `Betreff` varchar(45) NOT NULL,
   `Text` varchar(1000) NOT NULL,
   `Gelesen` datetime DEFAULT '0000-00-00 00:00:00',
   `Absender` int(11) NOT NULL,
-  `Empfänger` int(11) NOT NULL,
-  `AbsenderSchlüssel` varchar(1000) DEFAULT NULL,
-  `EmpfängerSchlüssel` varchar(1000) DEFAULT NULL,
-  PRIMARY KEY (`NachrichtID`),
-  KEY `fk_Nachricht_2_idx` (`Empfänger`),
-  KEY `fk_Nachricht_1` (`Absender`),
-  CONSTRAINT `fk_Nachricht_1` FOREIGN KEY (`Absender`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Nachricht_2` FOREIGN KEY (`Empfänger`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION
+  PRIMARY KEY (`NachrichtID`)
+  /*CONSTRAINT `fk_Nachricht_1` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE SET NULL ON UPDATE NO ACTION*/
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

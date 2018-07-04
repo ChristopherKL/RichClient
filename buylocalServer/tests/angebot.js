@@ -58,7 +58,7 @@ describe("/Get angebot",function() {
                             Preis:99.99,
                             Straße:"Traumallee",
                             Hausnummer:"11",
-                            Kategorie:"testkategorieAngebot",
+                            KategorieID:778,
                             Hashtags:["testkategorieAngebot1","testkategorieAngebot2"]
                         }
                         chai.request("http://localhost:8081")
@@ -113,8 +113,8 @@ describe("/Get angebot",function() {
                 res.body.success.should.be.true;
                 res.body.should.have.property("BenutzerName");
                 res.body.BenutzerName.should.equal("TestuserAngebot");
-                res.body.should.have.property("Kategorie");
-                res.body.Kategorie.should.equal("testkategorieAngebot");
+                res.body.should.have.property("KategorieID");
+                res.body.KategorieID.should.equal(778);
                 res.body.should.have.property("Titel");
                 res.body.Titel.should.equal("AngebotAngebot");
                 res.body.should.have.property("Hashtags");

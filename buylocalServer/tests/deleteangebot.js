@@ -58,7 +58,7 @@ describe("/post deleteangebot",function() {
                             PLZ:"47228",
                             Straße:"Traumallee",
                             Hausnummer:"11",
-                            Kategorie:"testkategorieDeleteAngebot",
+                            KategorieID:779,
                             Hashtags:["testkategorieDeleteAngebot1","testkategorieDeleteAngebot2"]
                         }
                         chai.request("http://localhost:8081")
