@@ -62,6 +62,7 @@ export class ProfileScreen extends Component {
                 </View>
             )
         }
+        console.log("rendering " + this.props.userData.username)
         return (
             <View>
                 <View style={styles.headlineContainer}>

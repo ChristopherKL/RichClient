@@ -17,15 +17,13 @@ import login from '../apiCom/login';
 export class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = { inputUserOrMail: '', inputPasswd: '' };
+        this.state = { inputUserOrMail: '', inputPasswd: '', isLoading: false };
     }
     
 
     componentDidMount() {
         if(this.props.serverPublicKey == null) {
             getServerKey().then((res) => { this.props.serverKeyAction(res); });
-            
-
         }
     }
 
@@ -34,16 +32,24 @@ export class LoginScreen extends Component {
             alert("Überprüfen Sie Ihre Eingaben!")
             return
         }
-
-
+        if(this.props.serverPublicKey == null) {
+            alert("Serverkey muss noch geladen werden, bitte warten sie einen Augenblick")
+            return
+        }
+        if(this.props.serverPublicKey == false) {
+            alert("Konnte Server nicht erreichen!")
+            return
+        }
+        this.setState({isLoading: true});
         login(this.state.inputUserOrMail, this.state.inputPasswd, this.props.serverPublicKey).then(
             (res) => {
+                this.setState({isLoading: false});
                 if(typeof res == "string") {
                     alert("Fehler: "+res);
                 }
                 else {
                     this.props.loginAction(res);
-                    this.props.navigator.switchToTab({tabIndex: 1});
+                    
                 }
             }
         )
@@ -74,6 +80,13 @@ export class LoginScreen extends Component {
     }
 
     render() {
+        if(this.state.isLoading) {
+            return (
+                <View>
+                    <Text>Loading...</Text>
+                </View>
+            )
+        }        
         return (
             <View>
                 <View style={styles.inputContainer}>

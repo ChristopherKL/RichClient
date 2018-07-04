@@ -10,6 +10,7 @@ import RegistrationScreen from './screens/registrationScreen';
 import EditProfileScreen from './screens/editProfileScreen';
 import ViewOfferScreen from './screens/viewOfferScreen';
 import ShowImageScreen from './screens/showImageScreen';
+import NegotiationScreen from './screens/negotiationScreen';
 
 
 export function registerScreens(store, Provider) {
@@ -22,7 +23,8 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.registrationScreen', () => RegistrationScreen, store, Provider);  
   Navigation.registerComponent('buylocal.editProfileScreen', () => EditProfileScreen, store, Provider);
   Navigation.registerComponent('buylocal.viewOfferScreen', () => ViewOfferScreen, store, Provider);
-  Navigation.registerComponent('buylocal.showImageScreen', () => ShowImageScreen, store, Provider);      
+  Navigation.registerComponent('buylocal.showImageScreen', () => ShowImageScreen, store, Provider); 
+  Navigation.registerComponent('buylocal.negotiationScreen', () => NegotiationScreen, store, Provider);   
 }
 
 export function registerScreenVisibilityListener() {

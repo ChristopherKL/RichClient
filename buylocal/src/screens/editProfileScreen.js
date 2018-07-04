@@ -21,7 +21,6 @@ export class EditProfileScreen extends Component {
     }
     
     onPress = () => {
-        console.log("key: " + this.props.serverPublicKey);
         if(!this.validateInput()) {
             alert("Überprüfen Sie Ihre Eingaben!")
             return
@@ -33,9 +32,13 @@ export class EditProfileScreen extends Component {
                     alert("Fehler: "+ res);
                 }
                 else {
-                    
                     alert("Änderung erfolgreich!");
-                    this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
+                    this.props.loginAction({id: this.props.userData.id, 
+                        username: this.state.inputUsername, 
+                        mail: this.state.inputMail, 
+                        token: this.props.userData.token,
+                        keyPair: this.props.userData.keyPair
+                    });
                     this.props.navigator.pop();
                     
                 }

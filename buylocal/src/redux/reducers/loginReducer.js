@@ -1,4 +1,4 @@
-import {ACTION_LOGIN, loginActionCreator, ACTION_LOGOUT, logoutActionCreator} from '../actions/loginAction';
+import {ACTION_LOGIN, ACTION_LOGOUT} from '../actions/loginAction';
 
 
 export default function loginReducer (state = {loggedIn: false, userData: null}, action) {
