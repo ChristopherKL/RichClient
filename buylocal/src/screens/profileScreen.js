@@ -27,19 +27,16 @@ export class ProfileScreen extends Component {
                 }
                 else {
                     this.setState({ profileUsername: res.BenutzerName, 
-                        reviewScore: 3.5, 
+                        reviewScore: res.Bewertung, 
                         regDate: res.reg_date,
                         lastLogin: res.last_login,
                         isLoading: false});
+                    this.setState({ offers: res.Angebote });
                 }
             }
 
         )
-        this.setState({ offers: [{  id: "666",
-                                    name: "Endgeiler Schuh",
-                                    img_uri: "https://i.otto.de/i/otto/18723170/woodstone-kids-trekking-schuh-rot.jpg",
-                                    price: "121321€"
-                                    }]});
+
     }
     onEditPress = () => {
         this.props.navigator.push({
@@ -98,22 +95,22 @@ export class ProfileScreen extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.offers}
                     renderItem={this.renderOffer}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => "angebot"+item.AngebotID}
                 />
             </View>
         )
     }
     renderOffer = ({item}) => (
         <TouchableOpacity
-            onPress={() => this.onOfferPress(item.id)}
+            onPress={() => this.onOfferPress(item.AngebotID)}
         >
             <View style={styles.offerContainer}>
                 <Image
                     style={{width: 40, height: 40}}
-                    source={{uri: item.img_uri}}
+                    source={{uri: 'data:image/jpeg;base64,' + item.Bild1}}
                 />
-                <Text>{item.name}</Text>
-                <Text>{item.price}</Text>
+                <Text>{item.Titel}</Text>
+                <Text>{item.Preis}</Text>
             </View>
         </TouchableOpacity>
     )
