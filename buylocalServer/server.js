@@ -469,7 +469,7 @@ api.post('/deleteangebot', function(req,res){
 //returns the kategorien
 //UeberKategorien,UnterKategorien
 api.get("/kategorie",function( req,res){
-  Kategorie.findAll({where:{UeberKategorie:null}}).then(ueberKategorien =>{
+  Kategorie.findAll({order: [['KategorieID', 'ASC']],where:{UeberKategorie:null}}).then(ueberKategorien =>{
     var returnarrayUeberKategorien=[];
     for(var i=0;i<ueberKategorien.length;i++){
       returnarrayUeberKategorien.push(ueberKategorien[i].get(0));
