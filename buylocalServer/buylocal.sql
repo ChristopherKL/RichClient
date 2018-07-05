@@ -125,7 +125,7 @@ CREATE TABLE `Verhandlung` (
   KEY `fk_Verhandlung_2_idx` (`Empfänger`),
   KEY `fk_Verhandlung_1_idx` (`Absender`),
   KEY `fk_Verhandlung_0_idx` (`AngebotID`),
-  CONSTRAINT `fk_AngebotVerhandlung_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `fk_AngebotVerhandlung_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE SET NULL ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
