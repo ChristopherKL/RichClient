@@ -11,7 +11,7 @@ export default async function register (username, mail, passwd, serverPublicKey)
     
     try {
       let response = await fetch(
-        'http://karlpi:8081/register',
+        'http://karlspi.ddnss.de:8081/register',
         {
           method: 'POST',
           headers: {

@@ -2,7 +2,7 @@ export default async function newOffer (token, title, desc, street, streetnr,plz
 price,subcategoryID,hashtag,images) {
     try {
       let response = await fetch(
-        'http://karlpi:8081/createangebot',
+        'http://karlspi.ddnss.de:8081/createangebot',
         {
           method: 'POST',
           headers: {

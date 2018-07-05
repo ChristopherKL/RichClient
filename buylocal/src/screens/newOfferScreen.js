@@ -15,6 +15,7 @@ import { showImagePicker } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import newOffer from '../apiCom/newOffer';
 import { connect } from 'react-redux';
+import createToken from '../apiCom/createToken';
 
 
 
@@ -30,14 +31,11 @@ export class NewOfferScreen extends Component {
 			streetNr: '',
 			plz: '',
 			price: '',
-			category: '',
-			subcategory: '',
 			hashtag: '',
 			dropdownSubOptions: [],
 			dropdownMainOptions: [],
-			selectedMainIndex: -1,
-			selectedSubIndex: -1,
-			catId: -1
+			selectedMainIndex: '',
+			catId: ''
 		};
 		this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
 	}
@@ -105,8 +103,8 @@ export class NewOfferScreen extends Component {
 		if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
 		if(this.state.images[0] == null){alertmessage +='-Kein Bild an erster Stelle \n';}
 		if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
-		if(this.state.selectedMainIndex == -1){alertmessage +='-Kategorie fehlt \n';}
-		if(this.state.catId == -1){alertmessage += '-Unterkategorie fehlt \n';}
+		if(this.state.selectedMainIndex.length == 0){alertmessage +='-Kategorie fehlt \n';}
+		if(this.state.catId.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
 		if(this.state.street.length == 0 || this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlt \n';}
 		if(this.state.streetNr.length == 0 || this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlt \n';}
 		if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}

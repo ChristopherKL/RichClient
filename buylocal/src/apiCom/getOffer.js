@@ -5,7 +5,7 @@ var sha256 = require('../crypto/shaHash');
 export default async function getOffer(token, id) {
     try {
         let response = await fetch(
-            'http://karlpi:8081/angebot/'+id+"/"+encodeURIComponent(token)
+            'http://karlspi.ddnss.de:8081/angebot/'+id+"/"+encodeURIComponent(token)
         );
         console.log("got res");
   

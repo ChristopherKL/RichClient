@@ -1,7 +1,7 @@
 export default async function getNegotiations(token) {
     try {
         let response = await fetch(
-            'http://karlpi:8081/verhandlungen/'+encodeURIComponent(token)
+            'http://karlspi.ddnss.de:8081/verhandlungen/'+encodeURIComponent(token)
         );
         console.log("got res");
   

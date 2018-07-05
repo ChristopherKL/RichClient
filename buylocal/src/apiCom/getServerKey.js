@@ -1,7 +1,7 @@
 export default async function getServerKey() {
     try {
         let response = await fetch(
-            'http://karlpi:8081/publickey'
+            'http://karlspi.ddnss.de:8081/publickey'
         );
         let responseJson = await response.json();
 
