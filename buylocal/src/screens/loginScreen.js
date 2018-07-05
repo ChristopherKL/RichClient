@@ -25,11 +25,10 @@ export class LoginScreen extends Component {
 
     componentDidMount() {
         if(this.props.cats == null) {
-            getCategories().then((res) => { this.props.serverKeyAction(res);
-            });
+            getCategories().then((res) => { this.props.catsAction(res); });
         }
         if(this.props.serverPublicKey == null) {
-            getServerKey().then((res) => { this.props.catsAction(res); console.log(this.props.cats) });
+            getServerKey().then((res) => { this.props.serverKeyAction(res); });
         
         }
     }

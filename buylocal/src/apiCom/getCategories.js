@@ -29,7 +29,7 @@ export default async function getCategories() {
             }
             res.subCats[mainIndex].push(responseJson.unterKategorien[subCatCounter]);            
         }
-        console.log(JSON.stringify(res)); 
+        
 
         return res;
       } catch (error) {

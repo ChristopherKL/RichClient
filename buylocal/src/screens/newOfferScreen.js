@@ -15,8 +15,11 @@ import { showImagePicker } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import newOffer from '../apiCom/newOffer';
 import * as categories from '../categories';
+import { connect } from 'react-redux';
 
-export default class NewOfferScreen extends Component {
+
+
+export class NewOfferScreen extends Component {
 
 	constructor(props){
 		super(props);
@@ -31,12 +34,19 @@ export default class NewOfferScreen extends Component {
 			category: '',
 			subcategory: '',
 			hashtag: '',
-			dropdownOptions: ['']
+			dropdownSubOptions: [],
+			dropdownMainOptions: [],
+			selectedMainIndex: -1,
+			selectedSubIndex: -1
 		};
 		this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
 	}
-
-  selectPhotoTapped(imageNumber) {
+	componentDidMount() {
+		this.props.cats.mainCats.forEach(element => {
+			this.state.dropdownMainOptions.push(element.Name)
+		});
+	}
+  	selectPhotoTapped(imageNumber) {
 		const options = {
 			quality: 1.0,
 			maxWidth: 500,
@@ -72,151 +82,77 @@ export default class NewOfferScreen extends Component {
 		});
 	}
 	
-	dropdownOnSelect(idx){
-		this.setState({
-			category: idx
+	dropdownOnSelect(idx, value){
+		let newDropSub = [];
+
+		this.props.cats.subCats[idx].forEach(element => {
+			newDropSub.push(element.Name)
 		});
-
-
-		switch (idx) {
-			case '0':
-				this.setState({dropdownOptions: categories.EXAMPLESUB0,
-					subcategory: ''});
-				break;
-			case '1':
-				this.setState({dropdownOptions: categories.EXAMPLESUB1,
-					subcategory: ''});
-				break;
-			case '2':
-				this.setState({dropdownOptions: categories.EXAMPLESUB2,
-					subcategory: ''});
-				break;
-		}
-		/**
-		switch (idx) {
-			case '0':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES0,
-					subcategory: ''});
-				break;
-			case '1':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES1,
-					subcategory: ''});
-				break;
-			case '2':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES2,
-					subcategory: ''});
-				break;
-			case '3':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES3,
-					subcategory: ''});
-				break;
-			case '4':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES4,
-					subcategory: ''});
-				break;
-			case '5':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES5,
-					subcategory: ''});
-				break;
-			case '6':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES6,
-					subcategory: ''});
-				break;
-			case '7':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES7,
-					subcategory: ''});
-				break;
-			case '8':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES8,
-					subcategory: ''});
-				break;
-			case '9':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES9,
-					subcategory: ''});
-				break;
-			case '10':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES10,
-					subcategory: ''});
-				break;
-			case '11':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES11,
-					subcategory: ''});
-				break;
-			case '12':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES12,
-					subcategory: ''});
-				break;
-			case '13':
-				this.setState({dropdownOptions: categories.SUBCATEGORIES13,
-					subcategory: ''});
-				break;
-		}
-		*/
+		this.setState({
+			dropdownSubOptions: newDropSub,
+			selectedMainIndex: idx
+		})
+	}
+	dropdownOnSelectSub(idx, value){
+		this.setState({
+			catId: this.props.cats.subCats[this.state.selectedMainIndex][idx].KategorieID
+		});
 	}
 
-dropdownOnSelectSub(idx){
-	this.setState({
-		subcategory: idx
-	});
-}
-
-validateInput(){
-	var alertmessage = '';
-	if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
-	if(this.state.images[0] == null){alertmessage +='-Kein Bild an erster Stelle \n';}
-	if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
-	if(this.state.category.length == 0){alertmessage +='-Kategorie fehlt \n';}
-	if(this.state.subcategory.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
-	if(this.state.street.length == 0 || this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlt \n';}
-	if(this.state.streetNr.length == 0 || this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlt \n';}
-	if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}
-	if(this.state.hashtag.length != 0 && this.state.hashtag.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hashtag fehlt \n';}
-	if(this.state.price.length == 0 || this.state.price.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/)===null){alertmessage +='-Preis fehlt';}
-	return alertmessage;
-}
-
-
-subcategorieToID(cat,subcat){
-    //TODO ID der Subkategorie ermitteln
-    return 1;
-}
-
-onPress = () => {
-	var alertmessage = this.validateInput();
-	if(alertmessage.length != 0){
-		Alert.alert(
-			'Fehlende Infos',
-			alertmessage
-		);
-	} else {
-		var subcategoryid = subcategorieToID(this.state.category,this.state.subcategory);
-		newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
-		this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
-            (res) => {
-                if(res != true) {
-                    alert("Fehler: "+ res);
-                }
-                else {
-                    alert("Angebot erstellt!");
-                    this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
-                    this.props.navigator.pop();
-                }
-            }
-        )
+	validateInput(){
+		var alertmessage = '';
+		if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
+		if(this.state.images[0] == null){alertmessage +='-Kein Bild an erster Stelle \n';}
+		if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
+		if(this.state.category.length == 0){alertmessage +='-Kategorie fehlt \n';}
+		if(this.state.subcategory.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
+		if(this.state.street.length == 0 || this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlt \n';}
+		if(this.state.streetNr.length == 0 || this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlt \n';}
+		if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}
+		if(this.state.hashtag.length != 0 && this.state.hashtag.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hashtag fehlt \n';}
+		if(this.state.price.length == 0 || this.state.price.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/)===null){alertmessage +='-Preis fehlt';}
+		return alertmessage;
 	}
-}
 
-renderScrollViewImage(imageNumber){
-    return(
-		<TouchableOpacity onPress={() => this.selectPhotoTapped(imageNumber)}>
-			<View style={[styles.imageField, styles.imageContainer, {marginBottom: 20}]}>
-			{ this.state.images[imageNumber] === null ? <Text>Foto wählen</Text> :
-				<Image style={styles.imageField} source={this.state.images[imageNumber]} />
-			}
-			</View>
-		</TouchableOpacity>
-    )
-}
+
+	onPress = () => {
+		console.log(this.state.catId);
+		var alertmessage = this.validateInput();
+		if(alertmessage.length != 0){
+			Alert.alert(
+				'Fehlende Infos',
+				alertmessage
+			);
+		} else {
+			console.log(this.state.catId);
+			return;
+			newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
+			this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
+				(res) => {
+					if(res != true) {
+						alert("Fehler: "+ res);
+					}
+					else {
+						alert("Angebot erstellt!");
+						this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
+						this.props.navigator.pop();
+					}
+				}
+			)
+		}
+	}
+
+	renderScrollViewImage(imageNumber){
+		return(
+			<TouchableOpacity onPress={() => this.selectPhotoTapped(imageNumber)}>
+				<View style={[styles.imageField, styles.imageContainer, {marginBottom: 20}]}>
+				{ this.state.images[imageNumber] === null ? <Text>Foto wählen</Text> :
+					<Image style={styles.imageField} source={this.state.images[imageNumber]} />
+				}
+				</View>
+			</TouchableOpacity>
+		)
+	}
 
   render() {
     return (
@@ -257,17 +193,17 @@ renderScrollViewImage(imageNumber){
 					style={styles.dropdown}
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
-					options={categories.EXAMPLECAT}
+					options={this.state.dropdownMainOptions}
 					//categories.CATEGORIES
-					onSelect={(idx) => this.dropdownOnSelect(idx)}
+					onSelect={(idx, value) => this.dropdownOnSelect(idx, value)}
 					defaultValue={'Kategorie'}
 				/>
 				<ModalDropdown
 					style={styles.dropdown}
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
-					options={this.state.dropdownOptions}
-					onSelect={(idx) => this.dropdownOnSelectSub(idx)}
+					options={this.state.dropdownSubOptions}
+					onSelect={(idx, value) => this.dropdownOnSelectSub(idx, value)}
 					defaultValue={'Unterkategorie'}
 				/>
 			</View>
@@ -403,3 +339,16 @@ const styles = StyleSheet.create({
 		padding: 10
 	}
 });
+
+const mapStateToProps = (state) => {
+    return {
+        cats: state.CatsReducer.cats,
+    }
+}
+ 
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+}
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(NewOfferScreen);

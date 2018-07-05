@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import {
-  Text,
   View,
-  Image,
   StyleSheet
 } from 'react-native';
 import FitImage from 'react-native-fit-image';
