@@ -14,7 +14,6 @@ import {
 import { showImagePicker } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import newOffer from '../apiCom/newOffer';
-import * as categories from '../categories';
 import { connect } from 'react-redux';
 
 
@@ -37,7 +36,8 @@ export class NewOfferScreen extends Component {
 			dropdownSubOptions: [],
 			dropdownMainOptions: [],
 			selectedMainIndex: -1,
-			selectedSubIndex: -1
+			selectedSubIndex: -1,
+			catId: -1
 		};
 		this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
 	}
@@ -90,7 +90,8 @@ export class NewOfferScreen extends Component {
 		});
 		this.setState({
 			dropdownSubOptions: newDropSub,
-			selectedMainIndex: idx
+			selectedMainIndex: idx,
+			catId: -1
 		})
 	}
 	dropdownOnSelectSub(idx, value){
@@ -104,8 +105,8 @@ export class NewOfferScreen extends Component {
 		if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
 		if(this.state.images[0] == null){alertmessage +='-Kein Bild an erster Stelle \n';}
 		if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
-		if(this.state.category.length == 0){alertmessage +='-Kategorie fehlt \n';}
-		if(this.state.subcategory.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
+		if(this.state.selectedMainIndex == -1){alertmessage +='-Kategorie fehlt \n';}
+		if(this.state.catId == -1){alertmessage += '-Unterkategorie fehlt \n';}
 		if(this.state.street.length == 0 || this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlt \n';}
 		if(this.state.streetNr.length == 0 || this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlt \n';}
 		if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}
@@ -124,10 +125,8 @@ export class NewOfferScreen extends Component {
 				alertmessage
 			);
 		} else {
-			console.log(this.state.catId);
-			return;
 			newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
-			this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
+			this.state.streetNr,this.state.plz,this.state.price,this.state.catId,this.state.hashtag,this.state.images).then(
 				(res) => {
 					if(res != true) {
 						alert("Fehler: "+ res);
@@ -194,7 +193,6 @@ export class NewOfferScreen extends Component {
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
 					options={this.state.dropdownMainOptions}
-					//categories.CATEGORIES
 					onSelect={(idx, value) => this.dropdownOnSelect(idx, value)}
 					defaultValue={'Kategorie'}
 				/>
