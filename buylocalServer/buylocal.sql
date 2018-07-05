@@ -109,7 +109,8 @@ DROP TABLE IF EXISTS `Verhandlung`;
 /*!40101 SET character_set_client = utf8 */;
 /*,
   CONSTRAINT `fk_Verhandlung_1` FOREIGN KEY (`Empfänger`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Verhandlung_2` FOREIGN KEY (`Absender`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION
+  CONSTRAINT `fk_Verhandlung_2` FOREIGN KEY (`Absender`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `fk_AngebotVerhandlung_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE SET NULL ON UPDATE NO ACTION
   WILL NICHT*/
 CREATE TABLE `Verhandlung` (
   `VerhandlungID` int(11) NOT NULL AUTO_INCREMENT,
@@ -124,8 +125,7 @@ CREATE TABLE `Verhandlung` (
   PRIMARY KEY (`VerhandlungID`),
   KEY `fk_Verhandlung_2_idx` (`Empfänger`),
   KEY `fk_Verhandlung_1_idx` (`Absender`),
-  KEY `fk_Verhandlung_0_idx` (`AngebotID`),
-  CONSTRAINT `fk_AngebotVerhandlung_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE SET NULL ON UPDATE NO ACTION
+  KEY `fk_Verhandlung_0_idx` (`AngebotID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
