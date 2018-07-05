@@ -108,6 +108,20 @@ api.get('/keys/:Token', function (req,res){
     res.json({success:false, message:"Token falsch"});
   }
 })
+
+// liste von nachrichten die jetzt gelesen wurden
+
+//checken der Verhandlung
+
+//gelesen flag in verhandlung
+
+//Bewertung runden
+
+//Bewertungen abgeben
+
+//danch Angebote suchen
+
+
 //needs Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every Verhandlung as Empfänger and an Array with every Verhandlung as Absender
 api.get("/verhandlungen/:Token", function (req,res){
@@ -146,7 +160,7 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
-      Nachricht.findAll({order: [['Datum', 'DESC']],where:{VerhandungID:VerhandlungID}}).then(nachrichten=>{
+      Nachricht.findAll({order: [['Datum', 'ASC']],where:{VerhandungID:VerhandlungID}}).then(nachrichten=>{
         if(nachrichten){
           nachrichtenArray=[];
           for(var i=0;i<nachrichten.length;i++){
@@ -164,10 +178,10 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
     res.json({success:false, message:"Token falsch"});
   }
 })
-//needs Empfänger,Betreff,AbsenderSchlüssel,EmpfängerSchlüssel, Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//needs Empfänger,Betreff,AngebotID,AbsenderSchlüssel,EmpfängerSchlüssel, Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns Id of the Verhandlung
 api.post('/beginverhandlung', function(req,res){
-  if(req.body.Empfänger&&req.body.Token&&req.body.Betreff&&req.body.EmpfängerSchlüssel&&req.body.AbsenderSchlüssel){
+  if(req.body.Empfänger&&req.body.Token&&req.body.Betreff&&req.body.EmpfängerSchlüssel&&req.body.AbsenderSchlüssel&&req.body.AngebotID){
     var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
     var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     try{
@@ -176,6 +190,7 @@ api.post('/beginverhandlung', function(req,res){
       if(decryptedToken.exp>current_time ){
         Verhandlung.create({
           Betreff:req.body.Betreff,
+          AngebotID:req.body.AngebotID,
           Absender:decryptedToken.BenutzerID,
           Empfänger:req.body.Empfänger,
           AbsenderSchlüssel:req.body.AbsenderSchlüssel,
@@ -510,7 +525,8 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
                     Straße:foundAngebot.Straße,
                     Hausnummer:foundAngebot.Hausnummer,
                     BenutzerID: benutzer.BenutzerID,
-                    BenutzerName: benutzer.BenutzerName
+                    BenutzerName: benutzer.BenutzerName,
+                    PublicKey: benutzer.PublicKey
                   })
                 })
               });

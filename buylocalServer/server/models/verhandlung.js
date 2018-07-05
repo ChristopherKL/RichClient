@@ -4,6 +4,7 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
 
  const Verhandlung= sequelize.define('Verhandlung',{
   VerhandlungID: {type: Sequelize.INTEGER, primaryKey:true},
+  AngebotID:Sequelize.INTEGER,
   Betreff: Sequelize.STRING,
   Absender: Sequelize.INTEGER,
   Empfänger: Sequelize.INTEGER,

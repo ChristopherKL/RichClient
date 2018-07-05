@@ -113,6 +113,7 @@ DROP TABLE IF EXISTS `Verhandlung`;
   WILL NICHT*/
 CREATE TABLE `Verhandlung` (
   `VerhandlungID` int(11) NOT NULL AUTO_INCREMENT,
+  `AngebotID` int(11) NOT NULL,
   `Betreff` varchar(45) NOT NULL,
   `Absender` int(11) NOT NULL,
   `Empfänger` int(11) NOT NULL,
@@ -122,7 +123,10 @@ CREATE TABLE `Verhandlung` (
   `EmpfängerSchlüssel` varchar(1000) NOT NULL,
   PRIMARY KEY (`VerhandlungID`),
   KEY `fk_Verhandlung_2_idx` (`Empfänger`),
-  KEY `fk_Verhandlung_1_idx` (`Absender`)
+  KEY `fk_Verhandlung_1_idx` (`Absender`),
+  KEY `fk_Verhandlung_0_idx` (`AngebotID`)
+
+  CONSTRAINT `fk_AngebotVerhandlung_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE SET NULL ON UPDATE NO ACTION,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
