@@ -227,8 +227,8 @@ const styles = StyleSheet.create ({
 
 const mapStateToProps = (state) => {
     return {
-        loggedIn: state.loginReducer.loggedIn,
-        userData: state.loginReducer.userData,
+        loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
         serverPublicKey: state.ServerKeyReducer.serverPublicKey
     }
 }

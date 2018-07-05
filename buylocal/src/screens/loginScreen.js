@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import {
     Text,
     View,
@@ -6,11 +6,13 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
-import {loginActionCreator} from '../redux/actions/loginAction';
-import {bindActionCreators} from 'redux';
+
 import { connect } from 'react-redux';
+import { loginActionCreator } from '../redux/actions/loginAction';
 import { serverKeyActionCreator } from '../redux/actions/serverKeyAction';
+import { catsActionCreator } from '../redux/actions/catsAction';
 import getServerKey from '../apiCom/getServerKey';
+import getCategories from '../apiCom/getCategories';
 import login from '../apiCom/login';
 
 
@@ -22,8 +24,13 @@ export class LoginScreen extends Component {
     
 
     componentDidMount() {
+        if(this.props.cats == null) {
+            getCategories().then((res) => { this.props.serverKeyAction(res);
+            });
+        }
         if(this.props.serverPublicKey == null) {
-            getServerKey().then((res) => { this.props.serverKeyAction(res); });
+            getServerKey().then((res) => { this.props.catsAction(res); console.log(this.props.cats) });
+        
         }
     }
 
@@ -148,16 +155,18 @@ const styles = StyleSheet.create ({
 
  const mapStateToProps = (state) => {
     return {
-        loggedIn: state.loginReducer.loggedIn,
-        userData: state.loginReducer.userData,
-        serverPublicKey: state.ServerKeyReducer.serverPublicKey
+        loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey,
+        cats: state.CatsReducer.cats
     }
 }
  
 const mapDispatchToProps = (dispatch) => {
     return {
         loginAction: (userData) => { dispatch(loginActionCreator(userData)) },
-        serverKeyAction: (serverPublicKey) => { dispatch(serverKeyActionCreator(serverPublicKey))}
+        serverKeyAction: (serverPublicKey) => { dispatch(serverKeyActionCreator(serverPublicKey))},
+        catsAction: (cats) => { dispatch(catsActionCreator(cats))}
     }
 }
  
