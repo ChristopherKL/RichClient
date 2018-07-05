@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import {
     Text,
     View,
@@ -6,26 +6,31 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
-import {loginActionCreator} from '../redux/actions/loginAction';
-import {bindActionCreators} from 'redux';
+
 import { connect } from 'react-redux';
+import { loginActionCreator } from '../redux/actions/loginAction';
 import { serverKeyActionCreator } from '../redux/actions/serverKeyAction';
+import { catsActionCreator } from '../redux/actions/catsAction';
 import getServerKey from '../apiCom/getServerKey';
+import getCategories from '../apiCom/getCategories';
 import login from '../apiCom/login';
 
 
 export class LoginScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = { inputUserOrMail: '', inputPasswd: '' };
+        this.state = { inputUserOrMail: '', inputPasswd: '', isLoading: false };
     }
     
 
     componentDidMount() {
+        if(this.props.cats == null) {
+            getCategories().then((res) => { this.props.serverKeyAction(res);
+            });
+        }
         if(this.props.serverPublicKey == null) {
-            getServerKey().then((res) => { this.props.serverKeyAction(res); });
-            
-
+            getServerKey().then((res) => { this.props.catsAction(res); console.log(this.props.cats) });
+        
         }
     }
 
@@ -34,16 +39,24 @@ export class LoginScreen extends Component {
             alert("Überprüfen Sie Ihre Eingaben!")
             return
         }
-
-
+        if(this.props.serverPublicKey == null) {
+            alert("Serverkey muss noch geladen werden, bitte warten sie einen Augenblick")
+            return
+        }
+        if(this.props.serverPublicKey == false) {
+            alert("Konnte Server nicht erreichen!")
+            return
+        }
+        this.setState({isLoading: true});
         login(this.state.inputUserOrMail, this.state.inputPasswd, this.props.serverPublicKey).then(
             (res) => {
+                this.setState({isLoading: false});
                 if(typeof res == "string") {
                     alert("Fehler: "+res);
                 }
                 else {
                     this.props.loginAction(res);
-                    this.props.navigator.switchToTab({tabIndex: 1});
+                    
                 }
             }
         )
@@ -74,6 +87,13 @@ export class LoginScreen extends Component {
     }
 
     render() {
+        if(this.state.isLoading) {
+            return (
+                <View>
+                    <Text>Loading...</Text>
+                </View>
+            )
+        }        
         return (
             <View>
                 <View style={styles.inputContainer}>
@@ -135,16 +155,18 @@ const styles = StyleSheet.create ({
 
  const mapStateToProps = (state) => {
     return {
-        loggedIn: state.loginReducer.loggedIn,
-        userData: state.loginReducer.userData,
-        serverPublicKey: state.ServerKeyReducer.serverPublicKey
+        loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey,
+        cats: state.CatsReducer.cats
     }
 }
  
 const mapDispatchToProps = (dispatch) => {
     return {
         loginAction: (userData) => { dispatch(loginActionCreator(userData)) },
-        serverKeyAction: (serverPublicKey) => { dispatch(serverKeyActionCreator(serverPublicKey))}
+        serverKeyAction: (serverPublicKey) => { dispatch(serverKeyActionCreator(serverPublicKey))},
+        catsAction: (cats) => { dispatch(catsActionCreator(cats))}
     }
 }
  

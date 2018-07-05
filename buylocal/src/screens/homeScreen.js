@@ -4,8 +4,8 @@ import {
   View
 } from 'react-native';
 import LoginScreen from './loginScreen'
-import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
+
 
 
 export class HomeScreen extends Component {
@@ -14,7 +14,6 @@ export class HomeScreen extends Component {
     }
 
     render() {
-        console.log("render "+this.props.userData);
         return (this.props.loggedIn) ? this.renderLoggedInScreen() : this.renderLoginScreen();
     }
 
@@ -34,8 +33,8 @@ export class HomeScreen extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        loggedIn: state.loginReducer.loggedIn,
-        userData: state.loginReducer.userData
+        loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData
     }
 }
  
