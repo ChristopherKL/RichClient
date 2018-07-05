@@ -14,8 +14,8 @@ import {
 import { showImagePicker } from 'react-native-image-picker';
 import ModalDropdown from 'react-native-modal-dropdown';
 import newOffer from '../apiCom/newOffer';
-import * as categories from '../categories';
 import { connect } from 'react-redux';
+import createToken from '../apiCom/createToken';
 
 
 
@@ -31,13 +31,11 @@ export class NewOfferScreen extends Component {
 			streetNr: '',
 			plz: '',
 			price: '',
-			category: '',
-			subcategory: '',
 			hashtag: '',
 			dropdownSubOptions: [],
 			dropdownMainOptions: [],
-			selectedMainIndex: -1,
-			selectedSubIndex: -1
+			selectedMainIndex: '',
+			catId: ''
 		};
 		this.selectPhotoTapped = this.selectPhotoTapped.bind(this);
 	}
@@ -71,7 +69,7 @@ export class NewOfferScreen extends Component {
 				console.log('User tapped custom button: ', response.customButton);
 			}
 			else {
-				let source = { uri: 'data:image/jpeg;base64,' + response.data };
+				let source = response.data;
 
         let imageArray = this.state.images;
         imageArray[imageNumber] = source
@@ -90,7 +88,8 @@ export class NewOfferScreen extends Component {
 		});
 		this.setState({
 			dropdownSubOptions: newDropSub,
-			selectedMainIndex: idx
+			selectedMainIndex: idx,
+			catId: -1
 		})
 	}
 	dropdownOnSelectSub(idx, value){
@@ -104,8 +103,8 @@ export class NewOfferScreen extends Component {
 		if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
 		if(this.state.images[0] == null){alertmessage +='-Kein Bild an erster Stelle \n';}
 		if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
-		if(this.state.category.length == 0){alertmessage +='-Kategorie fehlt \n';}
-		if(this.state.subcategory.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
+		if(this.state.selectedMainIndex.length == 0){alertmessage +='-Kategorie fehlt \n';}
+		if(this.state.catId.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
 		if(this.state.street.length == 0 || this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlt \n';}
 		if(this.state.streetNr.length == 0 || this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlt \n';}
 		if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}
@@ -124,17 +123,14 @@ export class NewOfferScreen extends Component {
 				alertmessage
 			);
 		} else {
-			console.log(this.state.catId);
-			return;
 			newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
-			this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
+			this.state.streetNr,this.state.plz,this.state.price,this.state.catId,this.state.hashtag,this.state.images).then(
 				(res) => {
 					if(res != true) {
 						alert("Fehler: "+ res);
 					}
 					else {
 						alert("Angebot erstellt!");
-						this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
 						this.props.navigator.pop();
 					}
 				}
@@ -147,7 +143,7 @@ export class NewOfferScreen extends Component {
 			<TouchableOpacity onPress={() => this.selectPhotoTapped(imageNumber)}>
 				<View style={[styles.imageField, styles.imageContainer, {marginBottom: 20}]}>
 				{ this.state.images[imageNumber] === null ? <Text>Foto wählen</Text> :
-					<Image style={styles.imageField} source={this.state.images[imageNumber]} />
+					<Image style={styles.imageField} source={{uri: 'data:image/jpeg;base64,' + this.state.images[imageNumber]}} />
 				}
 				</View>
 			</TouchableOpacity>
@@ -194,7 +190,6 @@ export class NewOfferScreen extends Component {
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
 					options={this.state.dropdownMainOptions}
-					//categories.CATEGORIES
 					onSelect={(idx, value) => this.dropdownOnSelect(idx, value)}
 					defaultValue={'Kategorie'}
 				/>
@@ -342,7 +337,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        cats: state.CatsReducer.cats,
+		loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
+		cats: state.CatsReducer.cats,
+		serverPublicKey: state.ServerKeyReducer.serverPublicKey
     }
 }
  

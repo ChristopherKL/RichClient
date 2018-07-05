@@ -32,7 +32,7 @@ export class RegistrationScreen extends Component {
                 }
                 else {
                     alert("Registration erfolgreich!");
-                    this.props.navigator.switchToTab({tabIndex: 1});
+                    this.props.navigator.pop();
                 }
             }
         )
