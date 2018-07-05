@@ -72,11 +72,27 @@ export default class NewOfferScreen extends Component {
 		});
 	}
 	
-	dropdownOnSelect(idx,value){
+	dropdownOnSelect(idx){
 		this.setState({
-			category: value
+			category: idx
 		});
 
+
+		switch (idx) {
+			case '0':
+				this.setState({dropdownOptions: categories.EXAMPLESUB0,
+					subcategory: ''});
+				break;
+			case '1':
+				this.setState({dropdownOptions: categories.EXAMPLESUB1,
+					subcategory: ''});
+				break;
+			case '2':
+				this.setState({dropdownOptions: categories.EXAMPLESUB2,
+					subcategory: ''});
+				break;
+		}
+		/**
 		switch (idx) {
 			case '0':
 				this.setState({dropdownOptions: categories.SUBCATEGORIES0,
@@ -135,27 +151,34 @@ export default class NewOfferScreen extends Component {
 					subcategory: ''});
 				break;
 		}
+		*/
 	}
 
-dropdownOnSelectSub(value){
+dropdownOnSelectSub(idx){
 	this.setState({
-		subcategory: value
+		subcategory: idx
 	});
 }
 
 validateInput(){
 	var alertmessage = '';
 	if(this.state.titleText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage += '-Titel fehlt \n';}
-	if(this.state.images[0] == null){alertmessage +='-Bild fehlt \n';}
+	if(this.state.images[0] == null){alertmessage +='-Kein Bild an erster Stelle \n';}
 	if(this.state.descriptionText.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Beschreibung fehlt \n';}
 	if(this.state.category.length == 0){alertmessage +='-Kategorie fehlt \n';}
 	if(this.state.subcategory.length == 0){alertmessage += '-Unterkategorie fehlt \n';}
-	if(this.state.street.length != 0 && this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlerhaft \n';}
-	if(this.state.streetNr.length != 0 && this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlerhaft \n';}
+	if(this.state.street.length == 0 || this.state.street.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Straße fehlt \n';}
+	if(this.state.streetNr.length == 0 || this.state.streetNr.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hausnummer fehlt \n';}
 	if(this.state.plz.match(/\d\d\d\d\d/)===null){alertmessage += '-Postleitzahl fehlerhaft \n';}
-	if(this.state.hashtag.length != 0 && this.state.hashtag.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hashtag fehlerhaft \n';}
-	if(this.state.price.length == 0 || this.state.price.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/)===null){alertmessage +='-Preis fehlerhaft';}
+	if(this.state.hashtag.length != 0 && this.state.hashtag.replace(/(\r\n\t|\n|\r\t|\s)/gm,"").length == 0){alertmessage +='-Hashtag fehlt \n';}
+	if(this.state.price.length == 0 || this.state.price.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/)===null){alertmessage +='-Preis fehlt';}
 	return alertmessage;
+}
+
+
+subcategorieToID(cat,subcat){
+    //TODO ID der Subkategorie ermitteln
+    return 1;
 }
 
 onPress = () => {
@@ -166,7 +189,7 @@ onPress = () => {
 			alertmessage
 		);
 	} else {
-		var subcategoryid = categories.subcategorieToID(this.state.category,this.state.subcategory);
+		var subcategoryid = subcategorieToID(this.state.category,this.state.subcategory);
 		newOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.titleText, this.state.descriptionText,this.state.street,
 		this.state.streetNr,this.state.plz,this.state.price,subcategoryid,this.state.hashtag,this.state.images).then(
             (res) => {
@@ -234,8 +257,9 @@ renderScrollViewImage(imageNumber){
 					style={styles.dropdown}
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
-					options={categories.CATEGORIES}
-					onSelect={(idx, value) => this.dropdownOnSelect(idx,value)}
+					options={categories.EXAMPLECAT}
+					//categories.CATEGORIES
+					onSelect={(idx) => this.dropdownOnSelect(idx)}
 					defaultValue={'Kategorie'}
 				/>
 				<ModalDropdown
@@ -243,7 +267,7 @@ renderScrollViewImage(imageNumber){
 					textStyle={styles.dropdown_text}
 					dropdownStyle={styles.dropdown_dropdown}
 					options={this.state.dropdownOptions}
-					onSelect={(idx, value) => this.dropdownOnSelectSub(value)}
+					onSelect={(idx) => this.dropdownOnSelectSub(idx)}
 					defaultValue={'Unterkategorie'}
 				/>
 			</View>

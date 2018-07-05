@@ -41,14 +41,14 @@ export class NegotiationListScreen extends Component {
             <View>
                 <View style={styles.flowContainer}>
                     <Text style={item.read ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
-                        {item.sender}
+                        {item.Absender}
                     </Text>
                     <Text style={item.read ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
                         {item.date}
                     </Text>
                 </View>
                 <Text style={item.read ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
-                    {item.title}
+                    {item.Betreff}
                 </Text>
             </View>
         </TouchableOpacity>

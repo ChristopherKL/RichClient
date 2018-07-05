@@ -57,7 +57,13 @@ export const SUBCATEGORIES12 = ['Beauty & Gesundheit','Computerkurse','Esoterik 
 //Zu veschenken & Tauschen
 export const SUBCATEGORIES13 = ['Tauschen', 'Verleihen', 'Zu verschenken'];
 
+
 export function subcategorieToID(cat,subcat){
     //TODO ID der Subkategorie ermitteln
     return 1;
 }
+
+export const EXAMPLECAT = ['Elektronik','Haustiere','Haus & Garten'];
+export const EXAMPLESUB0 = ['Handy & Telefon','Haushaltsgeräte'];
+export const EXAMPLESUB1 = ['Hunde','Katzen'];
+export const EXAMPLESUB2 = ['Küche & Esszimmer','Wohnzimmer'];
