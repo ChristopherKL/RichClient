@@ -77,8 +77,18 @@ describe("/Get verhandlungen",function() {
                             AbsenderSchlüssel: "egal1",
                             EmpfängerSchlüssel: "egal2",
                         }).then(a=>{
+                            var Verhandlung = require("../server/models/verhandlung");
+                            Verhandlung.create({
+                                VerhandlungID: 221,
+                                Betreff: "bla2",
+                                Absender: partnerId,
+                                Empfänger: eigeneId,
+                                AbsenderSchlüssel: "egal1",
+                                EmpfängerSchlüssel: "egal2",
+                            }).then(a=>{
                             done();
                         })
+                    })
                 });
             });
         
@@ -88,7 +98,7 @@ describe("/Get verhandlungen",function() {
         var Benutzer = require("../server/models/benutzer");
         var Verhandlung = require("../server/models/verhandlung");
         Verhandlung.destroy({
-            where:{VerhandlungID: 222}
+           where:{[Sequelize.Op.or]:[{VerhandlungID:222},{VerhandlungID:221}]}
         }).then(a=>{
             Benutzer.destroy({
                 where:{BenutzerName:"TestuserVerhandlungen2"}
