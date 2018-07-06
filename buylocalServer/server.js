@@ -327,7 +327,7 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
           Nachricht.findAll({order: [['Datum', 'ASC']],where:{VerhandlungID:req.params.VerhandlungID}}).then(nachrichten=>{
             nachrichtenArray=[];
             for(var i=0;i<nachrichten.length;i++){
-              nachrichtenArray.push(JSON.stringify(nachrichten[i].get(0)));
+              nachrichtenArray.push(nachrichten[i].get(0));
             }
             res.json({success:true, Nachrichten:JSON.stringify(nachrichtenArray)});
           })
