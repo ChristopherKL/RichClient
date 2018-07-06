@@ -86,7 +86,16 @@ describe("/Get nachrichten",function() {
                                 Gelesen:Date.now(),
                                 Datum: Date.now()
                             }).then(a=>{
+                                Nachricht.create({
+                                    NachrichtID:112,
+                                    VerhandlungID: verhandlung.VerhandlungID,
+                                    Text:"toller TExt",
+                                    Absender: eigeneId,
+                                    Gelesen:Date.now(),
+                                    Datum: Date.now()
+                                }).then(a=>{
                                 done();
+                                });
                             });
                         })
                 });
@@ -98,7 +107,7 @@ describe("/Get nachrichten",function() {
         var Benutzer = require("../server/models/benutzer");
         var Verhandlung = require("../server/models/verhandlung");
         var Nachricht = require("../server/models/nachricht");
-        Nachricht.destroy({where:{NachrichtID:111}}).then(a=>{
+        Nachricht.destroy({where:{[Sequelize.Op.or]:[{NachrichtID:111},{NachrichtID:112}]}}).then(a=>{
         Verhandlung.destroy({
             where:{VerhandlungID: 223}
         }).then(a=>{
