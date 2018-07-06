@@ -238,12 +238,14 @@ api.get("/verhandlungen/:Token", function (req,res){
                 if(nachricht&&!nachricht.Gelesen==null){
                   nachrichtGelesen=true;
                 }
-                empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen})
-                Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
-                  if(!absenderVerhandlung){
-                    res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
-                  }
+                Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
+                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name})
+                  Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
+                    if(!absenderVerhandlung){
+                      res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
+                    }
                 });
+              });
               });
             })
           }else{
@@ -254,7 +256,9 @@ api.get("/verhandlungen/:Token", function (req,res){
                 if(nachricht&&!nachricht.Gelesen==null){
                   nachrichtGelesen=true;
                 }
-                empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen})
+                Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
+                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name})
+                })
               });
             })
           }
@@ -271,8 +275,10 @@ api.get("/verhandlungen/:Token", function (req,res){
                   if(nachricht&&!nachricht.Gelesen==null){
                     nachrichtGelesen=true;
                   }
-                  absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen});
-                  res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
+                  Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Empfänger}}).then(benutzer=>{
+                    absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name});
+                    res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
+                  });
                 });
               })
             }
@@ -283,7 +289,9 @@ api.get("/verhandlungen/:Token", function (req,res){
                 if(nachricht&&!nachricht.Gelesen==null){
                   nachrichtGelesen=true;
                 }
-                absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen});
+                Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Empfänger}}).then(benutzer=>{
+                  absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen});
+                });
               });
             })
           }
