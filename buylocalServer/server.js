@@ -108,20 +108,115 @@ api.get('/keys/:Token', function (req,res){
     res.json({success:false, message:"Token falsch"});
   }
 })
-
-// liste von nachrichten die jetzt gelesen wurden
-
-//checken der Verhandlung
-
-//gelesen flag in verhandlung
-
-//Bewertung runden
-
 //Bewertungen abgeben
 
 //danch Angebote suchen
+//needs Token, VerhandlungID, Bewerteter, Sterne optional Text
+api.post('/bewerten', function(req,res){
+  if(req.body.Token&&req.body.VerhandlungID&&req.body.Bewerteter&&req.body.Sterne){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        Benuter.findOne({where:{BenutzerID:req.body.Bewerteter}}).then(benutzer=>{
+          if(benutzer){
+            Bewertung.create({
+              Datum:date.now(),
+              Sterne:req.body.Sterne,
+              Bewerteter:req.body.Bewerteter,
+              Text:req.body.Text,
+              VerhandlungID:req.body.VerhandlungID,
+              Bewerter:decryptedToken.BenutzerID
+            }).then(bewertung=>{
+              res.json({success:true,message:"Bewertung abgegeben"});
+            })
+          }else{
+            res.json({success:false,message:"Bewerteter nicht existent"});
+          }
+        })
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
 
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
+//needs Token and VerhandlungID
+//returns success
+api.post('/checkverhandlung', function(req,res){
+  if(req.body.Token&&req.body.VerhandlungID){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        Verhandlung.findOne({where:{VerhandlungID:req.body.VerhandlungID}}).then(verhandlung=>{
+          if(verhandlung){
+            if(verhandlung.Absender=decryptedToken.BenutzerID){
+              Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
+                res.json({success:true,message:"Verhandlung gecheckt"})
+              })
+            }else if(verhandlung.Empfänger=decryptedToken.BenutzerID){
+              Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
+                res.json({success:true,message:"Verhandlung gecheckt"})
+              })
+            }else{
+              res.json({success:false,message:"Benutzer nicht in der Verhandlung"});
+            }
+          }else{
+            res.json({success:false,message:"Verhandlung nicht vorhanden"});
+          }
+        })
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
 
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
+//
+//needs a Valid Token and an Array of NachrichtID's 
+//as Token and NachrichtArray
+//returns a success
+api.post('/gelesen', function(req,res){
+  if(req.body.Token&&req.body.NachrichtArray){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        for(var i=0;i<req.body.NachrichtArray.length;i++){
+          if(i<req.body.NachrichtArray.length-1){
+            Nachricht.update({Gelesen:date.now()},{ where: {Absender:{[Op.ne]: decryptedToken.BenutzerID},NachrichtID:NachrichtArray[i]}});
+          }else{
+            Nachricht.update({Gelesen:date.now()},{ where: {Absender:{[Op.ne]: decryptedToken.BenutzerID},NachrichtID:NachrichtArray[i]}}).then(nachricht=>{
+              res.json({success:true, message:"Nachrichten gelesen"});
+            });
+          }
+        }
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
+
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
 //needs Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every Verhandlung as Empfänger and an Array with every Verhandlung as Absender
 api.get("/verhandlungen/:Token", function (req,res){
@@ -134,14 +229,41 @@ api.get("/verhandlungen/:Token", function (req,res){
       Verhandlung.findAll({where:{Empfänger:decryptedToken.BenutzerID}}).then(empfängerVerhandlungen=>{
         var empfängerArray=[];
         for(var i=0;i<empfängerVerhandlungen.length;i++){
-          empfängerArray.push(empfängerVerhandlungen[i].get(0));
+          Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+            var nachrichtGelesen=false;
+            if(nachricht&&!nachricht.Gelesen==null){
+              nachrichtGelesen=true;
+            }
+            Verhanglung.findOne({where:{VerhandlungID:nachricht.VerhandlungID}}).then(verhandlung=>{
+              empfängerArray.push({Verhandlung:verhandlung,Gelesen:nachrichtGelesen})
+            })
+          });
         }
         Verhandlung.findAll({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlungen=>{
           var absenderArray=[];
           for(var j=0;j<absenderVerhandlungen.length;j++){
-            absenderArray.push(absenderVerhandlungen[j].get(0));
+            if(j=absenderVerhandlungen.length-1){
+              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+                var nachrichtGelesen=false;
+                if(nachricht&&!nachricht.Gelesen==null){
+                  nachrichtGelesen=true;
+                }
+                Verhanglung.findOne({where:{VerhandlungID:nachricht.VerhandlungID}}).then(verhandlung=>{
+                  absenderArray.push({Verhandlung:verhandlung,Gelesen:nachrichtGelesen})
+                   res.json({success:true,VerhandlungenAbsender:absenderArray,VerhandlungenEmpfänger:empfängerArray});
+                })
+              });
+            }
+            Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+              var nachrichtGelesen=false;
+              if(nachricht&&!nachricht.Gelesen==null){
+                nachrichtGelesen=true;
+              }
+              Verhanglung.findOne({where:{VerhandlungID:nachricht.VerhandlungID}}).then(verhandlung=>{
+                absenderArray.push({Verhandlung:verhandlung,Gelesen:nachrichtGelesen})
+              })
+            });
           }
-          res.json({success:true,VerhandlungenAbsender:absenderArray,VerhandlungenEmpfänger:empfängerArray})
       })
     })
     }else{
@@ -276,6 +398,30 @@ api.get('/user/:BenutzerID/:Token', function (req,res){
               }
               if(!gesamtScore==0){
                 gesamtScore=gesamtScore/bewertungen.length;
+                if(gesamtScore<0.5){
+                  gesamtScore=0;
+                }else if(gesamtScore<1.0){
+                  gesamtScore=0.5
+                }else if(gesamtScore<1.5){
+                  gesamtScore=1.0
+                }else if(gesamtScore<2.0){
+                  gesamtScore=1.5
+                }else if(gesamtScore<2.5){
+                  gesamtScore=2.0
+                }else if(gesamtScore<3.0){
+                  gesamtScore=2.5
+                }else if(gesamtScore<3.5){
+                  gesamtScore=3.0
+                }else if(gesamtScore<4.0){
+                  gesamtScore=3.5
+                }else if(gesamtScore<4.5){
+                  gesamtScore=4.0
+                }else if(gesamtScore<5.0){
+                  gesamtScore=4.5
+                }else{
+                  gesamtScore=5.0
+                }
+
               }
               Angebot.findAll({where:{BenutzerID:req.params.BenutzerID}}).then(angebote=>{
                 var angebotsArray=[]
