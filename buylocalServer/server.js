@@ -235,11 +235,13 @@ api.get("/verhandlungen/:Token", function (req,res){
               var selectedVerhandlung=verhandlung;
               Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
                 var nachrichtGelesen=false;
+                var nachrichtDate=null;
                 if(nachricht&&!nachricht.Gelesen==null){
                   nachrichtGelesen=true;
+                  nachrichtDate=nachricht.Datum;
                 }
                 Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
-                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name})
+                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name,last_edit:nachrichtDate})
                   Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
                     if(!absenderVerhandlung){
                       res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
@@ -253,11 +255,13 @@ api.get("/verhandlungen/:Token", function (req,res){
               var selectedVerhandlung=verhandlung;
               Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
                 var nachrichtGelesen=false;
+                var nachrichtDate=null;
                 if(nachricht&&!nachricht.Gelesen==null){
                   nachrichtGelesen=true;
+                  nachrichtDate=nachricht.Datum;
                 }
                 Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
-                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name})
+                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name,last_edit:nachrichtDate})
                 })
               });
             })
@@ -272,11 +276,13 @@ api.get("/verhandlungen/:Token", function (req,res){
                 var selectedVerhandlung=verhandlung;
                 Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
                   var nachrichtGelesen=false;
+                  var nachrichtDate=null;
                   if(nachricht&&!nachricht.Gelesen==null){
+                    nachrichtDate=nachricht.Datum;
                     nachrichtGelesen=true;
                   }
                   Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Empfänger}}).then(benutzer=>{
-                    absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.Name});
+                    absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,last_edit:nachrichtDate,Name:benutzer.Name});
                     res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
                   });
                 });
@@ -286,11 +292,13 @@ api.get("/verhandlungen/:Token", function (req,res){
               var selectedVerhandlung=verhandlung;
               Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
                 var nachrichtGelesen=false;
+                var nachrichtDate;
                 if(nachricht&&!nachricht.Gelesen==null){
+                  nachrichtDate=nachricht.Datum;
                   nachrichtGelesen=true;
                 }
                 Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Empfänger}}).then(benutzer=>{
-                  absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen});
+                  absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,last_edit:nachrichtDate,Name:benutzer.Name});
                 });
               });
             })
