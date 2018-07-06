@@ -219,6 +219,7 @@ api.post('/gelesen', function(req,res){
 })
 //needs Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every Verhandlung as Empfänger and an Array with every Verhandlung as Absender
+//as VerhandlungenAbsender, VerhandlungenEmpfänger
 api.get("/verhandlungen/:Token", function (req,res){
   var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
   var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
@@ -229,40 +230,62 @@ api.get("/verhandlungen/:Token", function (req,res){
       Verhandlung.findAll({where:{Empfänger:decryptedToken.BenutzerID}}).then(empfängerVerhandlungen=>{
         var empfängerArray=[];
         for(var i=0;i<empfängerVerhandlungen.length;i++){
-          Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
-            var nachrichtGelesen=false;
-            if(nachricht&&!nachricht.Gelesen==null){
-              nachrichtGelesen=true;
-            }
-            Verhanglung.findOne({where:{VerhandlungID:nachricht.VerhandlungID}}).then(verhandlung=>{
-              empfängerArray.push({Verhandlung:verhandlung,Gelesen:nachrichtGelesen})
+          if(i==empfängerVerhandlungen.length-1){
+            Verhandlung.findOne({where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
+              var selectedVerhandlung=verhandlung;
+              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+                var nachrichtGelesen=false;
+                if(nachricht&&!nachricht.Gelesen==null){
+                  nachrichtGelesen=true;
+                }
+                empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen})
+                Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
+                  if(!absenderVerhandlung){
+                    res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
+                  }
+                });
+              });
             })
-          });
+          }else{
+            Verhandlung.findOne({where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
+              var selectedVerhandlung=verhandlung;
+              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+                var nachrichtGelesen=false;
+                if(nachricht&&!nachricht.Gelesen==null){
+                  nachrichtGelesen=true;
+                }
+                empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen})
+              });
+            })
+          }
+          
         }
         Verhandlung.findAll({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlungen=>{
           var absenderArray=[];
           for(var j=0;j<absenderVerhandlungen.length;j++){
-            if(j=absenderVerhandlungen.length-1){
+            if(j==absenderVerhandlungen.length-1){
+              Verhandlung.findOne({where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
+                var selectedVerhandlung=verhandlung;
+                Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+                  var nachrichtGelesen=false;
+                  if(nachricht&&!nachricht.Gelesen==null){
+                    nachrichtGelesen=true;
+                  }
+                  absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen});
+                  res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
+                });
+              })
+            }
+            Verhandlung.findOne({where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
+              var selectedVerhandlung=verhandlung;
               Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
                 var nachrichtGelesen=false;
                 if(nachricht&&!nachricht.Gelesen==null){
                   nachrichtGelesen=true;
                 }
-                Verhanglung.findOne({where:{VerhandlungID:nachricht.VerhandlungID}}).then(verhandlung=>{
-                  absenderArray.push({Verhandlung:verhandlung,Gelesen:nachrichtGelesen})
-                   res.json({success:true,VerhandlungenAbsender:absenderArray,VerhandlungenEmpfänger:empfängerArray});
-                })
+                absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen});
               });
-            }
-            Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:absenderVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
-              var nachrichtGelesen=false;
-              if(nachricht&&!nachricht.Gelesen==null){
-                nachrichtGelesen=true;
-              }
-              Verhanglung.findOne({where:{VerhandlungID:nachricht.VerhandlungID}}).then(verhandlung=>{
-                absenderArray.push({Verhandlung:verhandlung,Gelesen:nachrichtGelesen})
-              })
-            });
+            })
           }
       })
     })
