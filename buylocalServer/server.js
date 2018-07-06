@@ -305,8 +305,8 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
-      Nachricht.findAll({order: [['Datum', 'ASC']],where:{VerhandungID:VerhandlungID}}).then(nachrichten=>{
-        if(nachrichten){
+      Nachricht.findAll({order: [['Datum', 'ASC']],where:{VerhandlungID:req.params.VerhandlungID}}).then(nachrichten=>{
+        if(typeof nachrichten !== 'undefined' && nachrichten.length>0){
           nachrichtenArray=[];
           for(var i=0;i<nachrichten.length;i++){
             nachrichtenArray.push(nachrichten[i].get(0));

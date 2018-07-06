@@ -11,7 +11,7 @@ const cryptico = require("cryptico");
 chai.use(chaiHttp);
 
 describe("/Get verhandlungen",function() {
-    this.timeout(20000);
+    this.timeout(10000);
     var token;
     var keyFromServerAsString;
     var keyFromUser;
