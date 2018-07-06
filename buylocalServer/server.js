@@ -233,7 +233,7 @@ api.get("/verhandlungen/:Token", function (req,res){
           if(i==empfängerVerhandlungen.length-1){
             Verhandlung.findOne({where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
               var selectedVerhandlung=verhandlung;
-              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:selectedVerhandlung.VerhandlungID}}).then(nachricht=>{
                 var nachrichtGelesen=false;
                 var nachrichtDate=null;
                 if(nachricht&&!nachricht.Gelesen==null){
@@ -253,7 +253,7 @@ api.get("/verhandlungen/:Token", function (req,res){
           }else{
             Verhandlung.findOne({where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
               var selectedVerhandlung=verhandlung;
-              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(nachricht=>{
+              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:selectedVerhandlung.VerhandlungID}}).then(nachricht=>{
                 var nachrichtGelesen=false;
                 var nachrichtDate=null;
                 if(nachricht&&!nachricht.Gelesen==null){
