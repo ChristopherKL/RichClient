@@ -608,35 +608,40 @@ api.post('/deleteangebot', function(req,res){
         Angebot.findOne({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
           if(angebot){
             AngebotHashtag.findAll({where:{AngebotID:angebot.AngebotID}}).then(angebotHashtagArray=>{
-              for(var i = 0;i<angebotHashtagArray.length;i++){
-                if(i==angebotHashtagArray.length-1){
-                  AngebotHashtag.destroy({where:{AngebotID:angebot.AngebotID,HashtagName:angebotHashtagArray[i].get(0).HashtagName}});
+              if(angebotHashtagArray.length>0){
+                for(var i = 0;i<angebotHashtagArray.length;i++){
+                  if(i==angebotHashtagArray.length-1){
+                    AngebotHashtag.destroy({where:{AngebotID:angebot.AngebotID,HashtagName:angebotHashtagArray[i].get(0).HashtagName}});
+                      Hashtag.findOne({where:{Name:angebotHashtagArray[i].get(0).HashtagName}}).then(hashtag=>{
+                        if(hashtag.NutzungsAnz<=1){
+                          Hashtag.destroy({where:{Name:hashtag.Name}}).then(hashtag=>{
+                            Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
+                              res.json({success:true, message:"Angebot entfernt"});
+                            });
+                          });
+                        }else{
+                          Hashtag.update({NutzungsAnz:hashtag.NutzungsAnz-1},{where:{Name:hashtag.Name}}).then(hashtag=>{
+                            Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
+                              res.json({success:true, message:"Angebot entfernt"});
+                            });
+                          });
+                        }
+                      });
+                  }else{
+                    AngebotHashtag.destroy({where:{AngebotID:angebot.AngebotID,HashtagName:angebotHashtagArray[i].get(0).HashtagName}});
                     Hashtag.findOne({where:{Name:angebotHashtagArray[i].get(0).HashtagName}}).then(hashtag=>{
                       if(hashtag.NutzungsAnz<=1){
-                        Hashtag.destroy({where:{Name:hashtag.Name}}).then(hashtag=>{
-                          Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
-                            res.json({success:true, message:"Angebot entfernt"});
-                          });
-                        });
+                        Hashtag.destroy({where:{Name:hashtag.Name}});
                       }else{
-                        Hashtag.update({NutzungsAnz:hashtag.NutzungsAnz-1},{where:{Name:hashtag.Name}}).then(hashtag=>{
-                          Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
-                            res.json({success:true, message:"Angebot entfernt"});
-                          });
-                        });
+                        Hashtag.update({NutzungsAnz:hashtag.NutzungsAnz-1},{where:{Name:hashtag.Name}});
                       }
                     });
-                }else{
-                  AngebotHashtag.destroy({where:{AngebotID:angebot.AngebotID,HashtagName:angebotHashtagArray[i].get(0).HashtagName}});
-                  Hashtag.findOne({where:{Name:angebotHashtagArray[i].get(0).HashtagName}}).then(hashtag=>{
-                    if(hashtag.NutzungsAnz<=1){
-                      Hashtag.destroy({where:{Name:hashtag.Name}});
-                    }else{
-                      Hashtag.update({NutzungsAnz:hashtag.NutzungsAnz-1},{where:{Name:hashtag.Name}});
-                    }
-                  });
+                  }
                 }
-              
+              }else{
+                Angebot.destroy({where:{BenutzerID:decryptedToken.BenutzerID, AngebotID:req.body.AngebotID}}).then(angebot=>{
+                  res.json({success:true, message:"Angebot entfernt"});
+                });
               }
             });
           }else{
