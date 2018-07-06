@@ -322,15 +322,15 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
-      Verhandlung.findOne({where:VerhandlungID:req.params.VerhandlungID}).then(verhandlung=>{
+      Verhandlung.findOne({where:{VerhandlungID:req.params.VerhandlungID}}).then(verhandlung=>{
         if(verhandlung){
           Nachricht.findAll({order: [['Datum', 'ASC']],where:{VerhandlungID:req.params.VerhandlungID}}).then(nachrichten=>{
             nachrichtenArray=[];
             for(var i=0;i<nachrichten.length;i++){
-              nachrichtenArray.push(nachrichten[i].get(0));
+              nachrichtenArray.push(JSON.stringify(nachrichten[i].get(0)));
             }
-            res.json({success:true, Nachrichten:nachrichtenArray});
-          }
+            res.json({success:true, Nachrichten:JSON.stringify(nachrichtenArray)});
+          })
         }else{
           res.json({success:false, message:"Verhandlung nicht vorhanden"});
         }
