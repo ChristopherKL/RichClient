@@ -1,4 +1,4 @@
-import {Component} from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     Text,
@@ -6,20 +6,41 @@ import {
     FlatList,
     TouchableOpacity
 } from 'react-native';
-
-
+import { connect } from 'react-redux';
+import createToken from '../apiCom/createToken';
+import getNegotiations from '../apiCom/getNegotiations';
 
 export class NegotiationListScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = ({isLoading: true});
+        this.state = ({isLoading: false});
+    }
+
+    componentDidMount() {
+        this.refreshNegotiations();
+    }
+
+    refreshNegotiations() {
+        getNegotiations(createToken(this.props.userData.token, this.props.serverPublicKey)).then(
+            (res) => {
+                if(res != true) {
+                    alert("Fehler: "+ res);
+                }
+                else {
+                    this.setState({
+                        negotiations: res.VerhandlungenAbsender.concat(res.VerhandlungenEmpfänger),
+                        isLoading: false
+                    })
+                }
+            }
+        )
     }
 
     onNegotiationPress = (id) => {
         this.props.navigator.push({
             screen: 'buylocal.viewNegotiationScreen',
             passProps: {negotiationId: id},
-            title: "Angebot"
+            title: "Verhandlung"
         });
     }
 
@@ -36,23 +57,23 @@ export class NegotiationListScreen extends Component {
 
     renderNegotiation = ({item}) => (
         <TouchableOpacity
-            onPress={() => this.onNegotiationPress(item.id)}
+            onPress={() => this.onNegotiationPress(item.Verhandlung.id)}
             >
             <View>
                 <View style={styles.flowContainer}>
-                    <Text style={item.read ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
-                        {item.Absender}
+                    <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                        {item.Name}
                     </Text>
-                    <Text style={item.read ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
-                        {item.date}
+                    <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                        {item.last_edit}
                     </Text>
                 </View>
-                <Text style={item.read ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
                     {item.Betreff}
                 </Text>
             </View>
         </TouchableOpacity>
-)
+    )
 
     render() {
         return (
@@ -61,7 +82,7 @@ export class NegotiationListScreen extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.negotiations}
                     renderItem={this.renderNegotiation}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.Verhandlung.id}
                 />
             </View>
         );
@@ -74,7 +95,25 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		padding: 10,
 		justifyContent: 'space-between'
-	}
+    },
+    actionButtonIcon: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    }
 })
 
-export default NegotiationListScreen;
+const mapStateToProps = (state) => {
+    return {
+		loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
+		serverPublicKey: state.ServerKeyReducer.serverPublicKey
+    }
+}
+ 
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+}
+ 
+export default connect(mapStateToProps, mapDispatchToProps)(NegotiationListScreen);

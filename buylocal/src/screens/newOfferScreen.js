@@ -17,8 +17,6 @@ import newOffer from '../apiCom/newOffer';
 import { connect } from 'react-redux';
 import createToken from '../apiCom/createToken';
 
-
-
 export class NewOfferScreen extends Component {
 
 	constructor(props){
@@ -69,10 +67,10 @@ export class NewOfferScreen extends Component {
 				console.log('User tapped custom button: ', response.customButton);
 			}
 			else {
-				let source = { uri: 'data:image/jpeg;base64,' + response.data };
+				let source = response.data;
 
-        let imageArray = this.state.images;
-        imageArray[imageNumber] = source
+    			let imageArray = this.state.images;
+        		imageArray[imageNumber] = source
 				this.setState({
 					images: imageArray
 				});
@@ -131,7 +129,6 @@ export class NewOfferScreen extends Component {
 					}
 					else {
 						alert("Angebot erstellt!");
-						this.props.loginAction({username: this.state.inputUsername, mail: this.state.inputMail});
 						this.props.navigator.pop();
 					}
 				}
@@ -144,7 +141,7 @@ export class NewOfferScreen extends Component {
 			<TouchableOpacity onPress={() => this.selectPhotoTapped(imageNumber)}>
 				<View style={[styles.imageField, styles.imageContainer, {marginBottom: 20}]}>
 				{ this.state.images[imageNumber] === null ? <Text>Foto wählen</Text> :
-					<Image style={styles.imageField} source={this.state.images[imageNumber]} />
+					<Image style={styles.imageField} source={{uri: 'data:image/jpeg;base64,' + this.state.images[imageNumber]}} />
 				}
 				</View>
 			</TouchableOpacity>
@@ -338,7 +335,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        cats: state.CatsReducer.cats,
+		loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
+		cats: state.CatsReducer.cats,
+		serverPublicKey: state.ServerKeyReducer.serverPublicKey
     }
 }
  
