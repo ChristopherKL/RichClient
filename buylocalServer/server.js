@@ -247,9 +247,8 @@ api.get("/verhandlungen/:Token", function (req,res){
                 Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
                   empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.BenutzerName,last_edit:nachrichtDate})
                   Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
-                    console.log(decryptedToken);
-                    console.log(absenderVerhandlung);
                     if(!absenderVerhandlung){
+                      var absenderArray=[];
                       res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
                     }
                 });
