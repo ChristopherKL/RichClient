@@ -4,6 +4,6 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
 
  const SuchanfrageKategorie= sequelize.define('SuchanfrageKategorie',{
     SuchanfrageID: {type: Sequelize.INTEGER, primaryKey:true,  autoIncrement:true},
-    KategorieID:Sequelize.INTEGERS
+    KategorieID: Sequelize.INTEGER
 },{tableName: 'SuchanfrageKategorie', timestamps:false});
 module.exports = SuchanfrageKategorie;
