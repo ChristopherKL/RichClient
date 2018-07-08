@@ -21,6 +21,9 @@ var AngebotHashtag = require("./server/models/angebotHashtag");
 var Nachricht = require("./server/models/nachricht");
 var Bewertung = require("./server/models/bewertung");
 var Verhandlung = require("./server/models/verhandlung");
+var Suchanfrage = require("./server/models/suchanfrage");
+var SuchanfrageHashtag = require("./server/models/suchanfrageHashtag");
+var SuchanfrageKategorie = require("./server/models/suchanfrageKategorie");
 
 const Op = Sequelize.Op;
 
@@ -244,6 +247,8 @@ api.get("/verhandlungen/:Token", function (req,res){
                 Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
                   empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.BenutzerName,last_edit:nachrichtDate})
                   Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
+                    console.log(decryptedToken);
+                    console.log(absenderVerhandlung);
                     if(!absenderVerhandlung){
                       res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
                     }
@@ -364,6 +369,100 @@ api.post('/beginverhandlung', function(req,res){
             res.json({success:true, VerhandlungID:verhandlung.VerhandlungID})
           }else{
             res.json({success:false, message:"Verhandlung konnte nicht erstellt werden"});
+          }
+        })
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
+
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
+
+//needs Token, KategorieID
+//optional HashtagArray(array with names of hashtags)
+//return's Id, Preis,Titel,Bild1 from every Angebot
+api.post('/search', function(req,res){
+  if(req.body.Token&&req.body.KategorieID){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        var angebote=[];
+        AngebotKategorie.findAll({where:{KategorieID:req.body.KategorieID}}).then(angebotKategorieArray=>{
+          if(angebotKategorieArray.length>0){
+            if(req.body.HashtagArray.length>0){
+              var angeboteWithHashtag = [];
+              for(var i=0;i<req.body.HashtagArray.length;i++){
+                AngebotHashtag.findAll({where:{HashtagName:req.body.HashtagArray[i]}}).then(angebotHashtag=>{
+                  //if()
+                })
+            }
+          }else{
+            for(var i=0;angebotKategorieArray.length;i++){
+              if(i==angebotKategorieArray.length-1){
+                Angebot.findOne({where:{AngebotID:angebotKategorieArray[i].get(0).AngebotID}}).then(angebot=>{
+                  angebote.push({AngebotID:angebot.AngebotID,Preis:angebot.Preis,Titel:angebot.Titel,Bild1:angebot.Bild1});
+                  res.json({success:true,Angebote:angebote});
+                })
+              }else{
+                Angebot.findOne({where:{AngebotID:angebotKategorieArray[i].get(0).AngebotID}}).then(angebot=>{
+                  angebote.push({AngebotID:angebot.AngebotID,Preis:angebot.Preis,Titel:angebot.Titel,Bild1:angebot.Bild1});
+                })
+              }
+            }
+          }
+          }else{
+            res.json({success:true,Angebote:angebote});
+          }
+        })
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
+
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
+  }
+})
+//needs Token, KategorieID
+//optional HashtagArray(array with names of hashtags)
+//return's ID of the search and success
+api.post('/savesearch', function(req,res){
+  if(req.body.Token&&req.body.KategorieID){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+        Suchanfrage.create({
+          Ersteller:decryptedToken.BenutzerID
+        }).then(suchanfrage=>{
+          var createdSuchanfrage=suchanfrage;
+          if(suchanfrage){
+            for(var i=0;i<req.body.HashtagArray.length;i++){
+              SuchanfrageHashtag.create({
+                SuchanfrageID:suchanfrage.SuchanfrageID,
+                HashtagName:req.body.HashtagArray[i]
+              })
+            }
+            SuchanfrageKategorie.create({
+              SuchanfrageID:createdSuchanfrage.SuchanfrageID,
+              KategorieID:req.body.Kategorie[j]
+            }).then(a=>{
+              res.json({success:ture,SuchanfrageID:createdSuchanfrage.SuchanfrageID})
+            })
+          }else{
+            res.json({success:false,message:"Suchanfrage konnte nicht erstellt werden"});
           }
         })
       }else{

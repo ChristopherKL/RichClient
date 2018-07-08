@@ -39,7 +39,7 @@ CREATE TABLE `Angebot` (
   `reg_date` datetime NOT NULL,
   PRIMARY KEY (`AngebotID`),
   KEY `fk_Angebot_1_idx` (`BenutzerID`),
-  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -139,15 +139,15 @@ CREATE TABLE `Bewertung` (
   `Datum` datetime DEFAULT NULL,
   `Sterne` double(3,1) DEFAULT NULL,
   `Bewerter` int(11) DEFAULT NULL,
-  `Bewerteter` int(11) DEFAULT NULL,
+  `Bewerteter` int(11)NOT NULL,
   `Text` varchar(200) DEFAULT NULL,
-  `VerhandlungID` int(11) NOT NULL,
+  `VerhandlungID` int(11) DEFAULT NULL,
   PRIMARY KEY (`BewertungID`),
   KEY `fk_Bewertung_1_idx` (`Bewerter`),
   KEY `fk_Bewertung_2_idx` (`Bewerteter`),
-  CONSTRAINT `fk_Verhandlung` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Bewertung_1` FOREIGN KEY (`Bewerter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Bewertung_2` FOREIGN KEY (`Bewerteter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Verhandlung` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Bewertung_1` FOREIGN KEY (`Bewerter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Bewertung_2` FOREIGN KEY (`Bewerteter`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -230,8 +230,8 @@ CREATE TABLE `Nachricht` (
   `Text` varchar(1000) NOT NULL,
   `Gelesen` datetime DEFAULT '0000-00-00 00:00:00',
   `Absender` int(11) NOT NULL,
-  PRIMARY KEY (`NachrichtID`)
-  /*CONSTRAINT `fk_Nachricht_1` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE SET NULL ON UPDATE NO ACTION*/
+  PRIMARY KEY (`NachrichtID`),
+  CONSTRAINT `fk_Nachricht_1` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -243,11 +243,11 @@ DROP TABLE IF EXISTS `Suchanfrage`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Suchanfrage` (
-  `SuchanfrageID` int(11) NOT NULL,
+  `SuchanfrageID` int(11) NOT NULL AUTO_INCREMENT,
   `Ersteller` int(11) DEFAULT NULL,
   PRIMARY KEY (`SuchanfrageID`),
   KEY `fk_Suchanfrage_1_idx` (`Ersteller`),
-  CONSTRAINT `fk_Suchanfrage_1` FOREIGN KEY (`Ersteller`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Suchanfrage_1` FOREIGN KEY (`Ersteller`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -263,8 +263,7 @@ CREATE TABLE `SuchanfrageHashtag` (
   `HashtagName` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`SuchanfrageID`),
   KEY `fk_SuchanfrageHashtag_2_idx` (`HashtagName`),
-  CONSTRAINT `fk_SuchanfrageHashtag_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_SuchanfrageHashtag_2` FOREIGN KEY (`HashtagName`) REFERENCES `Hashtag` (`Name`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_SuchanfrageHashtag_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -280,7 +279,7 @@ CREATE TABLE `SuchanfrageKategorie` (
   `KategorieID` int(11) DEFAULT NULL,
   PRIMARY KEY (`SuchanfrageID`),
   KEY `fk_SuchanfrageKategorie_2_idx` (`KategorieID`),
-  CONSTRAINT `fk_SuchanfrageKategorie_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SuchanfrageKategorie_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_SuchanfrageKategorie_2` FOREIGN KEY (`KategorieID`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
