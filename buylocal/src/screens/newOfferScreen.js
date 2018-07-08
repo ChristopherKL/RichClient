@@ -87,7 +87,7 @@ export class NewOfferScreen extends Component {
 		this.setState({
 			dropdownSubOptions: newDropSub,
 			selectedMainIndex: idx,
-			catId: -1
+			catId: ''
 		})
 	}
 	dropdownOnSelectSub(idx, value){

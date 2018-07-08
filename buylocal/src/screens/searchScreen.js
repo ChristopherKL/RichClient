@@ -110,6 +110,19 @@ export class SearchScreen extends Component {
 					    keyboardType='numeric'
 				    />
                 </View>
+                <View style={styles.flowContainer}>
+                    <Text>Standort</Text>
+                    <TextInput
+					    style={styles.flowInput}
+					    placeholder={"PLZ"}
+					    onChangeText={(text) => this.setState({plz: text})}
+					    value={this.state.plz}
+					    maxLength={5}
+					    underlineColorAndroid='transparent'
+					    width={75}
+					    keyboardType='numeric'
+				    />
+                </View>
                 <View>
                 <TextInput
 					style={styles.input}
