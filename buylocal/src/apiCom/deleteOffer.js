@@ -1,8 +1,7 @@
-
-export default async function register (token, newMail, newUsername) {
+export default async function register (token, offerId) {
     try {
       let response = await fetch(
-        'http://karlpi:8081/changeuser',
+        'http://karlpi:8081/deleteangebot',
         {
           method: 'POST',
           headers: {
@@ -10,8 +9,7 @@ export default async function register (token, newMail, newUsername) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            BenutzerName: newUsername,
-            Mail: newMail,
+            AngebotID: offerId,
             Token: token
           })
         }

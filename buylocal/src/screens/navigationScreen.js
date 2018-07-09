@@ -35,6 +35,10 @@ export class NavigationScreen extends Component {
                 key: 'sell'
             },
             {
+                title: 'Meine Angebote',
+                key: 'myoffers'                
+            },     
+            {
                 title: 'Logout',
                 key: 'logout'                
             }            
@@ -94,6 +98,19 @@ export class NavigationScreen extends Component {
                 case 'logout':
                     this.props.logoutAction();
                     this.props.navigator.switchToTab({tabIndex: 1});
+                    break;
+                case 'search':
+                this.props.navigator.push({
+                    screen: 'buylocal.viewOfferScreen',
+                    passProps: {offerId: 1},
+                    title: "Angebot"
+                });
+                    break;
+                case 'myoffers':
+                    this.props.navigator.push({
+                        screen: 'buylocal.myOffersScreen',
+                        title: "Meine Angebote"
+                    });
                     break;
                 default:
                     alert(item.title);

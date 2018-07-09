@@ -8,7 +8,8 @@ import {
   FlatList
 } from 'react-native';
 import {connect} from 'react-redux';
-
+import getNegotiation from '../apiCom/getNegotiation';
+import createToken from '../apiCom/createToken';
 
 
 export class NegotiationScreen extends Component {
@@ -17,17 +18,10 @@ export class NegotiationScreen extends Component {
         this.state = {negData: {partnerName: null, confirmed: null, rated: null}, messages: [] , imgs: [], hashtags: []};
     }
     componentDidMount() {
-        //getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negId).then(
-        //    (res) => {
-        //        if(typeof res == "string") {
-        //            alert("Fehler: "+ res);
-        //            this.props.navigator.pop();
-        //        }
-        //        else {
-        //            this.setState(res);
-        //        }
-        //    }
-        //)
+        getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negId).then(
+            (res) => {
+            }
+        )
         this.setState({negData: {partnerName: "robert", confirmed: "1", rated: "0"}});
         this.setState({messages: [  {id: "0", to: "0", date: "21.02.19 22:00", content: "roflrofl\nrofl"},
                                     {id: "11", to: "12", date: "22.02.19 22:00", content: "xxx\naaa"}]});

@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   FlatList
 } from 'react-native';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import createToken from '../apiCom/createToken';
 import getProfile from '../apiCom/getProfile';

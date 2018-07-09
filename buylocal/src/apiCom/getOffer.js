@@ -1,7 +1,3 @@
-var cryptico = require('../crypto/cryptico');
-var sha256 = require('../crypto/shaHash');
-
-
 export default async function getOffer(token, id) {
     try {
         let response = await fetch(
@@ -23,6 +19,7 @@ export default async function getOffer(token, id) {
             insertDate: responseJson.reg_date,
             insertUser: responseJson.BenutzerName,
             insertUserid: responseJson.BenutzerID,
+            insertUserKey: responseJson.PublicKey,
             hashtags: []
 
         });

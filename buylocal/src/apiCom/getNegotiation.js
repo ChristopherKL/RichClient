@@ -1,7 +1,7 @@
-export default async function getProfile(token, id) {
+export default async function getNegotiation(token, negId) {
     try {
         let response = await fetch(
-            'http://karlpi:8081/user/'+id+"/"+encodeURIComponent(token)
+            'http://karlpi:8081/nachrichten/'+negId+'/'+encodeURIComponent(token)
         );
         console.log("got res");
   
@@ -12,9 +12,7 @@ export default async function getProfile(token, id) {
         }
         return responseJson;
       } catch (error) {
-        console.error(error);
-        return false;
+            console.error(error);
+            return false;
       }
-    
-
 }
