@@ -17,8 +17,8 @@ export class SearchScreen extends Component {
 		super(props);
 		this.state = {
 			searchTerm: '',
-			lowPrice: -1,
-			highPrice: '',
+			minPrice: -1,
+			maxPrice: -1,
 			plz: '',
 			hashtags: '',
 			dropdownSubOptions: [],
@@ -57,18 +57,17 @@ export class SearchScreen extends Component {
 		if (this.state.searchTerm.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { alertcounter += 1 }
 		if (this.selectedMainIndex.length == 0) { alertcounter += 1 }
 		if (this.state.plz.match(/\d\d\d\d\d/) === null) { alertcounter += 1 }
-		if (this.state.lowPrice == -1 && this.state.highPrice == -1) { alertcounter += 1 }
-		if (this.state.hashtags.match(/(\w+,)*\w+/gm) == null ) { alertcounter += 1 }
+		if (this.state.minPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null && this.state.maxPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null) { alertcounter += 1 }
+		if (this.state.hashtags.match(/(\w+,)*\w+/gm) == null) { alertcounter += 1 } else { this.setState({hashtags: hashtags.split(",")}) }
 		return alertcounter;
 	}
 
 	onPress = () => {
 		var alertcounter = validateInput();
 		if (alertcounter == 5) { Alert.alert('Fehlende Infos', 'Es müssen weitere Angaben gemacht werden\n oder die Angaben sind fehlerhaft.') }
-		else { 
-			var hashtagArray = this.state.hashtags.split(",");
-			//TODO Suche anfragen und dann an SuchergebnisScreen weitergeben
-		 }
+		else {
+			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey),this.state.searchTerm,this.state.plz,this.state.minPrice,this.state.maxPrice);
+		}
 	}
 
 	render() {
@@ -112,7 +111,7 @@ export class SearchScreen extends Component {
 					<TextInput
 						style={styles.flowInput}
 						onChangeText={(text) => this.setState({ lowPrice: text })}
-						value={this.state.lowPrice}
+						value={this.state.minPrice}
 						maxLength={13}
 						underlineColorAndroid='transparent'
 						width={120}
@@ -124,7 +123,7 @@ export class SearchScreen extends Component {
 					<TextInput
 						style={styles.flowInput}
 						onChangeText={(text) => this.setState({ lowPrice: text })}
-						value={this.state.lowPrice}
+						value={this.state.minPrice}
 						maxLength={13}
 						underlineColorAndroid='transparent'
 						width={120}

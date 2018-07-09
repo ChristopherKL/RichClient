@@ -28,7 +28,7 @@ export class NegotiationListScreen extends Component {
                 }
                 else {
                     this.setState({
-                        negotiations: res.verhandlungen,
+                        negotiations: res.neg,
                         isLoading: false
                     })
                 }
@@ -36,11 +36,11 @@ export class NegotiationListScreen extends Component {
         )
     }
 
-    onNegotiationPress = (id) => {
+    onNegotiationPress = (id, key, partner) => {
         this.props.navigator.push({
             screen: 'buylocal.viewNegotiationScreen',
-            passProps: { negId: id },
-            title: "Verhandlung"
+            passProps: { negId: id, mKey: key},
+            title: "Verhandlung mit " + partner
         });
     }
 
@@ -57,11 +57,22 @@ export class NegotiationListScreen extends Component {
 
     renderNegotiation = ({ item }) => (
         <TouchableOpacity
-            onPress={() => this.onNegotiationPress(item.VerhandlungId)}
+            onPress={() => this.onNegotiationPress(item.Verhandlung.id, (this.props.userData.username === item.sender.BenutzerName) ? item.AbsenderSchlüssel : item.EmpfängerSchlüssel,
+                (this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName)}
         >
-            <Text style={item.ungelesene_nachrichten == 0 ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
-                {item.Betreff}
-            </Text>
+            <View>
+                <View style={styles.flowContainer}>
+                    <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                        { (this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName }
+                    </Text>
+                    <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                        {item.last_edited}
+                    </Text>
+                </View>
+                <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                    {item.Betreff}
+                </Text>
+            </View>
         </TouchableOpacity>
     )
 
@@ -71,7 +82,7 @@ export class NegotiationListScreen extends Component {
                 <FlatList
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.negotiations}
-                    renderItem={this.renderNegotiation(item)}
+                    renderItem={this.renderNegotiation}
                     keyExtractor={(item) => item.VerhandlungId}
                 />
             </View>
@@ -80,6 +91,12 @@ export class NegotiationListScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    flowContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		padding: 10,
+		justifyContent: 'space-between'
+    },
     actionButtonIcon: {
         fontSize: 20,
         height: 22,
