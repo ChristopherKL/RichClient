@@ -262,7 +262,7 @@ api.get("/verhandlungen/:Token", function (req,res){
       },
       order: Sequelize.literal('last_edited DESC')
     }).then((Verhandlungen) => {
-      res.json(Verhandlungen)
+      res.json({success: true, negs: Verhandlungen});
     })
     }else{
       res.json({success:false, message:"Token abgelaufen"});
