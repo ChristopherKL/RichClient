@@ -346,9 +346,105 @@ api.post('/search', function(req,res){
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
         var selectedAngebote=[];
+        var queryProms = [];
         if(req.body.KategorieID){
-          Angebote.findAll({where:{KategorieID:req.body.KategorieID}})
+          queryProms.push(Angebot.findAll({where:{KategorieID:req.body.KategorieID}}).then(angebote=>{
+            if(selectedAngebote==[]){
+              angebote.forEach(element=>{
+                selectedAngebote.push(element.get(0));
+              })
+            }else{
+              var übergangsArray=selectedAngebote;
+              selectedAngebote=[];
+              angebote.forEach(element=>{
+                übergangsArray.forEach(angebot=>{
+                  if(!element.get(0).AngebotID==angebot.AngebotID){
+                    selectedAngebote.push(angebot);
+                  }
+                })
+              })
+            }
+          }))
         }
+        if(req.body.PLZ){
+          queryProms.push(Angebot.findAll({where:{PLZ:req.body.PLZ}}).then(angebote=>{
+            if(selectedAngebote==[]){
+              angebote.forEach(element=>{
+                selectedAngebote.push(element.get(0));
+              })
+            }else{
+              var übergangsArray=selectedAngebote;
+              selectedAngebote=[];
+              angebote.forEach(element=>{
+                übergangsArray.forEach(angebot=>{
+                  if(!element.get(0).AngebotID==angebot.AngebotID){
+                    selectedAngebote.push(angebot);
+                  }
+                })
+              })
+            }
+          }))
+        }
+        if(req.body.MinPreis){
+          queryProms.push(Angebot.findAll({where:{Preis:{[Op.gte]:req.body.MinPreis}}}).then(angebote=>{
+            if(selectedAngebote==[]){
+              angebote.forEach(element=>{
+                selectedAngebote.push(element.get(0));
+              })
+            }else{
+              var übergangsArray=selectedAngebote;
+              selectedAngebote=[];
+              angebote.forEach(element=>{
+                übergangsArray.forEach(angebot=>{
+                  if(!element.get(0).AngebotID==angebot.AngebotID){
+                    selectedAngebote.push(angebot);
+                  }
+                })
+              })
+            }
+          }))
+        }
+        if(req.body.MaxPreis){
+          queryProms.push(Angebot.findAll({where:{Preis:{[Op.lte]:req.body.MaxPreis}}}).then(angebote=>{
+            if(selectedAngebote==[]){
+              angebote.forEach(element=>{
+                selectedAngebote.push(element.get(0));
+              })
+            }else{
+              var übergangsArray=selectedAngebote;
+              selectedAngebote=[];
+              angebote.forEach(element=>{
+                übergangsArray.forEach(angebot=>{
+                  if(!element.get(0).AngebotID==angebot.AngebotID){
+                    selectedAngebote.push(angebot);
+                  }
+                })
+              })
+            }
+          }))
+        }
+        if(req.body.Suchbegriff){
+          queryProms.push(Angebot.findAll({where:{[Op.or]:[{Title:{[Op.like]:'%'+req.body.Suchbegriff+'%'}},{Beschreibuing:{[Op.like]:'%'+req.body.Suchbegriff+'%'}}]}}).then(angebote=>{
+            if(selectedAngebote==[]){
+              angebote.forEach(element=>{
+                selectedAngebote.push(element.get(0));
+              })
+            }else{
+              var übergangsArray=selectedAngebote;
+              selectedAngebote=[];
+              angebote.forEach(element=>{
+                übergangsArray.forEach(angebot=>{
+                  if(!element.get(0).AngebotID==angebot.AngebotID){
+                    selectedAngebote.push(angebot);
+                  }
+                })
+              })
+            }
+          }))
+        }
+        Promise.all(queryProms).then(() => {
+          res.json({success:true, Angebote:selectedAngebote});
+        })
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }
