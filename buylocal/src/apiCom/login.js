@@ -23,7 +23,7 @@ export default async function login(usernameOrEmail, passwd, serverPublicKey) {
     try {
 
         let response = await fetch(
-          'http://karlpi:8081/login',
+          'http://karlspi.ddnss.de:8081/login',
           {
             method: 'POST',
             headers: {

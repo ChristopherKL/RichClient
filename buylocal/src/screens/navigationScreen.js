@@ -95,6 +95,13 @@ export class NavigationScreen extends Component {
                         title: "Nachrichten"
                     });
                     break;
+                case 'search':
+                    this.props.navigator.push({
+                        screen: 'buylocal.searchScreen',
+                        passProps: {profile_id: this.props.userData.id},
+                        title: "Suchen"
+                    });
+                    break;
                 case 'logout':
                     this.props.logoutAction();
                     this.props.navigator.switchToTab({tabIndex: 1});

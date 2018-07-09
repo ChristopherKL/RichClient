@@ -2,7 +2,7 @@
 export default async function register (token, newMail, newUsername) {
     try {
       let response = await fetch(
-        'http://karlpi:8081/changeuser',
+        'http://karlspi.ddnss.de:8081/changeuser',
         {
           method: 'POST',
           headers: {

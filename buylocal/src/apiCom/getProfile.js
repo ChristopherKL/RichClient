@@ -1,7 +1,7 @@
 export default async function getProfile(token, id) {
     try {
         let response = await fetch(
-            'http://karlpi:8081/user/'+id+"/"+encodeURIComponent(token)
+            'http://karlspi.ddnss.de:8081/user/'+id+"/"+encodeURIComponent(token)
         );
         console.log("got res");
   

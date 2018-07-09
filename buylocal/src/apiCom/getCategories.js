@@ -2,7 +2,7 @@
 export default async function getCategories() {
     try {
         let response = await fetch(
-            'http://karlpi:8081/kategorie'
+            'http://karlspi.ddnss.de:8081/kategorie'
         );
   
         let responseJson = await response.json();
