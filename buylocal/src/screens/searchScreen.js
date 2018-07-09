@@ -66,7 +66,8 @@ export class SearchScreen extends Component {
 		var alertcounter = validateInput();
 		if (alertcounter == 5) { Alert.alert('Fehlende Infos', 'Es müssen weitere Angaben gemacht werden\n oder die Angaben sind fehlerhaft.') }
 		else {
-			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey),this.state.searchTerm,this.state.plz,this.state.minPrice,this.state.maxPrice);
+			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey),this.state.searchTerm,this.state.plz,this.state.minPrice,this.state.maxPrice, 
+			this.state.hashtags);
 		}
 	}
 
