@@ -5,12 +5,11 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
-  FlatList
 } from 'react-native';
-import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import createToken from '../apiCom/createToken';
 import getOffer from '../apiCom/getOffer';
+
 
 
 export class ViewOfferScreen extends Component {
@@ -47,7 +46,7 @@ export class ViewOfferScreen extends Component {
         this.props.navigator.push({
             screen: 'buylocal.showImageScreen',
             passProps: {imgUrl: item},
-            title: "Angebotsbild"
+            title: "AngebotsBild"
         });
     }
     onHashPress = (item) => {
@@ -57,8 +56,17 @@ export class ViewOfferScreen extends Component {
         this.props.navigator.push({
             screen: 'buylocal.profileScreen',
             passProps: {profileId: this.state.insertUserid},
-            title: "Mein Profil"
+            title: "Profil"
         });
+    }
+    onBeginNegPress = () => {
+        this.props.navigator.push({
+            screen: 'buylocal.newMessageScreen',
+            passProps: {newNegData: {offerId: this.props.offerId, title: "Verhandlung zu "+ this.state.Name, recid: this.state.insertUserid,
+                        recKey: this.state.insertUserKey}, partnerName: this.state.insertUser},
+            title: "Verhandlung beginnen"
+        });
+
     }
     render() {
         return (
@@ -73,8 +81,10 @@ export class ViewOfferScreen extends Component {
 
                 <View style={styles.miscContainer}>
                     <Text style={styles.misc}>Erstellt {this.state.insertDate}</Text>
-                    <TouchableOpacity>
-                        <Text style={styles.userLink}>Anbieter {this.state.BenutzerName}</Text>
+                    <TouchableOpacity
+                        onPress={this.onUserPress}    
+                    >
+                        <Text style={styles.userLink}>Anbieter {this.state.insertUser}</Text>
                     </TouchableOpacity>
                     <Text style={styles.misc}>PLZ {this.state.zipcode}</Text>
                 </View>
@@ -87,13 +97,7 @@ export class ViewOfferScreen extends Component {
                 <View style={styles.descContainer}>
                     <Text>{this.state.desc}</Text>
                 </View>
-                
-                <TouchableOpacity
-                        style={styles.button}
-                        onPress={this.onPress}
-                >
-                    <Text>Verhandlung beginnen</Text>
-                </TouchableOpacity>
+                {this.renderNegButton()}
                 <TouchableOpacity
                             style={styles.button}
                             onPress={this.onPress}
@@ -102,6 +106,21 @@ export class ViewOfferScreen extends Component {
                 </TouchableOpacity>
             </View>
         );
+    }
+    renderNegButton = () => {
+        if(this.props.userData.id == this.state.insertUserid) {
+            return null;
+        }
+        else {
+            return (
+                <TouchableOpacity
+                        style={styles.button}
+                        onPress={this.onBeginNegPress}
+                >
+                    <Text>Verhandlung beginnen</Text>
+                </TouchableOpacity>
+            )
+        }
     }
     renderImagesList = () => (
             this.state.imgs.map((value, index) => (

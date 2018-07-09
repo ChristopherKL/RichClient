@@ -1,4 +1,4 @@
-import {ACTION_SERVERKEY, serverKeyActionCreator} from '../actions/serverKeyAction';
+import {ACTION_SERVERKEY} from '../actions/serverKeyAction';
 
 
 export default function ServerKeyReducer (state = {serverPublicKey: null}, action) {
