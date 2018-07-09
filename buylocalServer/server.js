@@ -23,7 +23,16 @@ var Bewertung = require("./server/models/bewertung");
 var Verhandlung = require("./server/models/verhandlung");
 var Suchanfrage = require("./server/models/suchanfrage");
 var SuchanfrageHashtag = require("./server/models/suchanfrageHashtag");
-var SuchanfrageKategorie = require("./server/models/suchanfrageKategorie");
+
+Verhandlung.hasMany(Nachricht, {as: "ungelesene", foreignKey: "VerhandlungID"});
+Nachricht.belongsTo(Verhandlung, {as: "ungelesene", foreignKey: "VerhandlungID"});
+ 
+ 
+Benutzer.hasMany(Verhandlung, {as: "recipient", foreignKey: "Empfänger", sourceKey: "BenutzerID"});
+Verhandlung.belongsTo(Benutzer, {as: "recipient", foreignKey: "Empfänger", targetKey: "BenutzerID"});
+ 
+Benutzer.hasMany(Verhandlung, {as: "sender", foreignKey: "Absender", sourceKey: "BenutzerID"});
+Verhandlung.belongsTo(Benutzer, {as: "sender", foreignKey: "Absender", targetKey: "BenutzerID"});
 
 const Op = Sequelize.Op;
 
@@ -232,37 +241,29 @@ api.get("/verhandlungen/:Token", function (req,res){
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
       Verhandlung.findAll({
-          attributes: ['VerhandlungID'],
-          where: {[Op.or]: [{Absender: decryptedToken.BenutzerID}, {Empfänger: decryptedToken.BenutzerID}]}})
-          .then(relevanteVerhandlungen=>{
-            if(relevanteVerhandlungen.length == 0) {
-              res.json({success:true, verhandlungen: []});
-              return;
-            }
-            let relArray = [];
-            relevanteVerhandlungen.forEach(element => {
-              relArray.push(element.VerhandlungID)
-            });
-            Nachricht.findAll({
-              attributes: ['VerhandlungID', [Sequelize.fn('MAX', Sequelize.col('datum')), 'last_edited']],
-              where: {VerhandlungID: relArray},
-              group: ['VerhandlungID'],
-              order: [[Sequelize.fn('MAX', Sequelize.col('datum')), 'DESC']]
-            }).then(sortierteVerhandlungen=>{
-              let resVerhandlungen = [],
-                  queryProms = [];
-              sortierteVerhandlungen.forEach(element => {
-                queryProms.push(Verhandlung.findOne({
-                  where: {VerhandlungID: element.VerhandlungID}})
-                  .then(currVerhandlung=>{
-                      resVerhandlungen.push(currVerhandlung)
-                }))
-              })
-              Promise.all(queryProms).then(() => {
-                res.json({success:true, verhandlungen: resVerhandlungen});
-              })
-            });
-      });
+        attributes: Object.keys(Verhandlung.attributes).concat([
+          [Sequelize.literal('(SELECT MAX(datum) FROM Nachricht AS sortierte WHERE sortierte.VerhandlungID = Verhandlung.VerhandlungID LIMIT 1)'), 'last_edited']
+        ]),
+      include: [  { as: "recipient", model: Benutzer, attributes: ['BenutzerName'] },
+                  { as: "sender", model: Benutzer, attributes: ['BenutzerName']},
+                  {
+                    as: "ungelesene",
+                    model: Nachricht,
+                    where: {
+                      Absender: {[Op.ne]: decryptedToken.BenutzerID},
+                      Gelesen: {[Op.lt]: 1}
+                    },
+                    required: false
+                  }
+   
+               ],
+      where: {
+        [Op.or]: [{Absender: decryptedToken.BenutzerID}, {Empfänger: decryptedToken.BenutzerID}]
+      },
+      order: Sequelize.literal('last_edited DESC')
+    }).then((Verhandlungen) => {
+      res.json(Verhandlungen)
+    })
     }else{
       res.json({success:false, message:"Token abgelaufen"});
     }
@@ -334,7 +335,7 @@ api.post('/beginverhandlung', function(req,res){
 })
 
 //needs Token
-//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis
+//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
 //return's Id, Preis,Titel,Bild1 from every Angebot
 api.post('/search', function(req,res){
   if(req.body.Token&&req.body.KategorieID){
@@ -344,8 +345,9 @@ api.post('/search', function(req,res){
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
+        var selectedAngebote=[];
         if(req.body.KategorieID){
-
+          Angebote.findAll({where:{KategorieID:req.body.KategorieID}})
         }
       }else{
         res.json({success:false, message:"Token abgelaufen"});
@@ -359,17 +361,35 @@ api.post('/search', function(req,res){
   }
 })
 //needs Token
-//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis
+//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
 //return's ID of the search and success
 api.post('/savesearch', function(req,res){
-  if(req.body.Token&&req.body.KategorieID){
+  if(req.body.Token){
     var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
     var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     try{
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
-        
+        Suchanfrage.create({
+          KategorieID:req.body.KategorieID,
+          PLZ:req.body.PLZ,
+          MinPreis:req.body.MinPreis,
+          MaxPreis:req.body.MaxPreis,
+          Suchbegriff:req.body.Suchbegriff
+        }).then(suchanfrage=>{
+          let selectedAnfrage=suchanfrage;
+          let queryProms = [];
+          req.body.HashtagArray.forEach(element => {
+            queryProms.push(SuchanfrageHashtag.create({
+              SuchanfrageID:suchanfrage.SuchanfrageID,
+              HashtagName:element
+            }));
+          })
+          Promise.all(queryProms).then(() => {
+            res.json({success:true, SuchanfrageID:selectedAnfrage.SuchanfrageID});
+          })
+        });
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }

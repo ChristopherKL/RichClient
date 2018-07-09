@@ -5,7 +5,7 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
  const Angebot= sequelize.define('Angebot',{
   AngebotID: {type: Sequelize.INTEGER, primaryKey:true, autoIncrement:true},
   Titel: Sequelize.STRING,
-  Preis: Sequelize.DOUBLE,
+  Preis: Sequelize.DECIMAL(10,2),
   Beschreibung: Sequelize.STRING,
   PLZ:Sequelize.STRING,
   Bild1: Sequelize.STRING,
