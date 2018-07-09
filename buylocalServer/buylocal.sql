@@ -39,7 +39,7 @@ CREATE TABLE `Angebot` (
   `reg_date` datetime NOT NULL,
   PRIMARY KEY (`AngebotID`),
   KEY `fk_Angebot_1_idx` (`BenutzerID`),
-  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET character_set_client = @saved_cs_client */;

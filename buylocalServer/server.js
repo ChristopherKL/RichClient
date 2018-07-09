@@ -227,95 +227,46 @@ api.post('/gelesen', function(req,res){
 api.get("/verhandlungen/:Token", function (req,res){
   var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
   var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-  try{
+
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
-      Verhandlung.findAll({where:{Empfänger:decryptedToken.BenutzerID}}).then(empfängerVerhandlungen=>{
-        var empfängerArray=[];
-        for(var i=0;i<empfängerVerhandlungen.length;i++){
-          if(i==empfängerVerhandlungen.length-1){
-            Verhandlung.findOne({where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
-              var selectedVerhandlung=verhandlung;
-              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:selectedVerhandlung.VerhandlungID}}).then(nachricht=>{
-                var nachrichtGelesen=false;
-                var nachrichtDate=null;
-                if(nachricht&&!nachricht.Gelesen==null){
-                  nachrichtGelesen=true;
-                  nachrichtDate=nachricht.Datum;
-                }
-                Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
-                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.BenutzerName,last_edit:nachrichtDate})
-                  Verhandlung.findOne({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlung=>{
-                    if(!absenderVerhandlung){
-                      var absenderArray=[];
-                      res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
-                    }
-                });
-              });
-              });
-            })
-          }else{
-            Verhandlung.findOne({where:{VerhandlungID:empfängerVerhandlungen[i].get(0).VerhandlungID}}).then(verhandlung=>{
-              var selectedVerhandlung=verhandlung;
-              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:selectedVerhandlung.VerhandlungID}}).then(nachricht=>{
-                var nachrichtGelesen=false;
-                var nachrichtDate=null;
-                if(nachricht&&!nachricht.Gelesen==null){
-                  nachrichtGelesen=true;
-                  nachrichtDate=nachricht.Datum;
-                }
-                Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Absender}}).then(benutzer=>{
-                  empfängerArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,Name:benutzer.BenutzerName,last_edit:nachrichtDate})
-                })
-              });
-            })
-          }
-          
-        }
-        Verhandlung.findAll({where:{Absender:decryptedToken.BenutzerID}}).then(absenderVerhandlungen=>{
-          var absenderArray=[];
-          for(var j=0;j<absenderVerhandlungen.length;j++){
-            if(j==absenderVerhandlungen.length-1){
-              Verhandlung.findOne({where:{VerhandlungID:absenderVerhandlungen[j].get(0).VerhandlungID}}).then(verhandlung=>{
-                var selectedVerhandlung=verhandlung;
-                Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:selectedVerhandlung.VerhandlungID}}).then(nachricht=>{
-                  var nachrichtGelesen=false;
-                  var nachrichtDate=null;
-                  if(nachricht&&!nachricht.Gelesen==null){
-                    nachrichtDate=nachricht.Datum;
-                    nachrichtGelesen=true;
-                  }
-                  Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Empfänger}}).then(benutzer=>{
-                    absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,last_edit:nachrichtDate,Name:benutzer.BenutzerName});
-                    res.json({success:true,VerhandlungenAbsender:JSON.stringify(absenderArray),VerhandlungenEmpfänger:JSON.stringify(empfängerArray)});
-                  });
-                });
-              })
+      Verhandlung.findAll({
+          attributes: ['VerhandlungID'],
+          where: {[Op.or]: [{Absender: decryptedToken.BenutzerID}, {Empfänger: decryptedToken.BenutzerID}]}})
+          .then(relevanteVerhandlungen=>{
+            if(relevanteVerhandlungen.length == 0) {
+              res.json({success:true, verhandlungen: []});
+              return;
             }
-            Verhandlung.findOne({where:{VerhandlungID:absenderVerhandlungen[j].get(0).VerhandlungID}}).then(verhandlung=>{
-              var selectedVerhandlung=verhandlung;
-              Nachricht.findOne({order: [['Datum', 'DESC']],where:{VerhandlungID:selectedVerhandlung.VerhandlungID}}).then(nachricht=>{
-                var nachrichtGelesen=false;
-                var nachrichtDate;
-                if(nachricht&&!nachricht.Gelesen==null){
-                  nachrichtDate=nachricht.Datum;
-                  nachrichtGelesen=true;
-                }
-                Benutzer.findOne({where:{BenutzerID:selectedVerhandlung.Empfänger}}).then(benutzer=>{
-                  absenderArray.push({Verhandlung:selectedVerhandlung.toJSON(),Gelesen:nachrichtGelesen,last_edit:nachrichtDate,Name:benutzer.BenutzerName});
-                });
-              });
-            })
-          }
-      })
-    })
+            let relArray = [];
+            relevanteVerhandlungen.forEach(element => {
+              relArray.push(element.VerhandlungID)
+            });
+            Nachricht.findAll({
+              attributes: ['VerhandlungID', [Sequelize.fn('MAX', Sequelize.col('datum')), 'last_edited']],
+              where: {VerhandlungID: relArray},
+              group: ['VerhandlungID'],
+              order: [[Sequelize.fn('MAX', Sequelize.col('datum')), 'DESC']]
+            }).then(sortierteVerhandlungen=>{
+              let resVerhandlungen = [],
+                  queryProms = [];
+              sortierteVerhandlungen.forEach(element => {
+                queryProms.push(Verhandlung.findOne({
+                  where: {VerhandlungID: element.VerhandlungID}})
+                  .then(currVerhandlung=>{
+                      resVerhandlungen.push(currVerhandlung)
+                }))
+              })
+              Promise.all(queryProms).then(() => {
+                res.json({success:true, verhandlungen: resVerhandlungen});
+              })
+            });
+      });
     }else{
       res.json({success:false, message:"Token abgelaufen"});
     }
-  }catch{
-    res.json({success:false, message:"Token falsch"});
-  }
+
 })
 //needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every send Nachricht of the Verhandlung
@@ -382,8 +333,8 @@ api.post('/beginverhandlung', function(req,res){
   }
 })
 
-//needs Token, KategorieID
-//optional HashtagArray(array with names of hashtags)
+//needs Token
+//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis
 //return's Id, Preis,Titel,Bild1 from every Angebot
 api.post('/search', function(req,res){
   if(req.body.Token&&req.body.KategorieID){
@@ -393,34 +344,9 @@ api.post('/search', function(req,res){
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
-        var angebote=[];
-        AngebotKategorie.findAll({where:{KategorieID:req.body.KategorieID}}).then(angebotKategorieArray=>{
-          if(angebotKategorieArray.length>0){
-            if(req.body.HashtagArray.length>0){
-              var angeboteWithHashtag = [];
-              for(var i=0;i<req.body.HashtagArray.length;i++){
-                AngebotHashtag.findAll({where:{HashtagName:req.body.HashtagArray[i]}}).then(angebotHashtag=>{
-                  //if()
-                })
-            }
-          }else{
-            for(var i=0;angebotKategorieArray.length;i++){
-              if(i==angebotKategorieArray.length-1){
-                Angebot.findOne({where:{AngebotID:angebotKategorieArray[i].get(0).AngebotID}}).then(angebot=>{
-                  angebote.push({AngebotID:angebot.AngebotID,Preis:angebot.Preis,Titel:angebot.Titel,Bild1:angebot.Bild1});
-                  res.json({success:true,Angebote:angebote});
-                })
-              }else{
-                Angebot.findOne({where:{AngebotID:angebotKategorieArray[i].get(0).AngebotID}}).then(angebot=>{
-                  angebote.push({AngebotID:angebot.AngebotID,Preis:angebot.Preis,Titel:angebot.Titel,Bild1:angebot.Bild1});
-                })
-              }
-            }
-          }
-          }else{
-            res.json({success:true,Angebote:angebote});
-          }
-        })
+        if(req.body.KategorieID){
+
+        }
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }
@@ -432,8 +358,8 @@ api.post('/search', function(req,res){
     res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 })
-//needs Token, KategorieID
-//optional HashtagArray(array with names of hashtags)
+//needs Token
+//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis
 //return's ID of the search and success
 api.post('/savesearch', function(req,res){
   if(req.body.Token&&req.body.KategorieID){
@@ -443,27 +369,7 @@ api.post('/savesearch', function(req,res){
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
-        Suchanfrage.create({
-          Ersteller:decryptedToken.BenutzerID
-        }).then(suchanfrage=>{
-          var createdSuchanfrage=suchanfrage;
-          if(suchanfrage){
-            for(var i=0;i<req.body.HashtagArray.length;i++){
-              SuchanfrageHashtag.create({
-                SuchanfrageID:suchanfrage.SuchanfrageID,
-                HashtagName:req.body.HashtagArray[i]
-              })
-            }
-            SuchanfrageKategorie.create({
-              SuchanfrageID:createdSuchanfrage.SuchanfrageID,
-              KategorieID:req.body.Kategorie[j]
-            }).then(a=>{
-              res.json({success:ture,SuchanfrageID:createdSuchanfrage.SuchanfrageID})
-            })
-          }else{
-            res.json({success:false,message:"Suchanfrage konnte nicht erstellt werden"});
-          }
-        })
+        
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }
