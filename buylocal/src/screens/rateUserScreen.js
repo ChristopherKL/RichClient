@@ -7,28 +7,39 @@ import {
     TouchableOpacity,
     Image
 } from 'react-native';
-import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import editProfile from '../apiCom/editProfile';
 import createToken from '../apiCom/createToken';
 import {loginActionCreator} from '../redux/actions/loginAction';
-
+import rateUser from '../apiCom/rateUser';
 
 export class RateUserScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {  inputMessage: "", 
-                        negData: {partnerName: "abc"},
                         starNum: 0
                     };
     }
 
 
     onPress = () => {
-        if(this.state.inputMessage.length < 10) {
-            alert("Nachrichten müssen min. 10 Zeichen enthalten")
-            return
-        }
+        rateUser(createToken(this.props.userData.token, this.props.serverPublicKey), 
+        this.props.negId, 
+        this.props.recipient, 
+        this.state.starNum, 
+        this.state.inputMessage).then(
+            (res) => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+ res);
+                    this.props.navigator.pop();
+                }
+                else {
+                    this.props.onChangedNeg();
+                    this.props.updateCallback();
+                    alert("Bewertung erstellt");
+                    this.props.navigator.pop();
+                }
+            }
+        )
     }
     onStarPres = (pos) => {
         this.setState({starNum: pos});
@@ -95,7 +106,7 @@ export class RateUserScreen extends Component {
         return (
             <View>
                 <View style={styles.headlineContainer}>
-                   <Text style={styles.headline}>Bewerte {this.state.negData.partnerName}</Text>
+                   <Text style={styles.headline}>Bewerte Partner</Text>
                 </View>
                 
                 {this.renderStarContainer()}

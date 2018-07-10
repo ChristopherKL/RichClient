@@ -1,4 +1,4 @@
-export default async function register (token, offerId) {
+export default async function deleteOffer (token, offerId) {
     try {
       let response = await fetch(
         'http://karlpi:8081/deleteangebot',

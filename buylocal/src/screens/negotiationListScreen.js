@@ -28,7 +28,7 @@ export class NegotiationListScreen extends Component {
                 }
                 else {
                     this.setState({
-                        negotiations: res.neg,
+                        negotiations: res.negs,
                         isLoading: false
                     })
                 }
@@ -36,11 +36,11 @@ export class NegotiationListScreen extends Component {
         )
     }
 
-    onNegotiationPress = (id, key, partner) => {
+    onNegotiationPress = (item) => {
         this.props.navigator.push({
-            screen: 'buylocal.viewNegotiationScreen',
-            passProps: { negId: id, mKey: key},
-            title: "Verhandlung mit " + partner
+            screen: 'buylocal.negotiationScreen',
+            passProps: { onChangedNeg: () => { this.refreshNegotiations(); }, negData: item },
+            title: "Verhandlung mit " + (this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName
         });
     }
 
@@ -57,8 +57,7 @@ export class NegotiationListScreen extends Component {
 
     renderNegotiation = ({ item }) => (
         <TouchableOpacity
-            onPress={() => this.onNegotiationPress(item.Verhandlung.id, (this.props.userData.username === item.sender.BenutzerName) ? item.AbsenderSchlüssel : item.EmpfängerSchlüssel,
-                (this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName)}
+            onPress={() => this.onNegotiationPress(item)}
         >
             <View>
                 <View style={styles.flowContainer}>
@@ -83,7 +82,7 @@ export class NegotiationListScreen extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.negotiations}
                     renderItem={this.renderNegotiation}
-                    keyExtractor={(item) => item.VerhandlungId}
+                    keyExtractor={(item) => "verhandlung"+item.VerhandlungID}
                 />
             </View>
         );

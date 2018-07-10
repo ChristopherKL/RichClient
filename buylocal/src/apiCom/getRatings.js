@@ -1,7 +1,7 @@
-export default async function getNegotiations(token) {
+export default async function getRatings(token, id) {
     try {
         let response = await fetch(
-            'http://karlspi.ddnss.de:8081/verhandlungen/'+encodeURIComponent(token)
+            'http://karlspi.ddnss.de:8081/bewertungen/'+id+"/"+encodeURIComponent(token)
         );
         console.log("got res");
   
@@ -12,7 +12,9 @@ export default async function getNegotiations(token) {
         }
         return responseJson;
       } catch (error) {
-            console.error(error);
-            return false;
+        console.error(error);
+        return false;
       }
+    
+
 }

@@ -10,6 +10,8 @@ import {
 import { connect } from 'react-redux';
 import beginNegotiation from '../apiCom/beginNegotiation';
 import createToken from '../apiCom/createToken';
+import newMessage from '../apiCom/newMessage';
+import {loginActionCreator} from '../redux/actions/loginAction';
 
 
 export class NewMessageScreen extends Component {
@@ -42,12 +44,51 @@ export class NewMessageScreen extends Component {
                         alert("Fehler: "+res);
                     }
                     else {
-                        alert("Verhandlung begonnen");
+                        newMessage(createToken(this.props.userData.token, this.props.serverPublicKey),
+                            res.VerhandlungID,
+                            this.state.inputMessage,
+                            res.aesKeyCipher,
+                            this.props.userData.keyPair
+                        ).then((res) => {
+                            if(typeof res == "string") {
+                                alert("Fehler: "+res);
+                            }
+                            else {
+                                alert("Verhandlung begonnen");
+                                negArr = this.props.userData.startedNegs;
+                                negArr.push(res.VerhandlungID);
+                                this.props.loginAction({id: this.props.userData.id, 
+                                    username: this.props.userData.username, 
+                                    mail: this.props.userData.mail, 
+                                    token: this.props.userData.token,
+                                    keyPair: this.props.userData.keyPair,
+                                    startedNegs: negArr
+                                });
+                            }
+                        });
                         this.props.navigator.pop();
                         
                     }
                 }
             )
+        }
+        else {
+            newMessage(createToken(this.props.userData.token, this.props.serverPublicKey),
+            this.props.negData.VerhandlungID,
+            this.state.inputMessage,
+            (this.props.negData.Absender == this.props.userData.id) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel,
+            this.props.userData.keyPair
+            ).then((res) => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+res);
+                }
+                else {
+                    alert("Nachricht gesendet");
+                    this.props.updateCallback();
+                    this.props.navigator.pop();
+                }
+            });
+            
         }
 
     }
@@ -113,12 +154,13 @@ const styles = StyleSheet.create ({
     return {
         loggedIn: state.LoginReducer.loggedIn,
         userData: state.LoginReducer.userData,
-        serverPublicKey: state.ServerKeyReducer.serverPublicKey
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey,
     }
 }
  
 const mapDispatchToProps = (dispatch) => {
     return {
+        loginAction: (userData) => { dispatch(loginActionCreator(userData)) }
     }
 }
  

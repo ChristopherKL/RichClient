@@ -62,7 +62,7 @@ export class ViewOfferScreen extends Component {
     onBeginNegPress = () => {
         this.props.navigator.push({
             screen: 'buylocal.newMessageScreen',
-            passProps: {newNegData: {offerId: this.props.offerId, title: "Verhandlung zu "+ this.state.Name, recid: this.state.insertUserid,
+            passProps: {newNegData: {offerId: this.props.offerId, title: "Verhandlung zu "+ this.state.name, recid: this.state.insertUserid,
                         recKey: this.state.insertUserKey}, partnerName: this.state.insertUser},
             title: "Verhandlung beginnen"
         });
@@ -108,7 +108,7 @@ export class ViewOfferScreen extends Component {
         );
     }
     renderNegButton = () => {
-        if(this.props.userData.id == this.state.insertUserid) {
+        if(this.props.userData.id == this.state.insertUserid || this.props.userData.startedNegs.includes(this.props.offerId)) {
             return null;
         }
         else {

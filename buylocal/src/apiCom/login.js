@@ -39,9 +39,15 @@ export default async function login(usernameOrEmail, passwd, serverPublicKey) {
         if(responseJson.success != true) {
           return responseJson.message;
         }
+        let startedNegs = [];
+
+        responseJson.gestarteteVerhandlungen.forEach((element) => {
+          startedNegs.push(element.AngebotID);
+        })
+
         let decToken = cryptico.decrypt(responseJson.token, myKeyPair).plaintext;
         let resObj = {id: responseJson.BenutzerId, username: responseJson.BenutzerName, mail: responseJson.Mail, token: decToken,
-                        keyPair: myKeyPair};
+                        keyPair: myKeyPair, startedNegs: startedNegs};
         return resObj;
       } catch (error) {
         console.error(error);

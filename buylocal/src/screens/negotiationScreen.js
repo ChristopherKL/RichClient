@@ -10,38 +10,85 @@ import {
 import {connect} from 'react-redux';
 import getNegotiation from '../apiCom/getNegotiation';
 import createToken from '../apiCom/createToken';
+import confirmNegotiation from '../apiCom/confirmNegotiation'
 
 
 export class NegotiationScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = {negData: {partnerName: null, confirmed: null, rated: null}, messages: [] , imgs: [], hashtags: []};
+        this.state = {partnerConfirmed: null, confirmed: null, rated: null, isSender: null, negData: null, messages: [] , imgs: [], hashtags: []};
     }
     componentDidMount() {
-        getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negId).then(
+        if((this.props.userData.username === this.props.negData.sender.BenutzerName))
+            this.setState({isSender: true});
+        
+        getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negData.VerhandlungID,
+        (this.isSender) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel, this.props.userData.keyPair).then(
             (res) => {
+                this.props.negData.Bewertung.forEach((rating) => {
+                    if(rating.Bewerter == this.props.userData.id) {
+                        this.setState({rated: true});
+                    }
+                })
+                this.setState({messages: res.Nachrichten,
+                    confirmed: (this.state.isSender) ? this.props.negData.AbsenderCheck : this.props.negData.EmpfängerCheck,
+                    partnerConfirmed: (this.state.isSender) ? this.props.negData.EmpfängerCheck : this.props.negData.AbsenderCheck},
+                    );
             }
         )
-        this.setState({negData: {partnerName: "robert", confirmed: "1", rated: "0"}});
-        this.setState({messages: [  {id: "0", to: "0", date: "21.02.19 22:00", content: "roflrofl\nrofl"},
-                                    {id: "11", to: "12", date: "22.02.19 22:00", content: "xxx\naaa"}]});
+    }
 
+    getMessages() {
+        getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negData.VerhandlungID,
+        (this.isSender) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel, this.props.userData.keyPair).then(
+            (res) => {
+                this.setState({messages: res.Nachrichten});
+            }
+        )
     }
     onNewPress = () => {
-        alert("new msg");
+        this.props.navigator.push({
+            screen: 'buylocal.newMessageScreen',
+            passProps: { updateCallback: () => { this.getMessages() }, negData: this.props.negData, partnerName: (this.state.isSender) ?  this.props.negData.recipient.BenutzerName : this.props.negData.sender.BenutzerName},
+            title: "Neue Nachricht"
+        });
+
     }
     onConfPress = () => {
-        alert("conf");
+        confirmNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negData.VerhandlungID).then(
+            (res) => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+res);
+                }
+                else {
+                    this.props.onChangedNeg();
+                    this.setState({confirmed: true});
+                    alert("Geschäft bestätigt")
+                    
+                }
+                
+
+            }
+        )
+
     }
     onRatePress = () => {
-        alert("rate");
+        this.props.navigator.push({
+            screen: 'buylocal.rateUserScreen',
+            passProps: { onChangedNeg: this.props.onChangedNeg, 
+                updateCallback: () => { this.setState({rated: true}) },
+                negId: this.props.negData.VerhandlungID,
+                recipient: (this.isSender) ? this.props.negData.Empfänger : this.props.negData.Absender,
+            },
+            title: "Nutzer bewerten"
+        });
     }
 
     render() {
         return (
             <View style={{flex: 1}}>
                 <View style={styles.headlineContainer}>
-                   <Text style={styles.headline}>Verhandlung mit {this.state.negData.partnerName}</Text>
+                   <Text style={styles.headline}>Verhandlung mit {(this.state.isSender) ?  this.props.negData.recipient.BenutzerName : this.props.negData.sender.BenutzerName}</Text>
                 </View>
 
                 {this.renderMessageList()}
@@ -59,7 +106,7 @@ export class NegotiationScreen extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.messages}
                     renderItem={this.renderMessage}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => "msg"+item.NachrichtID}
                     
                 />
         )
@@ -78,7 +125,7 @@ export class NegotiationScreen extends Component {
     renderMessage = ({item}) => {
         return (
             <View style={styles.messageContainer}>
-                {("0" == item.to) ? 
+                {(this.props.userData.id != item.Absender) ? 
                     <Image
                         style={{width: 50, height: 40}}
                         source={require('../../img/incomingmsg.png')}
@@ -90,15 +137,15 @@ export class NegotiationScreen extends Component {
                     />
                 }
                 <View style={styles.messsageContentContainer}>
-                    <Text>Datum: {item.date}</Text>
-                    <Text>{item.content}</Text>
+                    <Text>Datum: {item.Datum}</Text>
+                    <Text>{item.Text}</Text>
                 </View>
             </View>
         );
         
     }
     renderLeftButton = () => {
-        if(this.state.negData.confirmed == "0") {
+        if(this.state.confirmed == null) {
             return (
                 <TouchableOpacity
                 style={styles.button}
@@ -108,7 +155,7 @@ export class NegotiationScreen extends Component {
                 </TouchableOpacity>
             )
         }
-        else if(this.state.negData.rated == "0") {
+        else if(this.state.rated == null && this.state.partnerConfirmed != null) {
             return (
                 <TouchableOpacity
                 style={styles.button}
@@ -175,7 +222,7 @@ const mapStateToProps = (state) => {
     return {
         loggedIn: state.LoginReducer.loggedIn,
         userData: state.LoginReducer.userData,
-        serverPublicKey: state.ServerKeyReducer.serverPublicKey
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey,
     }
 }
  

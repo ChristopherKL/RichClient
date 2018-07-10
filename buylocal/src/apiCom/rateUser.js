@@ -1,8 +1,7 @@
-
-export default async function editProfile (token, newMail, newUsername) {
+export default async function rateUser (token, negID, partnerID, starNum, text) {
     try {
       let response = await fetch(
-        'http://karlspi.ddnss.de:8081/changeuser',
+        'http://karlpi:8081/bewerten',
         {
           method: 'POST',
           headers: {
@@ -10,8 +9,10 @@ export default async function editProfile (token, newMail, newUsername) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            BenutzerName: newUsername,
-            Mail: newMail,
+            Bewerteter: partnerID,
+            Sterne: starNum,
+            Text: text,
+            VerhandlungID: negID,
             Token: token
           })
         }

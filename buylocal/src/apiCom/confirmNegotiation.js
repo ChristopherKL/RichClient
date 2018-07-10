@@ -1,8 +1,7 @@
-
-export default async function editProfile (token, newMail, newUsername) {
+export default async function confirmNegotiation (token, negID) {
     try {
       let response = await fetch(
-        'http://karlspi.ddnss.de:8081/changeuser',
+        'http://karlpi:8081/checkverhandlung',
         {
           method: 'POST',
           headers: {
@@ -10,8 +9,7 @@ export default async function editProfile (token, newMail, newUsername) {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            BenutzerName: newUsername,
-            Mail: newMail,
+            VerhandlungID: negID,
             Token: token
           })
         }
