@@ -654,7 +654,7 @@ api.post('/login', function (req,res){
   if((req.body.Mail||req.body.BenutzerName)&&req.body.Passwort&&req.body.PublicKey){
     if (req.body.Mail){
       Benutzer.findOne({
-        include: [ { as: "sender", model: Verhandlung, attributes: ['VerhandlungID'] }],
+        include: [ { as: "sender", model: Verhandlung, attributes: ['VerhandlungID','AngebotID'] }],
         where: {Mail: req.body.Mail}})
         .then(benutzer =>{
           if (benutzer){
@@ -686,7 +686,7 @@ api.post('/login', function (req,res){
         })
     }else{
       Benutzer.findOne({
-        include: [ { as: "sender", model: Verhandlung, attributes: ['VerhandlungID'] }],
+        include: [ { as: "sender", model: Verhandlung, attributes: ['VerhandlungID','AngebotID'] }],
         where: {BenutzerName : req.body.BenutzerName}}).then(benutzer =>{
           if(benutzer){
 
