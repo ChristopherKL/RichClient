@@ -144,7 +144,6 @@ api.get("/bewertungen/:BenutzerID/:Token", function (req,res){
   }catch{
     res.json({success:false, message:"Token falsch"});
   }
-
 });
 //needs Token, VerhandlungID, Bewerteter, Sterne optional Text
 api.post('/bewerten', function(req,res){
@@ -194,12 +193,11 @@ api.post('/checkverhandlung', function(req,res){
       if(decryptedToken.exp>current_time ){
         Verhandlung.findOne({where:{VerhandlungID:req.body.VerhandlungID}}).then(verhandlung=>{
           if(verhandlung){
-
-            if(verhandlung.Absender=decryptedToken.BenutzerID){
+            if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
                 res.json({success:true,message:"Verhandlung gecheckt"})
               })
-            }else if(verhandlung.Empfänger=decryptedToken.BenutzerID){
+            }else if(verhandlung.Empfänger==decryptedToken.BenutzerID){
               Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
                 res.json({success:true,message:"Verhandlung gecheckt"})
               })
