@@ -34,6 +34,9 @@ Verhandlung.belongsTo(Benutzer, {as: "recipient", foreignKey: "Empfänger", targ
 Benutzer.hasMany(Verhandlung, {as: "sender", foreignKey: "Absender", sourceKey: "BenutzerID"});
 Verhandlung.belongsTo(Benutzer, {as: "sender", foreignKey: "Absender", targetKey: "BenutzerID"});
 
+Verhandlung.hasMany(Bewertung, {as: "Bewertung", foreignKey:"VerhandlungID"});
+Bewertung.belongsTo(Verhandlung, {as:"Bewertung", foreignKey: "VerhandlungID"});
+
 const Op = Sequelize.Op;
 
 api.use(bodyParser.urlencoded({ extended: false }));
@@ -198,38 +201,7 @@ api.post('/checkverhandlung', function(req,res){
     res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 })
-//
-//needs a Valid Token and an Array of NachrichtID's 
-//as Token and NachrichtArray
-//returns a success
-api.post('/gelesen', function(req,res){
-  if(req.body.Token&&req.body.NachrichtArray){
-    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
-    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-    try{
-      decryptedToken = jwt.verify(decryptedToken,secret);
-      var current_time = Date.now()/1000;
-      if(decryptedToken.exp>current_time ){
-        for(var i=0;i<req.body.NachrichtArray.length;i++){
-          if(i<req.body.NachrichtArray.length-1){
-            Nachricht.update({Gelesen:date.now()},{ where: {Absender:{[Op.ne]: decryptedToken.BenutzerID},NachrichtID:NachrichtArray[i]}});
-          }else{
-            Nachricht.update({Gelesen:date.now()},{ where: {Absender:{[Op.ne]: decryptedToken.BenutzerID},NachrichtID:NachrichtArray[i]}}).then(nachricht=>{
-              res.json({success:true, message:"Nachrichten gelesen"});
-            });
-          }
-        }
-      }else{
-        res.json({success:false, message:"Token abgelaufen"});
-      }
-    }catch{
-      res.json({success:false,message:"Token nicht entschlüsselbar"});
-    }
 
-  }else{
-    res.json({success:false,message:"Fehlerhafte Anfrage"});
-  }
-})
 //needs Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every Verhandlung as Empfänger and an Array with every Verhandlung as Absender
 //as VerhandlungenAbsender, VerhandlungenEmpfänger
@@ -246,6 +218,7 @@ api.get("/verhandlungen/:Token", function (req,res){
         ]),
       include: [  { as: "recipient", model: Benutzer, attributes: ['BenutzerName'] },
                   { as: "sender", model: Benutzer, attributes: ['BenutzerName']},
+                  { as: "Bewertung", model: Bewertung},
                   {
                     as: "ungelesene",
                     model: Nachricht,
@@ -269,9 +242,9 @@ api.get("/verhandlungen/:Token", function (req,res){
     }
 
 })
-//needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server
+//needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server, Gelesen
 //returns an Array with every send Nachricht of the Verhandlung
-api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
+api.get('/nachrichten/:VerhandlungID/:Token/:Gelesen', function (req,res){
   var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
   var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
   try{
@@ -281,11 +254,17 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
       Verhandlung.findOne({where:{VerhandlungID:req.params.VerhandlungID}}).then(verhandlung=>{
         if(verhandlung){
           Nachricht.findAll({order: [['Datum', 'ASC']],where:{VerhandlungID:req.params.VerhandlungID}}).then(nachrichten=>{
-            nachrichtenArray=[];
+            var nachrichtenArray=[];
+            var queryProms = [];
             for(var i=0;i<nachrichten.length;i++){
               nachrichtenArray.push(nachrichten[i].get(0));
+              if(req.params.Gelesen&&!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID&&!nachrichten[i].get(0).Gelesen){
+                queryproms.push(Nachricht.update({gelesen:true},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
+              }
             }
-            res.json({success:true, Nachrichten:JSON.stringify(nachrichtenArray)});
+            Promise.all(queryProms).then(() => {
+                res.json({success:true, Nachrichten:nachrichtenArray});
+            })
           })
         }else{
           res.json({success:false, message:"Verhandlung nicht vorhanden"});
