@@ -694,7 +694,7 @@ api.post('/login', function (req,res){
 
               Benutzer.update({last_login:Date.now()},{where:{BenutzerID:benutzer.BenutzerID}});
               
-              res.json({success: true, message: "Ein Token", BenutzerId:benutzer.BenutzerID, BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken});
+              res.json({success: true, message: "Ein Token", BenutzerId:benutzer.BenutzerID, BenutzerName: benutzer.BenutzerName, Mail:benutzer.Mail, token: encryptedToken, gestarteteVerhandlungen: benutzer.sender});
             }else{
               res.json({ success : false, message:"Passwort falsch"});
             }
