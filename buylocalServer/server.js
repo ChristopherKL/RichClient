@@ -37,7 +37,7 @@ Verhandlung.belongsTo(Benutzer, {as: "sender", foreignKey: "Absender", targetKey
 Verhandlung.hasMany(Bewertung, {as: "Bewertung", foreignKey:"VerhandlungID"});
 Bewertung.belongsTo(Verhandlung, {as:"Bewertung", foreignKey: "VerhandlungID"});
 
-Bewertung.belongsTo(Benutzer,{as:"critc",foreignKey:"Bewerter",targetKey:"BenutzerID"});
+Benutzer.hasMany(Bewertung,{as:"Bewertung",foreignKey:"Bewerteter",sourceKey:"BenutzerID"});
 
 const Op = Sequelize.Op;
 
@@ -132,11 +132,11 @@ api.get("/bewertungen/:BenutzerID/:Token", function (req,res){
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
-      Bewertung.findAll({
-        include: [ { as: "critic", model: Benutzer, attributes: ['BenutzerName'] }],
-        where:{Bewerteter:req.params.BenutzerID}
-      }).then(bewertungen=>{
-        res.json({success:true,Bewertungen:bewertungen});
+      Benutzer.findOne({
+        include: [ { as: "Bewertung", model: Bewertung}],
+        where:{BenutzerID:req.params.BenutzerID}
+      }).then(benutzer=>{
+        res.json({success:true,Benutzer:benutzer});
       })
     }else{
       res.json({success:false, message:"Token abgelaufen"});
