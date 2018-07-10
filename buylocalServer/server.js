@@ -242,9 +242,9 @@ api.get("/verhandlungen/:Token", function (req,res){
     }
 
 })
-//needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server, Gelesen
+//needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every send Nachricht of the Verhandlung
-api.get('/nachrichten/:VerhandlungID/:Token/:Gelesen', function (req,res){
+api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
   var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
   var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
   try{
@@ -258,7 +258,7 @@ api.get('/nachrichten/:VerhandlungID/:Token/:Gelesen', function (req,res){
             var queryProms = [];
             for(var i=0;i<nachrichten.length;i++){
               nachrichtenArray.push(nachrichten[i].get(0));
-              if(req.params.Gelesen&&!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID&&!nachrichten[i].get(0).Gelesen){
+              if(!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID&&!nachrichten[i].get(0).Gelesen){
                 queryproms.push(Nachricht.update({gelesen:true},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
               }
             }
