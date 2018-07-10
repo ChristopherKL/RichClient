@@ -435,6 +435,29 @@ api.post('/search', function(req,res){
     res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 })
+//needs Token and SuchanfrageID
+//returns values of the saved Suchanfrage
+api.get('requestsearch/:SuchanfrageID/:Token', function (req,res){
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      Suchanfrage.findOne({where:{SuchanfrageID:req.params.Suchanfrage, Ersteller:decryptedToken.BenutzerID}}).then(suchanfrage=>{
+        if(suchanfrage){
+          res.json({success:true, Suchanfrage:suchanfrage});
+        }else{
+          res.json({success:false, message:"Ungültige Suche angefragt"});
+        }
+      })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+})
 //needs Token
 //optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
 //return's ID of the search and success
@@ -447,6 +470,7 @@ api.post('/savesearch', function(req,res){
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
         Suchanfrage.create({
+          Ersteller:decryptedToken.BenutzerID,
           KategorieID:req.body.KategorieID,
           PLZ:req.body.PLZ,
           MinPreis:req.body.MinPreis,
