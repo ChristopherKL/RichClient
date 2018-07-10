@@ -654,7 +654,9 @@ api.post('/login', function (req,res){
   if((req.body.Mail||req.body.BenutzerName)&&req.body.Passwort&&req.body.PublicKey){
     if (req.body.Mail){
       Benutzer.findOne({
-        where: {Mail: req.body.Mail}}).then(benutzer =>{
+        include: [ { as: "sender", model: Verhandlung, attributes: ['VerhandlungID'] }],
+        where: {Mail: req.body.Mail}})
+        .then(benutzer =>{
           if (benutzer){
             completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort,key);
             var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
@@ -684,6 +686,7 @@ api.post('/login', function (req,res){
         })
     }else{
       Benutzer.findOne({
+        include: [ { as: "sender", model: Verhandlung, attributes: ['VerhandlungID'] }],
         where: {BenutzerName : req.body.BenutzerName}}).then(benutzer =>{
           if(benutzer){
 
