@@ -37,6 +37,8 @@ Verhandlung.belongsTo(Benutzer, {as: "sender", foreignKey: "Absender", targetKey
 Verhandlung.hasMany(Bewertung, {as: "Bewertung", foreignKey:"VerhandlungID"});
 Bewertung.belongsTo(Verhandlung, {as:"Bewertung", foreignKey: "VerhandlungID"});
 
+Bewertung.belongsTo(Benutzer,{as:"critc",foreignKey:"Bewerter",targetKey:"BenutzerID"});
+
 const Op = Sequelize.Op;
 
 api.use(bodyParser.urlencoded({ extended: false }));
@@ -123,9 +125,27 @@ api.get('/keys/:Token', function (req,res){
     res.json({success:false, message:"Token falsch"});
   }
 })
-//Bewertungen abgeben
+api.get("/bewertungen/:BenutzerID/:Token", function (req,res){
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      Bewertung.findAll({
+        include: [ { as: "critic", model: Benutzer, attributes: ['BenutzerName'] }],
+        where:{Bewerteter:req.params.BenutzerID}
+      }).then(bewertungen=>{
+        res.json({success:true,Bewertungen:bewertungen});
+      })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
 
-//danch Angebote suchen
+});
 //needs Token, VerhandlungID, Bewerteter, Sterne optional Text
 api.post('/bewerten', function(req,res){
   if(req.body.Token&&req.body.VerhandlungID&&req.body.Bewerteter&&req.body.Sterne){
@@ -135,10 +155,10 @@ api.post('/bewerten', function(req,res){
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
-        Benuter.findOne({where:{BenutzerID:req.body.Bewerteter}}).then(benutzer=>{
+        Benutzer.findOne({where:{BenutzerID:req.body.Bewerteter}}).then(benutzer=>{
           if(benutzer){
             Bewertung.create({
-              Datum:date.now(),
+              Datum:Date.now(),
               Sterne:req.body.Sterne,
               Bewerteter:req.body.Bewerteter,
               Text:req.body.Text,
@@ -559,7 +579,7 @@ api.get('/user/:BenutzerID/:Token', function (req,res){
               var gesamtScore=0;
               var bewertungsCount=bewertungen.length;
               for(var i=0;i<bewertungen.length;i++){
-                gesamtScore=gesamtScore+bewertung[i].get(0).Sterne;
+                gesamtScore=gesamtScore+bewertungen[i].get(0).Sterne;
               }
               if(!gesamtScore==0){
                 gesamtScore=gesamtScore/bewertungen.length;
