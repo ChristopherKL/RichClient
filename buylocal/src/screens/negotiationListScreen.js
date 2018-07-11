@@ -13,7 +13,7 @@ import getNegotiations from '../apiCom/getNegotiations';
 export class NegotiationListScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = ({ isLoading: false });
+        this.state = ({ isLoading: true });
     }
 
     componentDidMount() {
@@ -59,16 +59,16 @@ export class NegotiationListScreen extends Component {
         <TouchableOpacity
             onPress={() => this.onNegotiationPress(item)}
         >
-            <View>
+            <View style={styles.negContainer}>
                 <View style={styles.flowContainer}>
-                    <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
-                        { (this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName }
+                    <Text style={item.Gelesen ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
+                        {(this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName}
                     </Text>
-                    <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                    <Text style={item.Gelesen ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
                         {item.last_edited}
                     </Text>
                 </View>
-                <Text style={item.Gelesen ? {fontWeight: 'normal'}:{fontWeight: 'bold'}}>
+                <Text style={item.Gelesen ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
                     {item.Betreff}
                 </Text>
             </View>
@@ -76,13 +76,22 @@ export class NegotiationListScreen extends Component {
     )
 
     render() {
+        if (this.state.isLoading) {
+            return (
+                <View>
+                    <Text>Loading...</Text>
+                </View>
+            )
+        }
         return (
             <View>
                 <FlatList
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.negotiations}
                     renderItem={this.renderNegotiation}
+                    ListEmptyComponent={<Text>Keine Nachrichten vorhanden</Text>}
                     keyExtractor={(item) => "verhandlung"+item.VerhandlungID}
+
                 />
             </View>
         );
@@ -90,11 +99,15 @@ export class NegotiationListScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    negContainer: {
+        paddingLeft: 10,
+        paddingTop: 10,
+        paddingBottom: 5
+    },
     flowContainer: {
-		flex: 1,
-		flexDirection: 'row',
-		padding: 10,
-		justifyContent: 'space-between'
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
     },
     actionButtonIcon: {
         fontSize: 20,
