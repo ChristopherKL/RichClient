@@ -75,13 +75,11 @@ export class SearchScreen extends Component {
 							alert("Fehler: " + res);
 						}
 						else {
-							/* TODO Richtigen Screen einsetzen
 							this.props.navigator.push({
-								screen: 'buylocal.',
-								passProps: { negData: res },
+								screen: 'buylocal.searchResultScreen',
+								passProps: { results: res },
 								title: "Suchergebnisse"
 							});
-							*/
 						}
 					}
 				)
