@@ -38,8 +38,8 @@ export class NegotiationListScreen extends Component {
 
     onNegotiationPress = (item) => {
         this.props.navigator.push({
-            screen: 'buylocal.viewNegotiationScreen',
-            passProps: { negData: item },
+            screen: 'buylocal.negotiationScreen',
+            passProps: { onChangedNeg: () => { this.refreshNegotiations(); }, negData: item },
             title: "Verhandlung mit " + (this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName
         });
     }
@@ -89,8 +89,9 @@ export class NegotiationListScreen extends Component {
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.negotiations}
                     renderItem={this.renderNegotiation}
-                    keyExtractor={(item) => item.VerhandlungId}
                     ListEmptyComponent={<Text>Keine Nachrichten vorhanden</Text>}
+                    keyExtractor={(item) => "verhandlung"+item.VerhandlungID}
+
                 />
             </View>
         );

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import {logoutActionCreator} from '../redux/actions/loginAction';
+import { logoutActionCreator } from '../redux/actions/loginAction';
 
 
 
@@ -84,22 +84,13 @@ export class NavigationScreen extends Component {
                 case 'sell':
                     this.props.navigator.push({
                         screen: 'buylocal.newOfferScreen',
-                        passProps: {profile_id: this.props.userData.id},
                         title: "Neues Angebot"
                     });
                     break;
                 case 'messages':
                     this.props.navigator.push({
                         screen: 'buylocal.negotiationListScreen',
-                        passProps: {profile_id: this.props.userData.id},
                         title: "Nachrichten"
-                    });
-                    break;
-                case 'search':
-                    this.props.navigator.push({
-                        screen: 'buylocal.searchScreen',
-                        passProps: {profile_id: this.props.userData.id},
-                        title: "Suchen"
                     });
                     break;
                 case 'logout':
@@ -107,11 +98,11 @@ export class NavigationScreen extends Component {
                     this.props.navigator.switchToTab({tabIndex: 1});
                     break;
                 case 'search':
-                this.props.navigator.push({
-                    screen: 'buylocal.viewOfferScreen',
-                    passProps: {offerId: 1},
-                    title: "Angebot"
-                });
+                    this.props.navigator.push({
+                        screen: 'buylocal.viewOfferScreen',
+                        passProps: {offerId: 1},
+                        title: "Angebot"
+                    });
                     break;
                 case 'myoffers':
                     this.props.navigator.push({

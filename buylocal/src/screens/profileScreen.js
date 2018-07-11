@@ -29,6 +29,7 @@ export class ProfileScreen extends Component {
                         reviewScore: res.Bewertung, 
                         regDate: res.reg_date,
                         lastLogin: res.last_login,
+                    
                         isLoading: false});
                     this.setState({ offers: res.Angebote });
                 }
@@ -48,6 +49,14 @@ export class ProfileScreen extends Component {
             screen: 'buylocal.viewOfferScreen',
             passProps: {offerId: id},
             title: "Angebot"
+        });
+    }
+    onRatingPress = () => {
+        
+        this.props.navigator.push({
+            screen: 'buylocal.userRatingsScreen',
+            passProps: {profileId: this.props.profileId},
+            title: "Bewertungen"
         });
     }
     render() {
@@ -77,6 +86,7 @@ export class ProfileScreen extends Component {
                 <View>
                     <TouchableOpacity
                             style={styles.button}
+                            onPress={this.onRatingPress}
                     >
                         <Text>Bewertungen anzeigen</Text>
                     </TouchableOpacity>
