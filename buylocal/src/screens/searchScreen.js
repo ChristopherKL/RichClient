@@ -58,7 +58,7 @@ export class SearchScreen extends Component {
 		if (this.selectedMainIndex.length == 0) { alertcounter += 1 }
 		if (this.state.plz.match(/\d\d\d\d\d/) === null) { alertcounter += 1 }
 		if (this.state.minPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null && this.state.maxPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null) { alertcounter += 1 }
-		if (this.state.hashtags.match(/(\w+,)*\w+/gm) == null) { alertcounter += 1 } else { this.setState({hashtags: hashtags.split(",")}) }
+		if (this.state.hashtags.match(/(\w+,)*\w+/gm) == null) { alertcounter += 1 } else { this.setState({ hashtags: hashtags.split(",") }) }
 		return alertcounter;
 	}
 
@@ -66,8 +66,25 @@ export class SearchScreen extends Component {
 		var alertcounter = validateInput();
 		if (alertcounter == 5) { Alert.alert('Fehlende Infos', 'Es müssen weitere Angaben gemacht werden\n oder die Angaben sind fehlerhaft.') }
 		else {
-			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey),this.state.searchTerm,this.state.plz,this.state.minPrice,this.state.maxPrice, 
-			this.state.hashtags);
+			var category;
+			this.state.catId.length == 0 ? category = this.props.cats.mainCats[this.state.selectedMainIndex].KategorieID : category = this.state.catId
+			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.searchTerm, this.state.plz, this.state.minPrice, this.state.maxPrice,
+				this.state.hashtags, category).then(
+					(res) => {
+						if (typeof res == "string") {
+							alert("Fehler: " + res);
+						}
+						else {
+							/* TODO Richtigen Screen einsetzen
+							this.props.navigator.push({
+								screen: 'buylocal.',
+								passProps: { negData: res },
+								title: "Suchergebnisse"
+							});
+							*/
+						}
+					}
+				)
 		}
 	}
 
