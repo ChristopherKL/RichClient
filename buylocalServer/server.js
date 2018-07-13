@@ -21,7 +21,6 @@ var Nachricht = require("./server/models/nachricht");
 var Bewertung = require("./server/models/bewertung");
 var Verhandlung = require("./server/models/verhandlung");
 var Suchanfrage = require("./server/models/suchanfrage");
-var SuchanfrageHashtag = require("./server/models/suchanfrageHashtag");
 var BereitsAngezeigt = require("./server/models/bereitsangezeigt");
 
 
@@ -524,97 +523,6 @@ api.post('/beginverhandlung', function(req,res){
   }
 })
 
-//needs Token
-//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
-//return's Id, Preis,Titel,Bild1 from every Angebot
-api.post('/search', function(req,res){
-  if(req.body.Token && 
-        ( req.body.KategorieID || req.body.HashtagArray 
-            || req.body.Suchbegriff || req.body.PLZ 
-            || req.body.MaxPreis || req.body.MinPreis)){
-    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
-    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-    try{
-      decryptedToken = jwt.verify(decryptedToken,secret);
-      var current_time = Date.now()/1000;
-      if(decryptedToken.exp>current_time ){
-
-      }else{
-        res.json({success:false, message:"Token abgelaufen"});
-      }
-    }catch{
-      res.json({success:false,message:"Token nicht entschlüsselbar"});
-    }
-
-  }else{
-    res.json({success:false,message:"Fehlerhafte Anfrage"});
-  }
-})
-//needs Token and SuchanfrageID
-//returns values of the saved Suchanfrage
-api.get('requestsearch/:SuchanfrageID/:Token', function (req,res){
-  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
-  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-  try{
-    decryptedToken = jwt.verify(decryptedToken,secret);
-    var current_time = Date.now() /1000;
-    if(decryptedToken.exp>current_time){
-      Suchanfrage.findOne({where:{SuchanfrageID:req.params.Suchanfrage, Ersteller:decryptedToken.BenutzerID}}).then(suchanfrage=>{
-        if(suchanfrage){
-          res.json({success:true, Suchanfrage:suchanfrage});
-        }else{
-          res.json({success:false, message:"Ungültige Suche angefragt"});
-        }
-      })
-    }else{
-      res.json({success:false, message:"Token abgelaufen"});
-    }
-  }catch{
-    res.json({success:false, message:"Token falsch"});
-  }
-})
-//needs Token
-//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
-//return's ID of the search and success
-api.post('/savesearch', function(req,res){
-  if(req.body.Token){
-    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
-    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-    try{
-      decryptedToken = jwt.verify(decryptedToken,secret);
-      var current_time = Date.now()/1000;
-      if(decryptedToken.exp>current_time ){
-        Suchanfrage.create({
-          Ersteller:decryptedToken.BenutzerID,
-          KategorieID:req.body.KategorieID,
-          PLZ:req.body.PLZ,
-          MinPreis:req.body.MinPreis,
-          MaxPreis:req.body.MaxPreis,
-          Suchbegriff:req.body.Suchbegriff
-        }).then(suchanfrage=>{
-          let selectedAnfrage=suchanfrage;
-          let queryProms = [];
-          req.body.HashtagArray.forEach(element => {
-            queryProms.push(SuchanfrageHashtag.create({
-              SuchanfrageID:suchanfrage.SuchanfrageID,
-              HashtagName:element
-            }));
-          })
-          Promise.all(queryProms).then(() => {
-            res.json({success:true, SuchanfrageID:selectedAnfrage.SuchanfrageID});
-          })
-        });
-      }else{
-        res.json({success:false, message:"Token abgelaufen"});
-      }
-    }catch{
-      res.json({success:false,message:"Token nicht entschlüsselbar"});
-    }
-
-  }else{
-    res.json({success:false,message:"Fehlerhafte Anfrage"});
-  }
-})
 //needs VerhandlungID,Text, Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns Id of Nachricht
 api.post('/writenachricht', function(req,res){
