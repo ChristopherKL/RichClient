@@ -1,4 +1,4 @@
-export default async function startSearch(token, searchTerm, plz, minPrice, maxPrice, hashtags, categoryID) {
+export default async function startSearch(token, searchTerm, plz, minPrice, maxPrice, hashtags, categoryID, saveSearch, name) {
     try {
         let response = await fetch(
             'http://karlspi.ddnss.de:8081/search',
@@ -15,7 +15,9 @@ export default async function startSearch(token, searchTerm, plz, minPrice, maxP
                     MaxPreis: maxPrice,
                     MinPreis: minPrice,
                     HashtagArray: hashtags,
-                    KategorieID: categoryID
+                    KategorieID: categoryID,
+                    Speichern: saveSearch,
+                    Name: name
                 })
             }
         );

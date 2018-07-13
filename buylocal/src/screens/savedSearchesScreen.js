@@ -14,8 +14,8 @@ export class SavedSearchesScreen extends Component {
     }
 
     componentDidMount() {
-        //TODO gespeicherte Suchen abfragen
-        // this.setState({searchArray: res.Suchen})
+        
+        // this.setState({searchArray: res.Resultate})
     }
 
     onSearchPress = (id) => {
@@ -29,13 +29,13 @@ export class SavedSearchesScreen extends Component {
     renderItem = ({ item }) => {
         <View style={styles.offerContainer}>
             <TouchableOpacity
-                onPress={this.onSearchPress(item.SuchID)}
+                onPress={this.onSearchPress(item.SuchanfrageID)}
             >
-                <Text>{item.SuchName}</Text>
+                <Text>{item.Name}</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => this.onDelPress(item.SuchID)}
+                onPress={() => this.onDelPress(item.SuchanfrageID)}
             >
                 <Text>Löschen</Text>
             </TouchableOpacity>
@@ -61,7 +61,7 @@ export class SavedSearchesScreen extends Component {
                     data={this.state.searchArray}
                     renderItem={this.renderItem}
                     ListEmptyComponent={<Text>Keine gespeicherten Suchen vorhanden</Text>}
-                    keyExtractor={(item) => "suche" + item.SuchID}
+                    keyExtractor={(item) => "suche" + item.SuchanfrageID}
                 />
             </View>
         );
