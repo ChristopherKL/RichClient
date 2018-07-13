@@ -15,12 +15,63 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+
+--
+-- Table structure for table `Kategorie`
+--
+
+DROP TABLE IF EXISTS `Kategorie`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Kategorie` (
+  `KategorieID` int(11) NOT NULL,
+  `Name` varchar(45) NOT NULL,
+  `UeberKategorie` int(11) DEFAULT NULL,
+  PRIMARY KEY (`KategorieID`),
+  KEY `fk_Kategorie_1_idx` (`UeberKategorie`),
+  CONSTRAINT `fk_Kategorie_1` FOREIGN KEY (`UeberKategorie`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (1,"Elektronik");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (2,"Haustiere");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (3,"Haus & Garten");
+
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (4,"Handy & Telefon",1);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (5,"Haushaltsgeräte",1);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (6,"Hunde",2);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (7,"Katzen",2);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (8,"Küche & Esszimmer",3);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (9,"Wohnzimmer",3);
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `Benutzer`
+--
+
+DROP TABLE IF EXISTS `Benutzer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Benutzer` (
+  `BenutzerID` int(11) NOT NULL AUTO_INCREMENT,
+  `BenutzerName` varchar(45) NOT NULL,
+  `Mail` varchar(45) NOT NULL,
+  `Passwort` varchar(64) NOT NULL,
+  `PublicKey` varchar(512) DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `reg_date` datetime NOT NULL,
+  PRIMARY KEY (`BenutzerID`),
+  UNIQUE KEY `Mail_UNIQUE` (`Mail`),
+  UNIQUE KEY `BenutzerName_UNIQUE` (`BenutzerName`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DROP TABLE IF EXISTS `Angebot`;
+
 --
 -- Table structure for table `Angebot`
 --
 
-DROP TABLE IF EXISTS `Angebot`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Angebot` (
   `AngebotID` int(11) NOT NULL AUTO_INCREMENT,
@@ -63,27 +114,7 @@ CREATE TABLE `AngebotHashtag` (
   CONSTRAINT `fk_AngebotHashtag_2` FOREIGN KEY (`HashtagName`) REFERENCES `Hashtag` (`Name`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `Benutzer`
---
-
-DROP TABLE IF EXISTS `Benutzer`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Benutzer` (
-  `BenutzerID` int(11) NOT NULL AUTO_INCREMENT,
-  `BenutzerName` varchar(45) NOT NULL,
-  `Mail` varchar(45) NOT NULL,
-  `Passwort` varchar(64) NOT NULL,
-  `PublicKey` varchar(512) DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
-  `reg_date` datetime NOT NULL,
-  PRIMARY KEY (`BenutzerID`),
-  UNIQUE KEY `Mail_UNIQUE` (`Mail`),
-  UNIQUE KEY `BenutzerName_UNIQUE` (`BenutzerName`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -149,34 +180,6 @@ CREATE TABLE `Hashtag` (
   `NutzungsAnz` int(11) DEFAULT NULL,
   PRIMARY KEY (`Name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `Kategorie`
---
-
-DROP TABLE IF EXISTS `Kategorie`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `Kategorie` (
-  `KategorieID` int(11) NOT NULL,
-  `Name` varchar(45) NOT NULL,
-  `UeberKategorie` int(11) DEFAULT NULL,
-  PRIMARY KEY (`KategorieID`),
-  KEY `fk_Kategorie_1_idx` (`UeberKategorie`),
-  CONSTRAINT `fk_Kategorie_1` FOREIGN KEY (`UeberKategorie`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (1,"Elektronik");
-INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (2,"Haustiere");
-INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (3,"Haus & Garten");
-
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (4,"Handy & Telefon",1);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (5,"Haushaltsgeräte",1);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (6,"Hunde",2);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (7,"Katzen",2);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (8,"Küche & Esszimmer",3);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (9,"Wohnzimmer",3);
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -234,7 +237,7 @@ CREATE TABLE `BereitsAngezeigt` (
   `AngebotID` int(11) NOT NULL,
   PRIMARY KEY (`BereitsAngezeigtID`),
   CONSTRAINT `fk_BereitsAngezeigt_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_BereitsAngezeigt_2` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_BereitsAngezeigt_2` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -252,8 +255,7 @@ CREATE TABLE `Suchanfrage` (
   `Name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`SuchanfrageID`),
   KEY `fk_Suchanfrage_1_idx` (`BenutzerID`),
-  CONSTRAINT `fk_Suchanfrage_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_SuchanfrageKategorie_2` FOREIGN KEY (`KategorieID`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Suchanfrage_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
