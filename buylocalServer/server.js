@@ -108,7 +108,7 @@ api.post('/search', function(req,res){
         Angebot.findAll(queryData).then((angebote) => {
             if(req.body.Speichern == true) {
                 Suchanfrage.create({
-                    BenutzerID:1, // decryptedToken.ID
+                    BenutzerID:decryptedToken.BenutzerID,
                     AnfrageDaten: JSON.stringify(req.body),
 		    Name: req.body.Name
                   }).then(suchanfrage=>{
