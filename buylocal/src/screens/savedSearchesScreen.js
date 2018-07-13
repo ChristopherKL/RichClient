@@ -6,6 +6,10 @@ import {
     TouchableOpacity,
     StyleSheet
 } from "react-native";
+import startSavedSearch from "../apiCom/startSavedSearch";
+import getSavedSearches from "../apiCom/getSavedSearches";
+import createToken from "../apiCom/createToken";
+import deleteSavedSearch from "../apiCom/deleteSavedSearch";
 
 export class SavedSearchesScreen extends Component {
     constructor(props) {
@@ -14,16 +18,52 @@ export class SavedSearchesScreen extends Component {
     }
 
     componentDidMount() {
-        
-        // this.setState({searchArray: res.Resultate})
+        this.refreshSavedSearches();
+    }
+
+    refreshSavedSearches(){
+        getSavedSearches(createToken(this.props.userData.token, this.props.serverPublicKey)).then(
+            (res) => {
+                if (typeof res == "string") {
+                    alert("Fehler: " + res);
+                }
+                else {
+                    this.setState({ searchArray: res.suchanfragen })
+                }
+            }
+        )
     }
 
     onSearchPress = (id) => {
-        //TODO gespeicherte Suche mit ID aufrufen
+        startSavedSearch(createToken(this.props.userData.token, this.props.serverPublicKey), id).then(
+            (res) => {
+                if (typeof res == "string") {
+                    alert("Fehler: " + res);
+                }
+                else {
+                    this.props.navigator.push({
+                        screen: 'buylocal.searchResultScreen',
+                        passProps: { results: res.Resultate },
+                        title: "Suchergebnisse"
+                    });
+                }
+            }
+        )
     };
 
     onDelPress = (id) => {
-        //TODO gespeicherte Suche löschen
+        deleteSavedSearch(createToken(this.props.userData.token, this.props.serverPublicKey), id).then(
+            (res) => {
+                if (typeof res == "string") {
+                    alert("Fehler: " + res);
+                    this.props.navigator.pop();
+                }
+                else {
+                    this.refreshSavedSearches();
+                    alert("Suche geloescht");
+                }
+            }
+        )
     };
 
     renderItem = ({ item }) => {
@@ -82,4 +122,17 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SavedSearchesScreen;
+const mapStateToProps = (state) => {
+    return {
+        loggedIn: state.LoginReducer.loggedIn,
+        userData: state.LoginReducer.userData,
+        serverPublicKey: state.ServerKeyReducer.serverPublicKey
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SavedSearchesScreen);
