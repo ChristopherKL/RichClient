@@ -6,8 +6,8 @@ const cryptico = require('cryptico');
 
 const secret = require('crypto').randomBytes(64).toString('hex').substring(0,16);
 
-var randomString = "AAA"; //require('crypto').randomBytes(64).toString('hex');
-const key = "AAA"; //cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüsselpaar
+var randomString = require('crypto').randomBytes(64).toString('hex');
+const key = cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüsselpaar
 
 var bodyParser  = require('body-parser');
 
