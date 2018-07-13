@@ -106,13 +106,19 @@ buildSearchQuery = (req) => {
 //return's Id, Preis,Titel,Bild1 from every Angebot
 api.post('/search', function(req,res){
      if(req.body.Token && ( req.body.KategorieID || req.body.HashtagArray || req.body.Suchbegriff || req.body.PLZ || req.body.MaxPreis || req.body.MinPreis)){
-        let queryData = buildSearchQuery(req), foundOffers = [];
-        Angebot.findAll(queryData).then((angebote) => {
+      var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+      var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+      try{
+        decryptedToken = jwt.verify(decryptedToken,secret);
+        var current_time = Date.now()/1000;
+        if(decryptedToken.exp>current_time ){
+          let queryData = buildSearchQuery(req), foundOffers = [];
+          Angebot.findAll(queryData).then((angebote) => {
             if(req.body.Speichern == true) {
                 Suchanfrage.create({
                     BenutzerID:decryptedToken.BenutzerID,
                     AnfrageDaten: JSON.stringify(req.body),
-		    Name: req.body.Name
+		                Name: req.body.Name
                   }).then(suchanfrage=>{
                     angebote.forEach((angebot) => {
                         foundOffers.push({SuchanfrageID: suchanfrage.SuchanfrageID, AngebotID: angebot.AngebotID});
@@ -134,6 +140,13 @@ api.post('/search', function(req,res){
             }
             
         })
+
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    } 
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
     }else{
       res.json({success:false,message:"Fehlerhafte Anfrage"});
     }
