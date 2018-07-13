@@ -1,5 +1,7 @@
 var express = require('express');
 var api = express();
+api.use(express.json({limit: '250mb'}));
+api.use(express.urlencoded({limit: '250mb'}));
 var fs = require('fs');
 var jwt    = require('jsonwebtoken');
 const cryptico = require('cryptico');
