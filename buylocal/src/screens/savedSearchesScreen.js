@@ -10,6 +10,7 @@ import startSavedSearch from "../apiCom/startSavedSearch";
 import getSavedSearches from "../apiCom/getSavedSearches";
 import createToken from "../apiCom/createToken";
 import deleteSavedSearch from "../apiCom/deleteSavedSearch";
+import { connect } from 'react-redux';
 
 export class SavedSearchesScreen extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ export class SavedSearchesScreen extends Component {
 
     componentDidMount() {
         this.refreshSavedSearches();
+        console.log("Array: " + this.state.searchArray.Name);
     }
 
     refreshSavedSearches(){
@@ -31,7 +33,7 @@ export class SavedSearchesScreen extends Component {
                     alert("Fehler: " + res);
                 }
                 else {
-                    this.setState({ searchArray: res.suchanfragen, isLoading: false })
+                    this.setState({ searchArray: res.suchanfragen, isLoading: false });
                 }
             }
         )
@@ -72,7 +74,7 @@ export class SavedSearchesScreen extends Component {
     renderItem = ({ item }) => {
         <View style={styles.offerContainer}>
             <TouchableOpacity
-                onPress={this.onSearchPress(item.SuchanfrageID)}
+                onPress={() => this.onSearchPress(item.SuchanfrageID)}
             >
                 <Text>{item.Name}</Text>
             </TouchableOpacity>

@@ -26,7 +26,7 @@ export default async function startSearch(token, searchTerm, plz, minPrice, maxP
         if (responseJson.success != true) {
             return responseJson.message;
         }
-        return true;
+        return responseJson;
     } catch (error) {
         console.error(error);
         return false;
