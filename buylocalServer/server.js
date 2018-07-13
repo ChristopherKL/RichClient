@@ -6,8 +6,8 @@ const cryptico = require('cryptico');
 
 const secret = require('crypto').randomBytes(64).toString('hex').substring(0,16);
 
-var randomString = require('crypto').randomBytes(64).toString('hex');
-const key = cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüsselpaar
+var randomString = "AAA"; //require('crypto').randomBytes(64).toString('hex');
+const key = "AAA"; //cryptico.generateRSAKey(randomString, 2048); //2048 bit RSA Schlüsselpaar
 
 var bodyParser  = require('body-parser');
 
@@ -15,7 +15,6 @@ const Sequelize=require("sequelize");
 var Benutzer = require("./server/models/benutzer");
 var Angebot = require("./server/models/angebot");
 var Kategorie = require("./server/models/kategorie");
-var AngebotKategorie = require("./server/models/angebotKategorie");
 var Hashtag = require("./server/models/hashtag");
 var AngebotHashtag = require("./server/models/angebotHashtag");
 var Nachricht = require("./server/models/nachricht");
@@ -23,6 +22,8 @@ var Bewertung = require("./server/models/bewertung");
 var Verhandlung = require("./server/models/verhandlung");
 var Suchanfrage = require("./server/models/suchanfrage");
 var SuchanfrageHashtag = require("./server/models/suchanfrageHashtag");
+var BereitsAngezeigt = require("./server/models/bereitsangezeigt");
+
 
 Verhandlung.hasMany(Nachricht, {as: "ungelesene", foreignKey: "VerhandlungID"});
 Nachricht.belongsTo(Verhandlung, {as: "ungelesene", foreignKey: "VerhandlungID"});
@@ -39,6 +40,25 @@ Bewertung.belongsTo(Verhandlung, {as:"Bewertung", foreignKey: "VerhandlungID"});
 
 Benutzer.hasMany(Bewertung,{as:"Bewertung",foreignKey:"Bewerteter",sourceKey:"BenutzerID"});
 
+Angebot.belongsTo(Kategorie, {foreignKey: "KategorieID"})
+Kategorie.hasMany(Angebot, {foreignKey: "KategorieID"})
+
+Suchanfrage.hasMany(BereitsAngezeigt, {foreignKey: "SuchanfrageID"})
+BereitsAngezeigt.belongsTo(Suchanfrage, {foreignKey: "SuchanfrageID"})
+
+Angebot.hasMany(BereitsAngezeigt, {foreignKey: "AngebotID"})
+BereitsAngezeigt.belongsTo(Angebot, {foreignKey: "AngebotID"})
+
+Hashtag.belongsToMany(Angebot, {
+    through: AngebotHashtag,
+    foreignKey: 'HashtagName',
+  });
+Angebot.belongsToMany(Hashtag, {
+    through: AngebotHashtag,
+    foreignKey: 'AngebotID',
+    otherKey: 'HashtagName'
+  });
+
 const Op = Sequelize.Op;
 
 api.use(bodyParser.urlencoded({ extended: false }));
@@ -47,6 +67,179 @@ api.use(bodyParser.json());
 api.post('/deleteuser', function(req,res){
 
 })
+
+
+buildSearchQuery = (req) => {
+    let queryIncludes = [], whereConds = {}, queryData = {};
+
+    if(req.body.KategorieID) {
+        queryIncludes.push({model: Kategorie, where: {KategorieID: req.body.KategorieID}});
+    }
+    if(req.body.HashtagArray) {
+        queryIncludes.push({model: Hashtag, where: {Name: req.body.HashtagArray}});
+    }
+    if(req.body.Suchbegriff) {
+        whereConds.titel = {[Op.like]: '%' + req.body.Suchbegriff + '%'}
+    }
+    if(req.body.PLZ) {
+        whereConds["PLZ"] = req.body.PLZ;
+    }
+    if(req.body.MaxPreis) {
+        whereConds["preis"] = (req.body.MinPreis) ? { [Op.lt]: req.body.MaxPreis, [Op.gt]: req.body.MinPreis} : { [Op.lt]: req.body.MaxPreis };
+    }
+    else if(req.body.MinPreis) {
+        whereConds["preis"] =  { [Op.gt]: req.body.MinPreis }
+    }
+    if(queryIncludes.length > 0) {
+        queryData.include = queryIncludes;
+    }
+    if(Object.keys(whereConds).length > 0) {
+        queryData.where = whereConds;
+    }
+
+    return queryData;
+}
+
+//needs Token
+//optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
+//return's Id, Preis,Titel,Bild1 from every Angebot
+api.post('/search', function(req,res){
+     if(req.body.Token && ( req.body.KategorieID || req.body.HashtagArray || req.body.Suchbegriff || req.body.PLZ || req.body.MaxPreis || req.body.MinPreis)){
+        let queryData = buildSearchQuery(req), foundOffers = [];
+        Angebot.findAll(queryData).then((angebote) => {
+            if(req.body.Speichern == true) {
+                Suchanfrage.create({
+                    BenutzerID:1, // decryptedToken.ID
+                    AnfrageDaten: JSON.stringify(req.body),
+		    Name: req.body.Name
+                  }).then(suchanfrage=>{
+                    angebote.forEach((angebot) => {
+                        foundOffers.push({SuchanfrageID: suchanfrage.SuchanfrageID, AngebotID: angebot.AngebotID});
+                    })
+                    if(angebote.length > 0) {
+                        BereitsAngezeigt.bulkCreate(foundOffers).then(() => {
+                            res.json({success: true, Resultate: angebote});
+                        })
+                    }
+                    else {
+                        res.json({success: true, Resultate: angebote});
+                    }
+
+                    
+                  })
+            }
+            else {
+	         res.json({success: true, Resultate: angebote});
+            }
+            
+        })
+    }else{
+      res.json({success:false,message:"Fehlerhafte Anfrage"});
+    }
+})
+
+
+api.get('/suchanfrageAusfuehren/:suchanfrageID/:Token', function (req, res) {
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+	    Suchanfrage.findOne({where: {SuchanfrageID: req.params.suchanfrageID, BenutzerID:decryptedToken.ID}}).then((anfrage) => {
+		    if(!anfrage) {
+			    res.json({success: false, message: "Suchanfrage existiert nicht"})
+			    return
+		    }
+    	  let queryData = buildSearchQuery({body: JSON.parse(anfrage.AnfrageDaten)})
+        Angebot.findAll(queryData).then((angebote) => { res.json({success: true, Resultate: angebote})});
+	    })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+})
+
+
+api.get('/suchanfrageLoeschen/:suchanfrageID/:Token', function (req, res) {
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      Suchanfrage.destroy({where: {SuchanfrageID: req.params.suchanfrageID, BenutzerID:decryptedToken.BenutzerID}}).then((anfrage) => {
+        if(!anfrage) {
+          res.json({success: false, message: "Suchanfrage existiert nicht"})
+          return
+        }
+		    res.json({success: true});
+      })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    }
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+})
+
+api.get('/suchanfragenListe/:Token', function (req,res) {
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      Suchanfrage.findAll({where: {BenutzerID:decryptedToken.BenutzerID}}).then((suchanfragen) => {
+        res.json({success: true, suchanfragen: suchanfragen});
+      })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    } 
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+})
+
+api.get('/suchanfragenAusfuehren/:Token', function (req,res){
+  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+  try{
+    decryptedToken = jwt.verify(decryptedToken,secret);
+    var current_time = Date.now() /1000;
+    if(decryptedToken.exp>current_time){
+      let results = [], searchQueries = [];
+      function handleNewOffers(mySuchanfrageID, myAngebote) {
+        let excludeOffers = []
+
+        results.push({suchanfrageID: mySuchanfrageID, neueAngebot: myAngebote})
+        myAngebote.forEach((angebot) => excludeOffers.push({SuchanfrageID: mySuchanfrageID, AngebotID: angebot.AngebotID}));
+        BereitsAngezeigt.bulkCreate(excludeOffers).then(() => {})
+      }
+
+      Suchanfrage.findAll({where: {BenutzerID:decryptedToken.BenutzerID}}).then((suchanfragen) => {
+        suchanfragen.forEach((anfrage) => {
+          let queryData = buildSearchQuery({body: JSON.parse(anfrage.AnfrageDaten)})
+          if(queryData.include == undefined) {
+            queryData.include = []
+          }
+          queryData.include.push({model: BereitsAngezeigt, where:{ SuchanfrageID: anfrage.SuchanfrageID }, required: false})
+          queryData.where["SuchanfrageID"] = Sequelize.where(Sequelize.col("BereitsAngezeigts.SuchanfrageID"), 'IS', null)
+          searchQueries.push(Angebot.findAll(queryData).then(handleNewOffers.bind(null, anfrage.SuchanfrageID)))
+        })
+        Promise.all(searchQueries).then(() => res.json({success: true, Resultate: results}))
+      })
+    }else{
+      res.json({success:false, message:"Token abgelaufen"});
+    } 
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
+});
+
+
 //needs Valid Token of a User+16 random Chars encrypted with the public Key of Server, BenutzerID, new Password+16 random chars encrypted, and new PublicKey
 //Optional SchlüsselArray=  an Array with All the Keys newly encrypted with the same structure as in /keys {Status,Schlüssel,NachrichtID}
 //returns success:true if done
@@ -335,113 +528,17 @@ api.post('/beginverhandlung', function(req,res){
 //optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
 //return's Id, Preis,Titel,Bild1 from every Angebot
 api.post('/search', function(req,res){
-  if(req.body.Token&&req.body.KategorieID){
+  if(req.body.Token && 
+        ( req.body.KategorieID || req.body.HashtagArray 
+            || req.body.Suchbegriff || req.body.PLZ 
+            || req.body.MaxPreis || req.body.MinPreis)){
     var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
     var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     try{
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
-        var selectedAngebote=[];
-        var queryProms = [];
-        if(req.body.KategorieID){
-          queryProms.push(Angebot.findAll({where:{KategorieID:req.body.KategorieID}}).then(angebote=>{
-            if(selectedAngebote==[]){
-              angebote.forEach(element=>{
-                selectedAngebote.push(element.get(0));
-              })
-            }else{
-              var übergangsArray=selectedAngebote;
-              selectedAngebote=[];
-              angebote.forEach(element=>{
-                übergangsArray.forEach(angebot=>{
-                  if(!element.get(0).AngebotID==angebot.AngebotID){
-                    selectedAngebote.push(angebot);
-                  }
-                })
-              })
-            }
-          }))
-        }
-        if(req.body.PLZ){
-          queryProms.push(Angebot.findAll({where:{PLZ:req.body.PLZ}}).then(angebote=>{
-            if(selectedAngebote==[]){
-              angebote.forEach(element=>{
-                selectedAngebote.push(element.get(0));
-              })
-            }else{
-              var übergangsArray=selectedAngebote;
-              selectedAngebote=[];
-              angebote.forEach(element=>{
-                übergangsArray.forEach(angebot=>{
-                  if(!element.get(0).AngebotID==angebot.AngebotID){
-                    selectedAngebote.push(angebot);
-                  }
-                })
-              })
-            }
-          }))
-        }
-        if(req.body.MinPreis){
-          queryProms.push(Angebot.findAll({where:{Preis:{[Op.gte]:req.body.MinPreis}}}).then(angebote=>{
-            if(selectedAngebote==[]){
-              angebote.forEach(element=>{
-                selectedAngebote.push(element.get(0));
-              })
-            }else{
-              var übergangsArray=selectedAngebote;
-              selectedAngebote=[];
-              angebote.forEach(element=>{
-                übergangsArray.forEach(angebot=>{
-                  if(!element.get(0).AngebotID==angebot.AngebotID){
-                    selectedAngebote.push(angebot);
-                  }
-                })
-              })
-            }
-          }))
-        }
-        if(req.body.MaxPreis){
-          queryProms.push(Angebot.findAll({where:{Preis:{[Op.lte]:req.body.MaxPreis}}}).then(angebote=>{
-            if(selectedAngebote==[]){
-              angebote.forEach(element=>{
-                selectedAngebote.push(element.get(0));
-              })
-            }else{
-              var übergangsArray=selectedAngebote;
-              selectedAngebote=[];
-              angebote.forEach(element=>{
-                übergangsArray.forEach(angebot=>{
-                  if(!element.get(0).AngebotID==angebot.AngebotID){
-                    selectedAngebote.push(angebot);
-                  }
-                })
-              })
-            }
-          }))
-        }
-        if(req.body.Suchbegriff){
-          queryProms.push(Angebot.findAll({where:{[Op.or]:[{Title:{[Op.like]:'%'+req.body.Suchbegriff+'%'}},{Beschreibuing:{[Op.like]:'%'+req.body.Suchbegriff+'%'}}]}}).then(angebote=>{
-            if(selectedAngebote==[]){
-              angebote.forEach(element=>{
-                selectedAngebote.push(element.get(0));
-              })
-            }else{
-              var übergangsArray=selectedAngebote;
-              selectedAngebote=[];
-              angebote.forEach(element=>{
-                übergangsArray.forEach(angebot=>{
-                  if(!element.get(0).AngebotID==angebot.AngebotID){
-                    selectedAngebote.push(angebot);
-                  }
-                })
-              })
-            }
-          }))
-        }
-        Promise.all(queryProms).then(() => {
-          res.json({success:true, Angebote:selectedAngebote});
-        })
+
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }
@@ -831,15 +928,11 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now() /1000;
       if(decryptedToken.exp>current_time){
-
         var hashtagsOfAngebot={};
-        var foundKategorie;
         var foundAngebot
         Angebot.findOne({where: {AngebotID:req.params.AngebotID}}).then(angebot =>{
           if(angebot){
             foundAngebot=angebot;
-            AngebotKategorie.findOne({where:{AngebotID:angebot.AngebotID}}).then(angebotKategorie=>{
-              foundKategorie=angebotKategorie;
               AngebotHashtag.findAll({where:{AngebotID:foundAngebot.AngebotID}}).then(angebothashtag=>{
                 for(var i = 0;i<angebothashtag.length;i++){
                   hashtagsOfAngebot[i]=angebothashtag[i].get(0).HashtagName;
@@ -848,7 +941,7 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
                   res.json({
                     success:true,
                     Hashtags: hashtagsOfAngebot,
-                    KategorieID : foundKategorie.KategorieID,
+                    KategorieID : foundAngebot.KategorieID,
                     Bild1: foundAngebot.Bild1,
                     Bild2: foundAngebot.Bild2,
                     Bild3: foundAngebot.Bild3,
@@ -867,7 +960,7 @@ api.get("/angebot/:AngebotID/:Token",function (req,res){
                   })
                 })
               });
-            });
+
           }else{
             res.json({success:false, message:"Angebot nicht vorhanden"});
           }
@@ -908,6 +1001,7 @@ api.post('/createangebot', function (req,res){
             Straße:req.body.Straße,
             Hausnummer:req.body.Hausnummer,
             Beschreibung:req.body.Beschreibung,
+            KategorieID: req.body.KategorieID,
             reg_date: Date.now()
           }).then(angebot=>{
             if(angebot){
@@ -915,14 +1009,9 @@ api.post('/createangebot', function (req,res){
               Kategorie.findOne({
                 where:{KategorieID:req.body.KategorieID}
               }).then(kategorie =>{
-                AngebotKategorie.create({
-                  AngebotID:angebot.AngebotID,
-                  KategorieID:kategorie.KategorieID
-                }).then(angebotKategorie=>{
                   if(!req.body.Hashtags){
                     res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
                   }
-                });
               });
               if(req.body.Hashtags){
                 for(var i=0;i<req.body.Hashtags.length;i++){

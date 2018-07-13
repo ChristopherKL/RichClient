@@ -36,10 +36,12 @@ CREATE TABLE `Angebot` (
   `Straße` varchar(128) DEFAULT NULL,
   `Hausnummer` varchar(10) DEFAULT NULL,
   `BenutzerID` int(11) NOT NULL,
+  `KategorieID`int(11) NOT NULL,
   `reg_date` datetime NOT NULL,
   PRIMARY KEY (`AngebotID`),
   KEY `fk_Angebot_1_idx` (`BenutzerID`),
-  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Angebot_2` FOREIGN KEY (`KategorieID`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -60,23 +62,7 @@ CREATE TABLE `AngebotHashtag` (
   CONSTRAINT `fk_AngebotHashtag_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_AngebotHashtag_2` FOREIGN KEY (`HashtagName`) REFERENCES `Hashtag` (`Name`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `AngebotKategorie`
---
-
-DROP TABLE IF EXISTS `AngebotKategorie`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `AngebotKategorie` (
-  `AngebotID` int(11) NOT NULL,
-  `KategorieID` int(11) NOT NULL,
-  PRIMARY KEY (`AngebotID`),
-  KEY `fk_AngebotKategorie_2_idx` (`KategorieID`),
-  CONSTRAINT `fk_AngebotKategorie_1` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `fk_AngebotKategorie_2` FOREIGN KEY (`KategorieID`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -236,6 +222,23 @@ CREATE TABLE `Nachricht` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `BereitsAngezeigt`
+--
+
+DROP TABLE IF EXISTS `BereitsAngezeigt`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `BereitsAngezeigt` (
+  `BereitsAngezeigtID` int(11) NOT NULL AUTO_INCREMENT,
+  `SuchanfrageID` int(11) NOT NULL,
+  `AngebotID` int(11) NOT NULL,
+  PRIMARY KEY (`BereitsAngezeigtID`),
+  CONSTRAINT `fk_BereitsAngezeigt_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `fk_BereitsAngezeigt_2` FOREIGN KEY (`AngebotID`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `Suchanfrage`
 --
 
@@ -244,32 +247,13 @@ DROP TABLE IF EXISTS `Suchanfrage`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Suchanfrage` (
   `SuchanfrageID` int(11) NOT NULL AUTO_INCREMENT,
-  `Ersteller` int(11) DEFAULT NULL,
-  `KategorieID` int(11) DEFAULT NULL,
-  `PLZ` varchar(10) DEFAULT NULL,
-  `MinPreis` decimal(10,2) DEFAULT NULL,
-  `MaxPreis` decimal(10,2) DEFAULT NULL,
-  `Suchbegriff` varchar(128) DEFAULT NULL,
+  `BenutzerID` int(11) DEFAULT NULL,
+  `AnfrageDaten` LONGTEXT DEFAULT NULL,
+  `Name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`SuchanfrageID`),
-  KEY `fk_Suchanfrage_1_idx` (`Ersteller`),
-  CONSTRAINT `fk_Suchanfrage_1` FOREIGN KEY (`Ersteller`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  KEY `fk_Suchanfrage_1_idx` (`BenutzerID`),
+  CONSTRAINT `fk_Suchanfrage_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `fk_SuchanfrageKategorie_2` FOREIGN KEY (`KategorieID`) REFERENCES `Kategorie` (`KategorieID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `SuchanfrageHashtag`
---
-
-DROP TABLE IF EXISTS `SuchanfrageHashtag`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `SuchanfrageHashtag` (
-  `SuchanfrageID` int(11) NOT NULL,
-  `HashtagName` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`SuchanfrageID`),
-  KEY `fk_SuchanfrageHashtag_2_idx` (`HashtagName`),
-  CONSTRAINT `fk_SuchanfrageHashtag_1` FOREIGN KEY (`SuchanfrageID`) REFERENCES `Suchanfrage` (`SuchanfrageID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
