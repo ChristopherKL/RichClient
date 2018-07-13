@@ -14,7 +14,10 @@ import deleteSavedSearch from "../apiCom/deleteSavedSearch";
 export class SavedSearchesScreen extends Component {
     constructor(props) {
         super(props);
-        this.state = { searchArray: [] };
+        this.state = {
+            searchArray: [],
+            isLoading: true
+         };
     }
 
     componentDidMount() {
@@ -28,7 +31,7 @@ export class SavedSearchesScreen extends Component {
                     alert("Fehler: " + res);
                 }
                 else {
-                    this.setState({ searchArray: res.suchanfragen })
+                    this.setState({ searchArray: res.suchanfragen, isLoading: false })
                 }
             }
         )
@@ -94,6 +97,13 @@ export class SavedSearchesScreen extends Component {
     };
 
     render() {
+        if (this.state.isLoading) {
+            return (
+                <View>
+                    <Text>Loading...</Text>
+                </View>
+            )
+        }
         return (
             <View>
                 <FlatList

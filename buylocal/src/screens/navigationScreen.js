@@ -99,9 +99,8 @@ export class NavigationScreen extends Component {
                     break;
                 case 'search':
                     this.props.navigator.push({
-                        screen: 'buylocal.viewOfferScreen',
-                        passProps: {offerId: 1},
-                        title: "Angebot"
+                        screen: 'buylocal.searchScreen',
+                        title: "Suchen"
                     });
                     break;
                 case 'myoffers':

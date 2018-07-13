@@ -28,7 +28,8 @@ export class SearchScreen extends Component {
 			selectedMainIndex: null,
 			catId: null,
 			checked: false,
-			searchName: ''
+			searchName: '',
+			editable: false
 		};
 	}
 
@@ -59,7 +60,7 @@ export class SearchScreen extends Component {
 	validateInput() {
 		var alertcounter = 0;
 		if (this.state.searchTerm.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { alertcounter += 1 }
-		if (this.state,selectedMainIndex == null) { alertcounter += 1 }
+		if (this.state.selectedMainIndex == null) { alertcounter += 1 }
 		if (this.state.plz.match(/\d\d\d\d\d/) === null) { alertcounter += 1 }
 		if (this.state.minPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null && this.state.maxPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null) { alertcounter += 1 }
 		if (this.state.hashtags.match(/(#\w+,)*#\w+/gm) == null) { alertcounter += 1 }
@@ -72,7 +73,7 @@ export class SearchScreen extends Component {
 		else if (this.state.checked && this.state.searchName.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { Alert.alert('Zum Speichern der Suche ist ein Name notwendig!')}
 		else {
 			var category;
-			this.state.catId.length == 0 ? category = this.props.cats.mainCats[this.state.selectedMainIndex].KategorieID : category = this.state.catId
+			this.state.catId == null ? category = this.props.cats.mainCats[this.state.selectedMainIndex].KategorieID : category = this.state.catId
 			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.searchTerm, this.state.plz, this.state.minPrice, this.state.maxPrice,
 				(this.state.hashtags.length > 1) ? this.state.hashtags.split(",") : null, category, this.state.checked ,this.state.searchName).then(
 					(res) => {
@@ -81,7 +82,7 @@ export class SearchScreen extends Component {
 						}
 						else {
 							this.props.navigator.push({
-								screen: 'buylocal.searchResultScreen',
+								screen: 'buylocal.searchResultsScreen',
 								passProps: { results: res.Resultate },
 								title: "Suchergebnisse"
 							});
@@ -180,7 +181,7 @@ export class SearchScreen extends Component {
 				<View style={{ flexDirection: 'row' }}>
 					<CheckBox
 						value={this.state.checked}
-						onValueChange={() => this.setState({ checked: !this.state.checked })}
+						onValueChange={() => this.setState({ checked: !this.state.checked, editable: !this.state.editable })}
 					/>
 					<Text style={{ marginTop: 5 }}> Suche speichern?</Text>
 				</View>
@@ -192,7 +193,7 @@ export class SearchScreen extends Component {
 						value={this.state.searchName}
 						maxLength={30}
 						underlineColorAndroid='transparent'
-						keyboardType='numeric'
+						editable={this.state.editable}
 						/>
 						
 				</View>

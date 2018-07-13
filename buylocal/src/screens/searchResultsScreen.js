@@ -25,9 +25,6 @@ export class SearchResultsScreen extends Component {
     render() {
         return (
             <View>
-                <View style={styles.headlineContainer}>
-                    <Text>Gefundene Angebote</Text>
-                </View>
                 {this.renderOfferList()}
             </View>
         );
@@ -75,13 +72,6 @@ export class SearchResultsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    headlineContainer: {
-        padding: 10,
-        marginTop: 10,
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center'
-    },
     offerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -90,8 +80,6 @@ const styles = StyleSheet.create({
     offerList: {
         margin: 10,
         borderWidth: 1,
-        borderColor: '#d6d7da',
-        height: 150
     }
 })
 
