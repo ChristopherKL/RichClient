@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, AppRegistry } from 'react';
 import {
     Text,
     View,
     TextInput,
     StyleSheet,
-    TouchableOpacity
+    TouchableOpacity,
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -14,6 +14,7 @@ import { catsActionCreator } from '../redux/actions/catsAction';
 import getServerKey from '../apiCom/getServerKey';
 import getCategories from '../apiCom/getCategories';
 import login from '../apiCom/login';
+
 
 
 export class LoginScreen extends Component {
@@ -31,6 +32,7 @@ export class LoginScreen extends Component {
             getServerKey().then((res) => { this.props.serverKeyAction(res); });
         
         }
+
     }
 
     onPress = () => {
@@ -55,8 +57,7 @@ export class LoginScreen extends Component {
                 }
                 else {
                     this.props.loginAction(res);
-                    
-                }
+               }
             }
         )
 
@@ -170,3 +171,4 @@ const mapDispatchToProps = (dispatch) => {
 }
  
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+

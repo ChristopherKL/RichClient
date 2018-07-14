@@ -1,4 +1,4 @@
-import {Platform} from 'react-native';
+import {Platform, AppRegistry} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 import {registerScreens, registerScreenVisibilityListener} from './src/navCompReg';
 import configureStore from './src/redux/configureStore';
@@ -10,7 +10,7 @@ const store = configureStore();
 // screen related book keeping
 registerScreens(store, Provider);
 registerScreenVisibilityListener();
-
+AppRegistry.registerHeadlessTask('SomeTaskName',()=>console.log("heyyyyyyy"));
 
 const tabs = [{
     label: 'Navigation',

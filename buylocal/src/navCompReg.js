@@ -38,6 +38,7 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.searchScreen', () => SearchScreen, store, Provider);
   Navigation.registerComponent('buylocal.myOffersScreen', () => MyOffersScreen, store, Provider);  
   Navigation.registerComponent('buylocal.userRatingsScreen', () => UserRatingsScreen, store, Provider); 
+ 
   
 }
 
