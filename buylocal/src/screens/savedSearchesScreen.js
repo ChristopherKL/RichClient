@@ -46,7 +46,7 @@ export class SavedSearchesScreen extends Component {
                 }
                 else {
                     this.props.navigator.push({
-                        screen: 'buylocal.searchResultScreen',
+                        screen: 'buylocal.searchResultsScreen',
                         passProps: { results: res.Resultate },
                         title: "Suchergebnisse"
                     });
