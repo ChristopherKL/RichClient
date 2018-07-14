@@ -1,4 +1,4 @@
-export default async function startSavedSearches(token, id) {
+export default async function startSavedSearch(token, id) {
     try {
         let response = await fetch(
             'http://karlspi.ddnss.de:8081/suchanfrageAusfuehren/'+id+"/"+encodeURIComponent(token)

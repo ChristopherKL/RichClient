@@ -23,7 +23,6 @@ export class SavedSearchesScreen extends Component {
 
     componentDidMount() {
         this.refreshSavedSearches();
-        console.log("Array: " + this.state.searchArray.Name);
     }
 
     refreshSavedSearches(){
@@ -72,11 +71,13 @@ export class SavedSearchesScreen extends Component {
     };
 
     renderItem = ({ item }) => {
+        return(
         <View style={styles.offerContainer}>
             <TouchableOpacity
+                style={{flex: 1}}
                 onPress={() => this.onSearchPress(item.SuchanfrageID)}
             >
-                <Text>{item.Name}</Text>
+                <Text style={{marginLeft: 10, marginRight: 10}}>{item.Name}</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={styles.button}
@@ -85,6 +86,7 @@ export class SavedSearchesScreen extends Component {
                 <Text>Löschen</Text>
             </TouchableOpacity>
         </View>
+        )
     };
 
     renderSeparator = () => {
@@ -107,7 +109,7 @@ export class SavedSearchesScreen extends Component {
             )
         }
         return (
-            <View>
+            <View style={styles.offerList}>
                 <FlatList
                     ItemSeparatorComponent={this.renderSeparator}
                     data={this.state.searchArray}
@@ -125,12 +127,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#DDDDDD',
         padding: 10,
-        marginTop: 10
     },
     offerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+    },
+    offerList: {
+        margin: 10,
+        borderWidth: 1,
     }
 })
 

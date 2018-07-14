@@ -60,7 +60,7 @@ export class SearchScreen extends Component {
 	validateInput() {
 		var alertcounter = 0;
 		if (this.state.searchTerm.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { alertcounter += 1 }
-		if (this.state.selectedMainIndex == null) { alertcounter += 1 }
+		if (this.state.catId == null) { alertcounter += 1 }
 		if (this.state.plz.match(/\d\d\d\d\d/) === null) { alertcounter += 1 }
 		if (this.state.minPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null && this.state.maxPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null) { alertcounter += 1 }
 		if (this.state.hashtags.match(/(#\w+,)*#\w+/gm) == null) { alertcounter += 1 }
@@ -72,10 +72,8 @@ export class SearchScreen extends Component {
 		if (alertcounter == 5) { Alert.alert('Fehlende Infos', 'Es müssen weitere Angaben gemacht werden\n oder die Angaben sind fehlerhaft.') }
 		else if (this.state.checked && this.state.searchName.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { Alert.alert('Zum Speichern der Suche ist ein Name notwendig!')}
 		else {
-			var category;
-			this.state.catId == null ? category = this.props.cats.mainCats[this.state.selectedMainIndex].KategorieID : category = this.state.catId
 			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.searchTerm, this.state.plz, this.state.minPrice, this.state.maxPrice,
-				(this.state.hashtags.length > 1) ? this.state.hashtags.split(",") : null, category, this.state.checked ,this.state.searchName).then(
+				(this.state.hashtags.length > 1) ? this.state.hashtags.split(",") : null, this.state.catId, this.state.checked ,this.state.searchName).then(
 					(res) => {
 						if (typeof res == "string") {
 							alert("Fehler: " + res);
