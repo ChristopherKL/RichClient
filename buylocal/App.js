@@ -1,58 +1,58 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+import {Platform, AppRegistry} from 'react-native';
+import {Navigation} from 'react-native-navigation';
+import {registerScreens, registerScreenVisibilityListener} from './src/navCompReg';
+import configureStore from './src/redux/configureStore';
+import { Provider } from 'react-redux';
 
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const store = configureStore();
 
-type Props = {};
-export default class App extends Component<Props> {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-	  Hello World
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit App.js
-        </Text>
-        <Text style={styles.instructions}>
-          {instructions}
-        </Text>
-      </View>
-    );
+// screen related book keeping
+registerScreens(store, Provider);
+registerScreenVisibilityListener();
+AppRegistry.registerHeadlessTask('SomeTaskName',()=>console.log("heyyyyyyy"));
+
+const tabs = [{
+    label: 'Navigation',
+    screen: 'buylocal.navigationScreen',
+    title: 'Navigation',
+    icon: require('./img/menu.png')
+  },
+  {
+    label: 'Home',
+    screen: 'buylocal.homeScreen',
+    title: 'Home',
+    icon: require('./img/home.png')
+  },
+  {
+    label: 'Info',
+    screen: 'buylocal.infoScreen',
+    title: 'Info',
+    icon: require('./img/info.png')
   }
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+];
+
+// this will start our app
+Navigation.startTabBasedApp({
+  tabs,
+  animationType: Platform.OS === 'ios' ? 'slide-down' : 'fade',
+  tabsStyle: {
+    tabBarBackgroundColor: '#003a66',
+    tabBarButtonColor: '#ffffff',
+    tabBarSelectedButtonColor: '#ff505c',
+    tabFontFamily: 'BioRhyme-Bold',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+  appStyle: {
+    tabBarBackgroundColor: '#003a66',
+    navBarButtonColor: '#ffffff',
+    tabBarButtonColor: '#ffffff',
+    navBarTextColor: '#ffffff',
+    tabBarSelectedButtonColor: '#ff505c',
+    navigationBarColor: '#003a66',
+    navBarBackgroundColor: '#003a66',
+    statusBarColor: '#002b4c',
+    tabFontFamily: 'BioRhyme-Bold',
+    initialTabIndex: 1
+  }
 });
