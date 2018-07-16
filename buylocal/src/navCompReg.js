@@ -42,6 +42,7 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.userRatingsScreen', () => UserRatingsScreen, store, Provider);
   Navigation.registerComponent('buylocal.searchResultsScreen', () => SearchResultsScreen, store, Provider);
   Navigation.registerComponent('buylocal.savedSearchesScreen', () => SavedSearchesScreen, store, Provider);
+  Navigation.registerComponent('buylocal.userRatingsScreen', () => UserRatingsScreen, store, Provider);
 }
 
 export function registerScreenVisibilityListener() {

@@ -7,10 +7,9 @@ import {
     FlatList,
     Image
 } from 'react-native';
-import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import { logoutActionCreator } from '../redux/actions/loginAction';
-
+import BackgroundFetch from "react-native-background-fetch";
 
 
 export class NavigationScreen extends Component {
@@ -99,6 +98,7 @@ export class NavigationScreen extends Component {
                     break;
                 case 'logout':
                     this.props.logoutAction();
+                    BackgroundFetch.stop()
                     this.props.navigator.switchToTab({tabIndex: 1});
                     break;
                 case 'search':

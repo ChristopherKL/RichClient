@@ -50,11 +50,14 @@ export class SearchScreen extends Component {
 			selectedMainIndex: idx,
 			catId: null
 		})
+		console.log("Selected");
 	}
 	dropdownOnSelectSub(idx, value) {
 		this.setState({
 			catId: this.props.cats.subCats[this.state.selectedMainIndex][idx].KategorieID
 		});
+		
+
 	}
 
 	validateInput() {

@@ -44,7 +44,7 @@ export class MyOffersScreen extends Component {
                 else {
                     this.getCurrentOffers();
                     alert("angebot geloescht");
-                }
+                }           
             }
 
         )
