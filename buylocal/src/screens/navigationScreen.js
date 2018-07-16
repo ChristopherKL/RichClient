@@ -36,7 +36,11 @@ export class NavigationScreen extends Component {
             {
                 title: 'Meine Angebote',
                 key: 'myoffers'                
-            },     
+            },
+            {
+                title: 'Gespeicherte Suchen',
+                key: 'savedsearches'
+            },
             {
                 title: 'Logout',
                 key: 'logout'                
@@ -109,6 +113,12 @@ export class NavigationScreen extends Component {
                         title: "Meine Angebote"
                     });
                     break;
+                case 'savedsearches':
+                    this.props.navigator.push({
+                        screen: 'buylocal.savedSearchesScreen',
+                        title: "Gespeicherte Suchen"
+                    });
+                break;
                 default:
                     alert(item.title);
                     break;

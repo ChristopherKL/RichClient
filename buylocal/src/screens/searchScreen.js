@@ -6,7 +6,8 @@ import {
 	Text,
 	TouchableOpacity,
 	ScrollView,
-	Alert
+	Alert,
+	CheckBox
 } from 'react-native';
 import ModalDropdown from 'react-native-modal-dropdown';
 import { connect } from "react-redux";
@@ -18,14 +19,17 @@ export class SearchScreen extends Component {
 		super(props);
 		this.state = {
 			searchTerm: '',
-			minPrice: "",
-			maxPrice: "",
+			minPrice: '',
+			maxPrice: '',
 			plz: '',
 			hashtags: '',
 			dropdownSubOptions: [],
 			dropdownMainOptions: [],
 			selectedMainIndex: null,
-			catId: null
+			catId: null,
+			checked: false,
+			searchName: '',
+			editable: false
 		};
 	}
 
@@ -44,7 +48,7 @@ export class SearchScreen extends Component {
 		this.setState({
 			dropdownSubOptions: newDropSub,
 			selectedMainIndex: idx,
-			catId: ''
+			catId: null
 		})
 		console.log("Selected");
 	}
@@ -59,7 +63,7 @@ export class SearchScreen extends Component {
 	validateInput() {
 		var alertcounter = 0;
 		if (this.state.searchTerm.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { alertcounter += 1 }
-		if (this.state.selectedMainIndex == null) { alertcounter += 1 }
+		if (this.state.catId == null) { alertcounter += 1 }
 		if (this.state.plz.match(/\d\d\d\d\d/) === null) { alertcounter += 1 }
 		if (this.state.minPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null && this.state.maxPrice.match(/^([1-9]\d{1,10}|0)(\.\d{1,2})?$/) === null) { alertcounter += 1 }
 		if (this.state.hashtags.match(/(#\w+,)*#\w+/gm) == null) { alertcounter += 1 }
@@ -69,21 +73,20 @@ export class SearchScreen extends Component {
 	onPress = () => {
 		let alertcounter = this.validateInput();
 		if (alertcounter == 5) { Alert.alert('Fehlende Infos', 'Es müssen weitere Angaben gemacht werden\n oder die Angaben sind fehlerhaft.') }
+		else if (this.state.checked && this.state.searchName.replace(/(\r\n\t|\n|\r\t|\s)/gm, "").length == 0) { Alert.alert('Zum Speichern der Suche ist ein Name notwendig!')}
 		else {
-			startSearch("aaa" /*createToken(this.props.userData.token, this.props.serverPublicKey)*/, this.state.searchTerm, this.state.plz, this.state.minPrice, this.state.maxPrice,
-					(this.state.hashtags.length > 1) ? this.state.hashtags.split(",") : null, this.state.catId, true).then(
+			startSearch(createToken(this.props.userData.token, this.props.serverPublicKey), this.state.searchTerm, this.state.plz, this.state.minPrice, this.state.maxPrice,
+				(this.state.hashtags.length > 1) ? this.state.hashtags.split(",") : null, this.state.catId, this.state.checked ,this.state.searchName).then(
 					(res) => {
 						if (typeof res == "string") {
 							alert("Fehler: " + res);
 						}
 						else {
-							/* TODO Richtigen Screen einsetzen
 							this.props.navigator.push({
-								screen: 'buylocal.',
-								passProps: { negData: res },
+								screen: 'buylocal.searchResultsScreen',
+								passProps: { results: res.Resultate },
 								title: "Suchergebnisse"
 							});
-							*/
 						}
 					}
 				)
@@ -175,6 +178,25 @@ export class SearchScreen extends Component {
 						numberOfLines={2}
 						underlineColorAndroid='transparent'
 					/>
+				</View>
+				<View style={{ flexDirection: 'row' }}>
+					<CheckBox
+						value={this.state.checked}
+						onValueChange={() => this.setState({ checked: !this.state.checked, editable: !this.state.editable })}
+					/>
+					<Text style={{ marginTop: 5 }}> Suche speichern?</Text>
+				</View>
+				<View>
+					<TextInput
+						style={styles.input}
+						placeholder={"Name der Suche"}
+						onChangeText={(text) => this.setState({ searchName: text })}
+						value={this.state.searchName}
+						maxLength={30}
+						underlineColorAndroid='transparent'
+						editable={this.state.editable}
+						/>
+						
 				</View>
 				<View style={styles.inputContainer}>
 					<TouchableOpacity
