@@ -20,6 +20,7 @@ import MyOffersScreen from './screens/myOffersScreen';
 import UserRatingsScreen from './screens/userRatingsScreen';
 import SearchResultsScreen from './screens/searchResultsScreen';
 import SavedSearchesScreen from "./screens/savedSearchesScreen";
+import SearchResultsMapScreen from './screens/searchResultsMapScreen';
 
 export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.loginScreen', () => LoginScreen, store, Provider);
@@ -43,6 +44,8 @@ export function registerScreens(store, Provider) {
   Navigation.registerComponent('buylocal.searchResultsScreen', () => SearchResultsScreen, store, Provider);
   Navigation.registerComponent('buylocal.savedSearchesScreen', () => SavedSearchesScreen, store, Provider);
   Navigation.registerComponent('buylocal.userRatingsScreen', () => UserRatingsScreen, store, Provider);
+  Navigation.registerComponent('buylocal.searchResultsMapScreen', () => SearchResultsMapScreen, store, Provider);
+
 }
 
 export function registerScreenVisibilityListener() {

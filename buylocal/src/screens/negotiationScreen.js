@@ -66,8 +66,6 @@ export class NegotiationScreen extends Component {
                     alert("Geschäft bestätigt")
                     
                 }
-                
-
             }
         )
 

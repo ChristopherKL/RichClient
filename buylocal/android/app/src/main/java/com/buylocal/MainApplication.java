@@ -3,6 +3,7 @@ package com.buylocal;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.transistorsoft.rnbackgroundfetch.RNBackgroundFetchPackage;
 import com.imagepicker.ImagePickerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -30,7 +31,8 @@ public class MainApplication extends NavigationApplication {
         return Arrays.<ReactPackage>asList(
             new RNBackgroundFetchPackage(),
             new ImagePickerPackage(),
-            new ReactNativePushNotificationPackage()
+            new ReactNativePushNotificationPackage(),
+            new MapsPackage()
         );
     }
 

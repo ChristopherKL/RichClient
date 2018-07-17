@@ -1,23 +1,49 @@
 import React, { Component } from 'react';
 import {
-  Text,
-  View
+    Text,
+    View,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    FlatList
 } from 'react-native';
 import LoginScreen from './loginScreen'
 import { connect } from 'react-redux';
 import BackgroundFetch from "react-native-background-fetch";
 import createToken from '../apiCom/createToken';
 import executeSavedSearches from '../apiCom/backgroundFetch';
+import getNewestOffers from '../apiCom/getNewestOffers';
 import PushNotification from 'react-native-push-notification';
+
 
 export class HomeScreen extends Component {
     constructor(props) {
         super(props)
+        this.state = {newestNearOffers: [], newestOffers: [], savedSearchRes: []}
     }
 
 
     componentWillReceiveProps(nextProps) {
         if(nextProps.loggedIn) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    getNewestOffers(createToken(nextProps.userData.token, nextProps.serverPublicKey), position.coords.latitude, position.coords.longitude, 5).then(res => {
+                        this.setState({newestNearOffers: res.angebote})
+                    })
+                },
+                (error) => console.log(error.message),
+                { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+            );
+
+            executeSavedSearches(createToken(nextProps.userData.token, nextProps.serverPublicKey)).then(res => {
+                if(typeof res == "string") {
+                    alert("Fehler: "+res);
+                }
+                else {
+                    this.setState({savedSearchRes: res.Resultate})
+                }
+            });
+            
             BackgroundFetch.configure({
                 minimumFetchInterval: 15, // <-- minutes (15 is minimum allowed)
               }, () => {
@@ -36,7 +62,7 @@ export class HomeScreen extends Component {
                                     bigText += element.suchanfrageName + " (" + element.neueAngebot.length + "), "
                             });
                             bigText = bigText.substring(0, bigText.length - 2);
-                            if(bigText != "Suchanfragen: ") {
+                            if(bigText != "Suchanfragen") {
                                 PushNotification.localNotification({
                                     autoCancel: true, // (optional) default: true
                                     largeIcon: "ic_launcher", // (optional) default: "ic_launcher"
@@ -74,12 +100,89 @@ export class HomeScreen extends Component {
             <LoginScreen { ...this.props }/>
         );
     }
-    renderLoggedInScreen() {
+    renderLoggedInScreen = () => ( 
+            <View>
+                <Text style={styles.headline}>Willkommen, {this.props.userData.username}</Text> 
+                <View style={styles.subHeadlineContainer}>
+                    <Text>5 Neuste Angebote (5km Umkreis)</Text> 
+                </View>
+                
+                {this.renderNewestOfferList()}
+            </View>
+            
+
+    )
+
+    renderNewestOfferList = () => {
         return (
-            <Text>Logged in as {this.props.userData.username}</Text>
+            <View style={styles.offerList}>
+                <FlatList
+                    ItemSeparatorComponent={this.renderSeparator}
+                    data={this.state.newestNearOffers}
+                    renderItem={this.renderNewestOffer}
+                    keyExtractor={(item) => "angebot"+item.angebotData.AngebotID}
+                />
+            </View>
         )
     }
+    onOfferPress = (id) => {
+        this.props.navigator.push({
+            screen: 'buylocal.viewOfferScreen',
+            passProps: {offerId: id},
+            title: "Angebot"
+        });
+    }    
+    renderNewestOffer = ({item}) => (
+        <TouchableOpacity
+            onPress={() => this.onOfferPress(item.angebotData.AngebotID)}
+        >
+            <View style={styles.offerContainer}>
+                <Image
+                    style={{width: 40, height: 40}}
+                    source={{uri: 'data:image/jpeg;base64,' + item.angebotData.Bild1}}
+                />
+                <Text>{item.angebotData.Titel}</Text>
+                <Text>{item.angebotData.Preis}</Text>
+                <Text>{(item.dist == undefined) ? null : item.dist.toFixed(2) + "km"}</Text>
+            </View>
+        </TouchableOpacity>
+    )
+    renderSeparator = () => {
+        return (
+          <View
+            style={{
+              height: 1,
+              backgroundColor: "#CED0CE"
+            }}
+          />
+        );
+    };
 }
+
+
+const styles = StyleSheet.create ({
+    headline: {
+        fontSize: 20,
+    },
+    subHeadlineContainer: {
+        paddingTop: 30
+    },
+    offerContainer: {
+        flex: 1, 
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    offerList: {
+
+        margin: 10,
+        borderWidth: 1,
+        borderColor: '#d6d7da',
+        height: 150
+        
+    }
+ })
+
 
 
 

@@ -42,6 +42,7 @@
 		9E646AE2659B4236BC86E341 /* libRNBackgroundFetch.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28354CD3F90244C983BEA27B /* libRNBackgroundFetch.a */; };
 		848E3943738B4864AC41BD29 /* TSBackgroundFetch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 44DC056080624F32B16D4DAD /* TSBackgroundFetch.framework */; };
 		3314EDC3AE12443081F781A4 /* RNBackgroundFetch+AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F87EB751006E43189BE89442 /* RNBackgroundFetch+AppDelegate.m */; };
+		AC8D2E8EBBBF421488C93C0D /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 46F1F6441B7448B29C90222C /* libAirMaps.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -355,6 +356,8 @@
 		28354CD3F90244C983BEA27B /* libRNBackgroundFetch.a */ = {isa = PBXFileReference; name = "libRNBackgroundFetch.a"; path = "libRNBackgroundFetch.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		44DC056080624F32B16D4DAD /* TSBackgroundFetch.framework */ = {isa = PBXFileReference; name = "TSBackgroundFetch.framework"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/TSBackgroundFetch.framework"; sourceTree = SDKROOT; fileEncoding = undefined; lastKnownFileType = wrapper.framework; explicitFileType = undefined; includeInIndex = 0; };
 		F87EB751006E43189BE89442 /* RNBackgroundFetch+AppDelegate.m */ = {isa = PBXFileReference; name = "RNBackgroundFetch+AppDelegate.m"; path = "../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/RNBackgroundFetch+AppDelegate.m"; sourceTree = "<group>"; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; explicitFileType = undefined; includeInIndex = 0; };
+		6BB218A543FE429D9DAFBBA0 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; name = "AirMaps.xcodeproj"; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		46F1F6441B7448B29C90222C /* libAirMaps.a */ = {isa = PBXFileReference; name = "libAirMaps.a"; path = "libAirMaps.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -387,6 +390,7 @@
 				2199D9DE610F4482919F2CAD /* libReactNativeNavigation.a in Frameworks */,
 				9E646AE2659B4236BC86E341 /* libRNBackgroundFetch.a in Frameworks */,
 				848E3943738B4864AC41BD29 /* TSBackgroundFetch.framework in Frameworks */,
+				AC8D2E8EBBBF421488C93C0D /* libAirMaps.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +582,7 @@
 				3867C8CC9CFA40B596BFE627 /* RNImagePicker.xcodeproj */,
 				8DA5FDA9D05E4280A2CCAB7A /* ReactNativeNavigation.xcodeproj */,
 				FC796AB67E92477BA78EA58C /* RNBackgroundFetch.xcodeproj */,
+				6BB218A543FE429D9DAFBBA0 /* AirMaps.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1215,12 +1220,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1247,12 +1254,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1280,6 +1289,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1306,6 +1316,7 @@
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1341,12 +1352,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1382,12 +1395,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1422,12 +1437,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",
@@ -1462,12 +1479,14 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)\..\node_modules\react-native-image-picker\ios",
 					"$(SRCROOT)\..\node_modules\react-native-navigation\ios/**",
 					"$(SRCROOT)/../node_modules/react-native-background-fetch/ios/RNBackgroundFetch/**",
+					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
 				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PROJECT_DIR)/../node_modules/react-native-background-fetch/ios/**",

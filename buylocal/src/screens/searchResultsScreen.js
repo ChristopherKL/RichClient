@@ -21,11 +21,25 @@ export class SearchResultsScreen extends Component {
             title: "Angebot"
         });
     }
+    onMapPress = () =>  {
+        this.props.navigator.push({
+            screen: 'buylocal.searchResultsMapScreen',
+            passProps: { results: this.props.results },
+            title: "Kartenansicht"
+        });
+    }
 
     render() {
         return (
             <View>
                 {this.renderOfferList()}
+                <View style={styles.inputContainer}>
+					<TouchableOpacity
+						style={styles.button}
+						onPress={this.onMapPress}>
+						<Text>Kartenansicht</Text>
+					</TouchableOpacity>
+				</View>
             </View>
         );
     }
@@ -80,7 +94,15 @@ const styles = StyleSheet.create({
     offerList: {
         margin: 10,
         borderWidth: 1,
-    }
+    },
+    button: {
+        alignItems: 'center',
+        backgroundColor: '#DDDDDD',
+        padding: 10,
+    },
+    inputContainer: {
+		padding: 10
+	}
 })
 
 
