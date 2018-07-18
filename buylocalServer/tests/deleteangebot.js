@@ -74,14 +74,12 @@ describe("/post deleteangebot",function() {
 
         });
     after(function(done){
-        var AngebotKategorie = require("../server/models/angebotKategorie");
         var AngebotHashtag= require("../server/models/angebotHashtag");
         var Angebot = require("../server/models/angebot");
         var Hashtag = require("../server/models/hashtag");
         var Kategorie = require("../server/models/kategorie");
         var Benutzer = require("../server/models/benutzer");
 
-        AngebotKategorie.destroy({where:{KategorieID:779}}).then(a=>{
             AngebotHashtag.destroy({where:{[Op.or]:[{HashtagName:"testkategorieDeleteAngebot1"},{HashtagName:"testkategorieDeleteAngebot2"}]}}).then(a=>{
                 Angebot.destroy({where:{Titel:"AngebotDeleteAngebot"}}).then(a=>{
                     Kategorie.destroy({where:{KategorieID:779}}).then(a=>{
@@ -99,7 +97,6 @@ describe("/post deleteangebot",function() {
 
                 });
 
-        });
       });
     it('delete an Angebot',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);

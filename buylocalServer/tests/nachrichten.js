@@ -132,7 +132,6 @@ describe("/Get nachrichten",function() {
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
                 res.body.success.should.be.true;
-                console.log(res.body);
                 done();
             });
     });

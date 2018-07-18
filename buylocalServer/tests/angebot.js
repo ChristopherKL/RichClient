@@ -74,24 +74,19 @@ describe("/Get angebot",function() {
 
         });
     after(function(done){
-        var AngebotKategorie = require("../server/models/angebotKategorie");
         var AngebotHashtag= require("../server/models/angebotHashtag");
         var Angebot = require("../server/models/angebot");
         var Hashtag = require("../server/models/hashtag");
         var Kategorie = require("../server/models/kategorie");
         var Benutzer = require("../server/models/benutzer");
 
-        AngebotKategorie.destroy({where:{KategorieID:778}}).then(a=>{
-            AngebotHashtag.destroy({where:{[Op.or]:[{HashtagName:"testkategorieAngebot1"},{HashtagName:"testkategorieAngebot2"}]}}).then(a=>{
-                Angebot.destroy({where:{Titel:"AngebotAngebot"}}).then(a=>{
-                    Kategorie.destroy({where:{KategorieID:778}}).then(a=>{
-                        Hashtag.destroy({where: {[Op.or]:[{Name:"testkategorieAngebot1"},{Name:"testkategorieAngebot2"}]}}).then(a=>{
-
-                            Benutzer.destroy({
-                                where:{BenutzerName:"TestuserAngebot"}
-                            }).then(a=>{done()});
-
-                            });
+        AngebotHashtag.destroy({where:{[Op.or]:[{HashtagName:"testkategorieAngebot1"},{HashtagName:"testkategorieAngebot2"}]}}).then(a=>{
+            Angebot.destroy({where:{Titel:"AngebotAngebot"}}).then(a=>{
+                Kategorie.destroy({where:{KategorieID:778}}).then(a=>{
+                    Hashtag.destroy({where: {[Op.or]:[{Name:"testkategorieAngebot1"},{Name:"testkategorieAngebot2"}]}}).then(a=>{
+                        Benutzer.destroy({
+                            where:{BenutzerName:"TestuserAngebot"}
+                        }).then(a=>{done()});
 
                         });
 
@@ -99,7 +94,7 @@ describe("/Get angebot",function() {
 
                 });
 
-        });
+            });
       });
     it('request info about Angebot',function(done){
         var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);

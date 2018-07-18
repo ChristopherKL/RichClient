@@ -89,6 +89,8 @@ CREATE TABLE `Angebot` (
   `BenutzerID` int(11) NOT NULL,
   `KategorieID`int(11) NOT NULL,
   `reg_date` datetime NOT NULL,
+  `lon` varchar(100) DEFAULT NULL,
+  `lat` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`AngebotID`),
   KEY `fk_Angebot_1_idx` (`BenutzerID`),
   CONSTRAINT `fk_Angebot_1` FOREIGN KEY (`BenutzerID`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE CASCADE ON UPDATE NO ACTION,

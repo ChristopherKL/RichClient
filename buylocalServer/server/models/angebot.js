@@ -17,6 +17,8 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
   Hausnummer: Sequelize.STRING,
   BenutzerID:Sequelize.INTEGER,
   KategorieID: Sequelize.INTEGER,
-  reg_date: Sequelize.DATE,
+  reg_date: {type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('last_login')).format('DD.MM.YYYY')}},
+  lat: Sequelize.STRING,
+  lon: Sequelize.STRING
 },{tableName: 'Angebot', timestamps:false});
 module.exports = Angebot;

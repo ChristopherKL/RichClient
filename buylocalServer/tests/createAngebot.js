@@ -51,14 +51,12 @@ describe("/POSt createangebot",function() {
         });
     });
     after(function(done){   
-        var AngebotKategorie = require("../server/models/angebotKategorie");
         var AngebotHashtag= require("../server/models/angebotHashtag");
         var Angebot = require("../server/models/angebot");
         var Hashtag = require("../server/models/hashtag");
         var Kategorie = require("../server/models/kategorie");
         var Benutzer = require("../server/models/benutzer");
 
-        AngebotKategorie.destroy({where:{KategorieID:777}}).then(a=>{
             AngebotHashtag.destroy({where:{[Op.or]:[{HashtagName:"testhashtag1"},{HashtagName:"testhashtag2"},{HashtagName:"testhashtag3"}]}}).then(a=>{
                 Angebot.destroy({where:{Titel:"Angebot 1"}}).then(a=>{
                     Kategorie.destroy({where:{KategorieID:777}}).then(a=>{
@@ -76,7 +74,6 @@ describe("/POSt createangebot",function() {
 
                 });
 
-        });
     });
 
       it('create Angebot',(done)=>{

@@ -25,6 +25,7 @@ var Verhandlung = require("./server/models/verhandlung");
 var Suchanfrage = require("./server/models/suchanfrage");
 var BereitsAngezeigt = require("./server/models/bereitsangezeigt");
 
+const { NominatimJS } = require('nominatim-js');
 
 Verhandlung.hasMany(Nachricht, {as: "ungelesene", foreignKey: "VerhandlungID"});
 Nachricht.belongsTo(Verhandlung, {as: "ungelesene", foreignKey: "VerhandlungID"});
@@ -60,6 +61,8 @@ Angebot.belongsToMany(Hashtag, {
     otherKey: 'HashtagName'
   });
 
+
+ 
 const Op = Sequelize.Op;
 
 api.use(bodyParser.urlencoded({ extended: false }));
@@ -69,6 +72,66 @@ api.post('/deleteuser', function(req,res){
 
 })
 
+
+
+
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//:::                                                                         :::
+//:::  This routine calculates the distance between two points (given the     :::
+//:::  latitude/longitude of those points). It is being used to calculate     :::
+//:::  the distance between two locations using GeoDataSource (TM) prodducts  :::
+//:::                                                                         :::
+//:::  Definitions:                                                           :::
+//:::    South latitudes are negative, east longitudes are positive           :::
+//:::                                                                         :::
+//:::  Passed to function:                                                    :::
+//:::    lat1, lon1 = Latitude and Longitude of point 1 (in decimal degrees)  :::
+//:::    lat2, lon2 = Latitude and Longitude of point 2 (in decimal degrees)  :::
+//:::    unit = the unit you desire for results                               :::
+//:::           where: 'M' is statute miles (default)                         :::
+//:::                  'K' is kilometers                                      :::
+//:::                  'N' is nautical miles                                  :::
+//:::                                                                         :::
+//:::  Worldwide cities and other features databases with latitude longitude  :::
+//:::  are available at https://www.geodatasource.com                          :::
+//:::                                                                         :::
+//:::  For enquiries, please contact sales@geodatasource.com                  :::
+//:::                                                                         :::
+//:::  Official Web site: https://www.geodatasource.com                        :::
+//:::                                                                         :::
+//:::               GeoDataSource.com (C) All Rights Reserved 2017            :::
+//:::                                                                         :::
+//:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+function distance(lat1, lon1, lat2, lon2, unit) {
+	var radlat1 = Math.PI * lat1/180
+	var radlat2 = Math.PI * lat2/180
+	var theta = lon1-lon2
+	var radtheta = Math.PI * theta/180
+	var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+	if (dist > 1) {
+		dist = 1;
+	}
+	dist = Math.acos(dist)
+	dist = dist * 180/Math.PI
+	dist = dist * 60 * 1.1515
+	if (unit=="K") { dist = dist * 1.609344 }
+	if (unit=="N") { dist = dist * 0.8684 }
+	return dist
+}
+
+async function search(street, streetNum, zip) {
+    let results = await NominatimJS.search({
+        q: street + ' ' + streetNum + ' ' + zip
+    });
+    console.log(results);
+    if(results[0] == undefined) {
+        return null;
+    }
+    else {
+        return {long: results[0].lon, lat: results[0].lat};
+    }
+}
 
 buildSearchQuery = (req) => {
     let queryIncludes = [], whereConds = {}, queryData = {};
@@ -101,6 +164,41 @@ buildSearchQuery = (req) => {
     return queryData;
 }
 
+
+
+api.post('/neusteAngebote', function(req,res){
+    if(req.body.Token&&req.body.lat&&req.body.lon&&req.body.limit){
+      var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+      var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+        decryptedToken = jwt.verify(decryptedToken,secret);
+        var current_time = Date.now()/1000;
+        if(decryptedToken.exp>current_time ){
+          Angebot.findAll({order:[['reg_date', 'ASC']]}).then(angebote=>{
+              let found = 0, resAngebote = [], dist;
+
+              angebote.forEach(angebot => {
+                  if(found == 5) {
+                    res.json({success: true, angebote: resAngebote})  
+                    return;
+                  }
+                  dist = distance(req.body.lat, req.body.lon, angebot.lat, angebot.lon, 'K')
+                  if(dist <= req.body.limit) {
+                        resAngebote.push({dist: dist, angebotData: angebot});
+                        found++;
+                  }
+
+              })
+              res.json({success: true, angebote: resAngebote})
+          })
+        }else{
+          res.json({success:false, message:"Token abgelaufen"});
+        }
+
+  
+    }else{
+      res.json({success:false,message:"Fehlerhafte Anfrage"});
+    }
+  })
 //needs Token
 //optional HashtagArray(array with names of hashtags), KategorieID, PLZ, MaxPreis, MinPreis, Suchbegriff
 //return's Id, Preis,Titel,Bild1 from every Angebot
@@ -433,7 +531,7 @@ api.post('/checkverhandlung', function(req,res){
 api.get("/verhandlungen/:Token", function (req,res){
   var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
   var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-
+  try{
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
@@ -465,7 +563,9 @@ api.get("/verhandlungen/:Token", function (req,res){
     }else{
       res.json({success:false, message:"Token abgelaufen"});
     }
-
+  }catch{
+    res.json({success:false, message:"Token falsch"});
+  }
 })
 //needs Id of Verhandlung, Valid Token of a User+16 random Chars encrypted with the public Key of Server
 //returns an Array with every send Nachricht of the Verhandlung
@@ -911,64 +1011,73 @@ api.post('/createangebot', function (req,res){
       var current_time = Date.now()/1000;
       var finalAngebot;
       if(decryptedToken.exp>current_time ){
-          Angebot.create({
-            BenutzerID:decryptedToken.BenutzerID,
-            Titel:req.body.Titel,
-            Preis:req.body.Preis,
-            Bild1:req.body.Bild1,
-            Bild2:req.body.Bild2,
-            Bild3:req.body.Bild3,
-            Bild4:req.body.Bild4,
-            Bild5:req.body.Bild5,
-            PLZ:req.body.Straße,
-            Straße:req.body.Straße,
-            Hausnummer:req.body.Hausnummer,
-            Beschreibung:req.body.Beschreibung,
-            KategorieID: req.body.KategorieID,
-            reg_date: Date.now()
-          }).then(angebot=>{
-            if(angebot){
-              finalAngebot=angebot;
-              Kategorie.findOne({
-                where:{KategorieID:req.body.KategorieID}
-              }).then(kategorie =>{
-                  if(!req.body.Hashtags){
-                    res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
-                  }
-              });
-              if(req.body.Hashtags){
-                for(var i=0;i<req.body.Hashtags.length;i++){
-                    var selectedHashtag=req.body.Hashtags[i];
-                    Hashtag.findOrCreate({
-                      where:{Name:selectedHashtag}
-                    }).then(hashtag=>{
-                      if(!hashtag[1]){
-                        Hashtag.update({NutzungsAnz:hashtag[0].NutzungsAnz+1},{where:{Name:hashtag[0].Name}});
-                          if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
-                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
-                              res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
-                            })
-                          }else{
-                          AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
-                          }
-                        
-                      }else{
-                        Hashtag.update({NutzungsAnz:1},{where:{Name:hashtag[0] .Name}});
-                          if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
-                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
-                              res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
-                            })
-                          }else{
-                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
-                          }
-                      }
-                    });
-                }
-              }
-            }else{
-              res.json({success:false,message:"Angebot konnte nicht erstellt werden"});
+        search(req.body.Straße, req.body.Hausnummer, req.body.PLZ).then(coordRes => {
+            if(coordRes == null) {
+                res.json({success:false,message:"Adresse nicht gefunden"});
+                return;
             }
-          })
+            Angebot.create({
+                BenutzerID:decryptedToken.BenutzerID,
+                Titel:req.body.Titel,
+                Preis:req.body.Preis,
+                Bild1:req.body.Bild1,
+                Bild2:req.body.Bild2,
+                Bild3:req.body.Bild3,
+                Bild4:req.body.Bild4,
+                Bild5:req.body.Bild5,
+                PLZ:req.body.PLZ,
+                Straße:req.body.Straße,
+                Hausnummer:req.body.Hausnummer,
+                Beschreibung:req.body.Beschreibung,
+                KategorieID: req.body.KategorieID,
+                reg_date: Date.now(),
+                lat: coordRes.lat,
+                lon: coordRes.long
+            }).then(angebot=>{
+                if(angebot){
+                finalAngebot=angebot;
+                Kategorie.findOne({
+                    where:{KategorieID:req.body.KategorieID}
+                }).then(kategorie =>{
+                    if(!req.body.Hashtags){
+                        res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
+                    }
+                });
+                if(req.body.Hashtags){
+                    for(var i=0;i<req.body.Hashtags.length;i++){
+                        var selectedHashtag=req.body.Hashtags[i];
+                        Hashtag.findOrCreate({
+                        where:{Name:selectedHashtag}
+                        }).then(hashtag=>{
+                        if(!hashtag[1]){
+                            Hashtag.update({NutzungsAnz:hashtag[0].NutzungsAnz+1},{where:{Name:hashtag[0].Name}});
+                            if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
+                                AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
+                                res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
+                                })
+                            }else{
+                            AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
+                            }
+                            
+                        }else{
+                            Hashtag.update({NutzungsAnz:1},{where:{Name:hashtag[0] .Name}});
+                            if(hashtag[0].Name==req.body.Hashtags[req.body.Hashtags.length-1]){
+                                AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name}).then(angebotHashtag=>{
+                                res.json({success:true,message:"Angebot erstellt",AngebotID:finalAngebot.AngebotID});
+                                })
+                            }else{
+                                AngebotHashtag.create({AngebotID:angebot.AngebotID, HashtagName:hashtag[0].Name})
+                            }
+                        }
+                        });
+                    }
+                }
+                
+                }else{
+                res.json({success:false,message:"Angebot konnte nicht erstellt werden"});
+                }
+            })
+        })
       }else{
         res.json({success:false, message:"Token abgelaufen"});
       }
@@ -1020,3 +1129,4 @@ var server = api.listen(8081, function (){
 
   console.log("Example app listening at http://%s:%s", host, port)
 })
+
