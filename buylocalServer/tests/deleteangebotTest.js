@@ -56,8 +56,8 @@ describe("/post deleteangebot",function() {
                             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
                             Preis:99.99,
                             PLZ:"47228",
-                            Straße:"Traumallee",
-                            Hausnummer:"11",
+                            Straße:"kahlacker",
+                            Hausnummer:"29",
                             KategorieID:779,
                             Hashtags:["testkategorieDeleteAngebot1","testkategorieDeleteAngebot2"]
                         }

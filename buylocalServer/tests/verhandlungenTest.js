@@ -119,9 +119,8 @@ describe("/Get verhandlungen",function() {
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');
                 res.body.success.should.be.true;
-                res.body.should.have.property("VerhandlungenAbsender");
-                var absenderarray=JSON.parse(res.body.VerhandlungenAbsender);
-                absenderarray[0].Verhandlung.VerhandlungID.should.equal(222);
+                res.body.should.have.property("negs");
+                res.body.negs[0].VerhandlungID.should.be.within(221,222);
                 done();
             });
     });

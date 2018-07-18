@@ -1,5 +1,6 @@
 
 const Sequelize = require('sequelize');
+const moment = require('moment');
 const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'localhost', dialect:"mysql",logging:false});
 
  const Angebot= sequelize.define('Angebot',{

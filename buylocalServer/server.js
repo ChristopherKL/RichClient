@@ -124,7 +124,6 @@ async function search(street, streetNum, zip) {
     let results = await NominatimJS.search({
         q: street + ' ' + streetNum + ' ' + zip
     });
-    console.log(results);
     if(results[0] == undefined) {
         return null;
     }

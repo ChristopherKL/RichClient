@@ -85,8 +85,8 @@ describe("/POSt createangebot",function() {
             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
             PLZ:"47228",
             Preis:99.99,
-            Straße:"Traumallee",
-            Hausnummer:"11",
+            Straße:"Kahlacker",
+            Hausnummer:"29",
             KategorieID:777
         }
         chai.request("http://localhost:8081")
@@ -102,19 +102,14 @@ describe("/POSt createangebot",function() {
                 res.body.message.should.equal("Angebot erstellt");
                 res.body.should.have.property("AngebotID");
                 var Angebot = require("../server/models/angebot");
-                var AngebotKategorie = require("../server/models/angebotKategorie");
                 Angebot.findOne({
                     where:{AngebotID:res.body.AngebotID}
                 }).then(angebot =>{
                     angebot.Titel.should.equal("Angebot 1");
                     angebot.Preis.should.equal("99.99");
-                    angebot.Straße.should.equal("Traumallee");
-                    angebot.Hausnummer.should.equal("11");
-                    AngebotKategorie.findOne({where:{AngebotID:angebot.AngebotID}}).then(angebotKategorie =>{
-                        angebotKategorie.KategorieID.should.equal(777);
-                        angebotKategorie.AngebotID.should.equal(angebot.AngebotID);
-                        done();
-                    });
+                    angebot.Straße.should.equal("Kahlacker");
+                    angebot.Hausnummer.should.equal("29");
+                    done();
                 })
             });
       });
@@ -127,8 +122,8 @@ describe("/POSt createangebot",function() {
             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
             PLZ:"47228",
             Preis:99.99,
-            Straße:"Traumallee",
-            Hausnummer:"11",
+            Straße:"Kahlacker",
+            Hausnummer:"29",
             KategorieID:777,
             Hashtags:["testhashtag1"]
         }
@@ -144,7 +139,6 @@ describe("/POSt createangebot",function() {
                 res.body.message.should.equal("Angebot erstellt");
                 res.body.should.have.property("AngebotID");
                 var Angebot = require("../server/models/angebot");
-                var AngebotKategorie = require("../server/models/angebotKategorie");
                 var AngebotHashtag= require("../server/models/angebotHashtag");
                 var Hashtag= require("../server/models/hashtag");
                 Angebot.findOne({
@@ -152,12 +146,8 @@ describe("/POSt createangebot",function() {
                 }).then(angebot =>{
                     angebot.Titel.should.equal("Angebot 1");
                     angebot.Preis.should.equal("99.99");
-                    angebot.Straße.should.equal("Traumallee");
-                    angebot.Hausnummer.should.equal("11");
-                    AngebotKategorie.findOne({where:{AngebotID:angebot.AngebotID}}).then(angebotKategorie =>{
-                        angebotKategorie.KategorieID.should.equal(777);
-                        angebotKategorie.AngebotID.should.equal(angebot.AngebotID);
-                    });
+                    angebot.Straße.should.equal("Kahlacker");
+                    angebot.Hausnummer.should.equal("29");
                     AngebotHashtag.findOne({where:{AngebotID:angebot.AngebotID, HashtagName:"testhashtag1"}}).then(angebotHashtag=>{
                         angebotHashtag.should.exist;
                     });
@@ -177,8 +167,8 @@ describe("/POSt createangebot",function() {
             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
             Preis:99.99,
             PLZ:"47228",
-            Straße:"Traumallee",
-            Hausnummer:"11",
+            Straße:"Kahlacker",
+            Hausnummer:"29",
             KategorieID:777,
             Hashtags:["testhashtag1","testhashtag2","testhashtag3"]
         }
@@ -194,7 +184,6 @@ describe("/POSt createangebot",function() {
                 res.body.message.should.equal("Angebot erstellt");
                 res.body.should.have.property("AngebotID");
                 var Angebot = require("../server/models/angebot");
-                var AngebotKategorie = require("../server/models/angebotKategorie");
                 var AngebotHashtag= require("../server/models/angebotHashtag");
                 var Hashtag= require("../server/models/hashtag");
                 Angebot.findOne({
@@ -202,12 +191,8 @@ describe("/POSt createangebot",function() {
                 }).then(angebot =>{
                     angebot.Titel.should.equal("Angebot 1");
                     angebot.Preis.should.equal("99.99");
-                    angebot.Straße.should.equal("Traumallee");
-                    angebot.Hausnummer.should.equal("11");
-                    AngebotKategorie.findOne({where:{AngebotID:angebot.AngebotID}}).then(angebotKategorie =>{
-                        angebotKategorie.KategorieID.should.equal(777);
-                        angebotKategorie.AngebotID.should.equal(angebot.AngebotID);
-                    });
+                    angebot.Straße.should.equal("Kahlacker");
+                    angebot.Hausnummer.should.equal("29");
                     AngebotHashtag.findOne({where:{AngebotID:angebot.AngebotID, HashtagName:"testhashtag1"}}).then(angebotHashtag=>{
                         angebotHashtag.should.exist;
                     });
@@ -238,8 +223,8 @@ describe("/POSt createangebot",function() {
             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
             Preis:99.99,
             PLZ:"47228",
-            Straße:"Traumallee",
-            Hausnummer:"11",
+            Straße:"Kahlacker",
+            Hausnummer:"29",
             Kategorie:"testkategorie",
         }
         chai.request("http://localhost:8081")
@@ -255,6 +240,32 @@ describe("/POSt createangebot",function() {
                 done();
             });
       });
+      it('try with not existent address',(done)=>{
+        var randomString = (Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)).substring(0,16);
+        var encryptedToken=cryptico.encrypt(token+randomString, keyFromServerAsString).cipher;
+        var requestCreateAngebot={
+            Token:encryptedToken,
+            Titel:"test1",
+            Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
+            Preis:99.99,
+            PLZ:"47228",
+            Straße:"blablastraße",
+            Hausnummer:"29",
+            KategorieID:777
+        }
+        chai.request("http://localhost:8081")
+            .post("/createangebot")
+            .send(requestCreateAngebot)
+            .end((err,res)=>{
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.should.have.property('success');
+                res.body.success.should.not.be.true;
+                res.body.should.have.property("message");
+                res.body.message.should.equal("Adresse nicht gefunden");
+                done();             
+        });    
+      });
       it('try create with defect Token',(done)=>{
         var encryptedToken=cryptico.encrypt(token, keyFromServerAsString).cipher;
         var requestCreateAngebot={
@@ -263,8 +274,8 @@ describe("/POSt createangebot",function() {
             Bild1:"LANGER BILDTEXT FÜR TEST IST DIE LÄNGE ABER ERSTMAL EGAL",
             Preis:99.99,
             PLZ:"47228",
-            Straße:"Traumallee",
-            Hausnummer:"11",
+            Straße:"Kahlacker",
+            Hausnummer:"29",
             KategorieID:777
         }
         chai.request("http://localhost:8081")
