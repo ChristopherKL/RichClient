@@ -11,7 +11,6 @@ export default async function getNegotiation(token, negId, myAESKEyCipher, myKey
         aesKey = cryptico.decrypt(myAESKEyCipher, myKeyPair).plaintext
         aesKey = base64.toByteArray(aesKey);
 
-
         let response = await fetch(
             'http://karlspi.ddnss.de:8081/nachrichten/'+negId+'/'+encodeURIComponent(token)
         );
