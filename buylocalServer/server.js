@@ -24,6 +24,7 @@ var Bewertung = require("./server/models/bewertung");
 var Verhandlung = require("./server/models/verhandlung");
 var Suchanfrage = require("./server/models/suchanfrage");
 var BereitsAngezeigt = require("./server/models/bereitsangezeigt");
+var Meldung = require("./server/models/Meldung");
 
 const { NominatimJS } = require('nominatim-js');
 
@@ -312,9 +313,9 @@ api.get('/suchanfragenListe/:Token', function (req,res) {
 })
 
 api.get('/suchanfragenAusfuehren/:Token', function (req,res){
-  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
-  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
-  try{
+    var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
@@ -356,6 +357,14 @@ api.post('/angebotmelden', function(req,res){
       decryptedToken = jwt.verify(decryptedToken,secret);
       var current_time = Date.now()/1000;
       if(decryptedToken.exp>current_time ){
+        Meldung.create({
+          Datum:Date.now(),
+          Angebot:req.body.AngebotID,
+          Grund:req.body.Grund,
+          Melder:decryptedToken.BenutzerID
+        }).then(meldung=>{
+          res.json({success:true,MeldungID:meldung.MeldungID})
+        })
 
       }else{
         res.json({success:false, message:"Token abgelaufen"});
