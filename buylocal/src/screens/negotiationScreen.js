@@ -39,7 +39,7 @@ export class NegotiationScreen extends Component {
                     );
             }
         )
-        this.setState({isSender: true});
+        this.setState({isSender: isSender});
     }
 
     getMessages() {
