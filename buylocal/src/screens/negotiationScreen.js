@@ -19,11 +19,14 @@ export class NegotiationScreen extends Component {
         this.state = {partnerConfirmed: null, confirmed: null, rated: null, isSender: null, negData: null, messages: [] , imgs: [], hashtags: []};
     }
     componentDidMount() {
-        if((this.props.userData.username === this.props.negData.sender.BenutzerName))
-            this.setState({isSender: true});
+        let isSender = false;
+        if((this.props.userData.username === this.props.negData.sender.BenutzerName)) {
+            isSender = true;
+        }
+            
         
         getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negData.VerhandlungID,
-        (this.isSender) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel, this.props.userData.keyPair).then(
+        (isSender) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel, this.props.userData.keyPair).then(
             (res) => {
                 this.props.negData.Bewertung.forEach((rating) => {
                     if(rating.Bewerter == this.props.userData.id) {
@@ -31,16 +34,17 @@ export class NegotiationScreen extends Component {
                     }
                 })
                 this.setState({messages: res.Nachrichten,
-                    confirmed: (this.state.isSender) ? this.props.negData.AbsenderCheck : this.props.negData.EmpfängerCheck,
-                    partnerConfirmed: (this.state.isSender) ? this.props.negData.EmpfängerCheck : this.props.negData.AbsenderCheck},
+                    confirmed: (isSender) ? this.props.negData.AbsenderCheck : this.props.negData.EmpfängerCheck,
+                    partnerConfirmed: (isSender) ? this.props.negData.EmpfängerCheck : this.props.negData.AbsenderCheck},
                     );
             }
         )
+        this.setState({isSender: true});
     }
 
     getMessages() {
         getNegotiation(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.negData.VerhandlungID,
-        (this.isSender) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel, this.props.userData.keyPair).then(
+        (this.state.isSender) ? this.props.negData.AbsenderSchlüssel : this.props.negData.EmpfängerSchlüssel, this.props.userData.keyPair).then(
             (res) => {
                 this.setState({messages: res.Nachrichten});
             }
@@ -76,7 +80,7 @@ export class NegotiationScreen extends Component {
             passProps: { onChangedNeg: this.props.onChangedNeg, 
                 updateCallback: () => { this.setState({rated: true}) },
                 negId: this.props.negData.VerhandlungID,
-                recipient: (this.isSender) ? this.props.negData.Empfänger : this.props.negData.Absender,
+                recipient: (this.state.isSender) ? this.props.negData.Empfänger : this.props.negData.Absender,
             },
             title: "Nutzer bewerten"
         });
