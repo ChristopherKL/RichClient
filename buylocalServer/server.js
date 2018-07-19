@@ -621,8 +621,17 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
             var queryProms = [];
             for(var i=0;i<nachrichten.length;i++){
               nachrichtenArray.push(nachrichten[i].get(0));
-              console.log(nachrichten[i].get(0).Gelesen.indexOf('date'));
-              if(!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID&&nachrichten[i].get(0).Gelesen.indexOf('date')>-1){
+              if(nachrichten[i].get(0).Gelesen.indexOf('date')){
+                console.log("test2 bestanden");
+                
+              }
+              console.log(nachrichten[i].get(0).Absender);
+              console.log(decryptedToken.BenutzerID);
+              
+              if(!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID){
+                console.log("test1 bestanden");
+              }
+              if((!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID)&&(nachrichten[i].get(0).Gelesen.indexOf('date')>-1)){
                 console.log("erfolg");
                 queryproms.push(Nachricht.update({Gelesen:Date.now()},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
               }
