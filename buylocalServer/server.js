@@ -524,10 +524,10 @@ api.post('/checkverhandlung', function(req,res){
       if(decryptedToken.exp>current_time ){
         Verhandlung.findOne({where:{VerhandlungID:req.body.VerhandlungID}}).then(verhandlung=>{
           if(verhandlung){
+            var prevVerhandlung=verhandlung;
             if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                console.log(verhandlung.get(0).EmpfängerCheck);
-                if(verhandlung.get(0).EmpfängerCheck){
+                if(prevVerhandlungEmpfängerCheck){
                   Angebot.destroy({where:{AngebotID:verhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
@@ -536,9 +536,8 @@ api.post('/checkverhandlung', function(req,res){
                 }
               })
             }else if(verhandlung.Empfänger==decryptedToken.BenutzerID){
-              console.log(verhandlung.get(0).AbsenderCheck);
               Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                if(verhandlung.get(0).AbsenderCheck){
+                if(prevVerhandlung.AbsenderCheck){
                   Angebot.destroy({where:{AngebotID:verhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
