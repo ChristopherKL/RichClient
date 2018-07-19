@@ -1,7 +1,7 @@
 export default async function confirmNegotiation (token, negID) {
     try {
       let response = await fetch(
-        'http://karlpi:8081/checkverhandlung',
+        'http://karlspi.ddnss.de:8081/checkverhandlung',
         {
           method: 'POST',
           headers: {

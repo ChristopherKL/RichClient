@@ -19,7 +19,7 @@ export default async function beginNegotiation (token, offerId, negTitel, recId,
 
     try {
       let response = await fetch(
-        'http://karlpi:8081/beginverhandlung',
+        'http://karlspi.ddnss.de:8081/beginverhandlung',
         {
           method: 'POST',
           headers: {

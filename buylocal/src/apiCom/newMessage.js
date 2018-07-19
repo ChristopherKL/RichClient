@@ -16,7 +16,7 @@ export default async function newMessage (token, negID, plainMsg, myAESKEyCipher
       encrypted = aesCtr.encrypt(toEncrypt);
       
       let response = await fetch(
-        'http://karlpi:8081/writenachricht',
+        'http://karlspi.ddnss.de:8081/writenachricht',
         {
           method: 'POST',
           headers: {

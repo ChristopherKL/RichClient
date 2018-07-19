@@ -1,7 +1,7 @@
 export default async function deleteOffer (token, offerId) {
     try {
       let response = await fetch(
-        'http://karlpi:8081/deleteangebot',
+        'http://karlspi.ddnss.de:8081/deleteangebot',
         {
           method: 'POST',
           headers: {

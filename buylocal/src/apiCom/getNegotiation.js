@@ -13,7 +13,7 @@ export default async function getNegotiation(token, negId, myAESKEyCipher, myKey
 
 
         let response = await fetch(
-            'http://karlpi:8081/nachrichten/'+negId+'/'+encodeURIComponent(token)
+            'http://karlspi.ddnss.de:8081/nachrichten/'+negId+'/'+encodeURIComponent(token)
         );
         console.log("got res");
   

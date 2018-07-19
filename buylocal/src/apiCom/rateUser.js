@@ -1,7 +1,7 @@
 export default async function rateUser (token, negID, partnerID, starNum, text) {
     try {
       let response = await fetch(
-        'http://karlpi:8081/bewerten',
+        'http://karlspi.ddnss.de:8081/bewerten',
         {
           method: 'POST',
           headers: {
