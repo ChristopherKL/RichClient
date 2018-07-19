@@ -254,7 +254,7 @@ api.get('/suchanfrageAusfuehren/:suchanfrageID/:Token', function (req, res) {
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
-	    Suchanfrage.findOne({where: {SuchanfrageID: req.params.suchanfrageID, BenutzerID:decryptedToken.ID}}).then((anfrage) => {
+	    Suchanfrage.findOne({where: {SuchanfrageID: req.params.suchanfrageID, BenutzerID:decryptedToken.BenutzerID}}).then((anfrage) => {
 		    if(!anfrage) {
 			    res.json({success: false, message: "Suchanfrage existiert nicht"})
 			    return
@@ -344,6 +344,27 @@ api.get('/suchanfragenAusfuehren/:Token', function (req,res){
     } 
   }catch{
     res.json({success:false, message:"Token falsch"});
+  }
+});
+
+
+api.post('/angebotmelden', function(req,res){
+  if(req.body.Token&&req.body.AngebotID&&req.body.Grund){
+    var decryptedTokenWithExtra = cryptico.decrypt(req.body.Token,key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
+    try{
+      decryptedToken = jwt.verify(decryptedToken,secret);
+      var current_time = Date.now()/1000;
+      if(decryptedToken.exp>current_time ){
+
+      }else{
+        res.json({success:false, message:"Token abgelaufen"});
+      }
+    }catch{
+      res.json({success:false,message:"Token nicht entschlüsselbar"});
+    }
+  }else{
+    res.json({success:false,message:"Fehlerhafte Anfrage"});
   }
 });
 
