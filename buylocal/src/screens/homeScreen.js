@@ -104,7 +104,7 @@ export class HomeScreen extends Component {
             <View>
                 <Text style={styles.headline}>Willkommen, {this.props.userData.username}</Text> 
                 <View style={styles.subHeadlineContainer}>
-                    <Text>5 Neuste Angebote (5km Umkreis)</Text> 
+                    <Text>Fünf Neuste Angebote (5km Umkreis)</Text> 
                 </View>
                 
                 {this.renderNewestOfferList()}
@@ -165,6 +165,7 @@ const styles = StyleSheet.create ({
         fontSize: 20,
     },
     subHeadlineContainer: {
+        margin: 10,
         paddingTop: 30
     },
     offerContainer: {

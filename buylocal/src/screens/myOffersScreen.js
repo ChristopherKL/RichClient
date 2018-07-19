@@ -43,7 +43,7 @@ export class MyOffersScreen extends Component {
                 }
                 else {
                     this.getCurrentOffers();
-                    alert("angebot geloescht");
+                    alert("Angebot geloescht");
                 }           
             }
 
@@ -70,7 +70,7 @@ export class MyOffersScreen extends Component {
         return (
             <View>
                 <View style={styles.headlineContainer}>
-                    <Text>Meine Angebot</Text>
+                    <Text>Meine Angebote</Text>
                 </View>
                 {this.renderOfferList()}
 
