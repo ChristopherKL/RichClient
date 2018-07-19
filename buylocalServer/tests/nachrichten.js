@@ -144,7 +144,6 @@ describe("/Get nachrichten",function() {
         chai.request("http://localhost:8081")
         .get("/nachrichten/"+verhandlungId+"/"+encryptedToken)
         .end((err,res)=>{
-            console.log(res.body);
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.should.have.property('success');

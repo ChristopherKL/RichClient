@@ -584,7 +584,6 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
               }
             }
             Promise.all(queryProms).then(() => {
-              console.log(nachrichtenArray);
                 res.json({success:true, Nachrichten:nachrichtenArray});
             })
           })

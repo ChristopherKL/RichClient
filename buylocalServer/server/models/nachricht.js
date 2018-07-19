@@ -7,7 +7,7 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
   VerhandlungID: Sequelize.INTEGER,
   Text: Sequelize.STRING,
   Absender: Sequelize.INTEGER,
-  Gelesen:{type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('last_login')).format('HH:MM DD.MM.YYYY')}},
-  Datum: {type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('last_login')).format('HH:MM DD.MM.YYYY')}},
+  Gelesen:{type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('Gelesen')).format('HH:MM DD.MM.YYYY')}},
+  Datum: {type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('Datum')).format('HH:MM DD.MM.YYYY')}},
 },{tableName: 'Nachricht', timestamps:false});
 module.exports = Nachricht;

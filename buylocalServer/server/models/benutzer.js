@@ -10,6 +10,6 @@ const sequelize = new Sequelize("buylocal","buylocalAPI","buyl0cal",{host: 'loca
   Passwort: Sequelize.STRING,
   PublicKey: Sequelize.STRING,
   last_login: {type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('last_login')).format('DD.MM.YYYY')}},
-  reg_date: {type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('last_login')).format('DD.MM.YYYY')}},
+  reg_date: {type:Sequelize.DATE,    get: function() {return moment.utc(this.getDataValue('reg_date')).format('DD.MM.YYYY')}},
 },{tableName: 'Benutzer', timestamps:false});
 module.exports = Benutzer;
