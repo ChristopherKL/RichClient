@@ -9,13 +9,15 @@ import {
 import {connect} from 'react-redux';
 import createToken from '../apiCom/createToken';
 import getOffer from '../apiCom/getOffer';
+import createReport from '../apiCom/createReport';
+import Prompt from 'rn-prompt';
 
 
 
 export class ViewOfferScreen extends Component {
     constructor(props) {
         super(props)
-        this.state = {imgs: [], hashtags: []};
+        this.state = {imgs: [], hashtags: [], reported: false};
     }
     componentDidMount() {
         getOffer(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.offerId).then(
@@ -49,8 +51,8 @@ export class ViewOfferScreen extends Component {
             title: "AngebotsBild"
         });
     }
-    onHashPress = (item) => {
-        alert(item);
+    onReportPress = () => {
+        this.setState({reported:true})
     }
     onUserPress = () => {
         this.props.navigator.push({
@@ -68,6 +70,17 @@ export class ViewOfferScreen extends Component {
         });
 
     }
+    doReport(reason) {
+        createReport(createToken(this.props.userData.token, this.props.serverPublicKey), this.props.offerId, reason).then((res) => {
+            if(typeof res == "string") {
+                alert("Fehler: "+ res);
+            }
+            else {
+                alert("Gemeldet!");
+            }
+            this.setState({reported: false})
+        })
+    }
     render() {
         return (
             <View>
@@ -75,6 +88,14 @@ export class ViewOfferScreen extends Component {
                    <Text style={styles.headline}>{this.state.name}</Text>
                 </View>
 
+            <Prompt
+                title="Nutzer melden"
+                placeholder="Grund..."
+                submitText="Melden"
+                cancelText="Abbrechen"
+                visible={ this.state.reported }
+                onCancel={ () => this.setState({reported: false}) }
+                onSubmit={ (value) => this.doReport(value) }/>
                 <View style={styles.imageContainer}>
                     {this.renderImagesList()}
                 </View>
@@ -98,12 +119,13 @@ export class ViewOfferScreen extends Component {
                     <Text>{this.state.desc}</Text>
                 </View>
                 {this.renderNegButton()}
+                {(this.props.userData.id == this.state.insertUserid) ? null : 
                 <TouchableOpacity
                             style={styles.button}
-                            onPress={this.onPress}
+                            onPress={this.onReportPress}
                 >
                     <Text>Angebot melden</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
         );
     }
@@ -138,14 +160,9 @@ export class ViewOfferScreen extends Component {
     )
     renderHashtagList = () => (
         this.state.hashtags.map((value, index) => (
-            <TouchableOpacity
-                onPress={() => this.onHashPress(value)}
-                key={index}
-            >
                 <View style={{backgroundColor: 'lightgrey', marginRight: 5}}>
                     <Text>{value}</Text>
                 </View>
-            </TouchableOpacity>
             )
         )
     )

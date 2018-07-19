@@ -12,6 +12,7 @@
     "react": "16.3.1",
     "react-native": "0.55.4",
     "react-native-action-button": "^2.8.4",
+    "react-native-alert-input": "^1.0.5",
     "react-native-background-fetch": "^2.4.3",
     "react-native-fit-image": "^1.5.4",
     "react-native-image-picker": "^0.26.10",
@@ -20,10 +21,12 @@
     "react-native-maps": "^0.21.0",
     "react-native-modal-dropdown": "^0.6.2",
     "react-native-navigation": "^1.1.468",
+    "react-native-prompt": "^1.0.0",
     "react-native-push-notification": "^3.0.2",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "rn-prompt": "^1.0.3",
     "utf8": "^3.0.0"
   },
   "devDependencies": {
