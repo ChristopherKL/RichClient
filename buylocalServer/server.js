@@ -823,9 +823,10 @@ api.post('/login', function (req,res){
         include: [ { as: "sender", model: Verhandlung, attributes: ['AngebotID'] }],
         where: {BenutzerName : req.body.BenutzerName}}).then(benutzer =>{
           if(benutzer){
-
-            completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort,key);
-            var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
+            try{
+              completePassphraseWithExtra = cryptico.decrypt(req.body.Passwort,key);
+              var completePassphraseWithout= completePassphraseWithExtra.plaintext.substring(0, completePassphraseWithExtra.plaintext.length -16);//deletes last 16 chars (the random signs)
+            }catch{res.json({success:false,message:"Token falsch"})}
             if(benutzer.Passwort==completePassphraseWithout){
               //no Public KEy before first login... at first login.. add public key
               if(!benutzer.PublicKey){
