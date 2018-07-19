@@ -80,7 +80,7 @@ export class NegotiationScreen extends Component {
             passProps: { onChangedNeg: this.props.onChangedNeg, 
                 updateCallback: () => { this.setState({rated: true}) },
                 negId: this.props.negData.VerhandlungID,
-                recipient: (this.state.isSender) ? this.props.negData.Empfänger : this.props.negData.Absender,
+                recipient: (this.state.isSender) ? this.props.negData.Absender : this.props.negData.Empfänger,
             },
             title: "Nutzer bewerten"
         });
