@@ -295,9 +295,9 @@ api.get('/suchanfrageLoeschen/:suchanfrageID/:Token', function (req, res) {
 })
 
 api.get('/suchanfragenListe/:Token', function (req,res) {
-  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
-  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
   try{
+    var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
@@ -538,7 +538,7 @@ api.post('/checkverhandlung', function(req,res){
             }else if(verhandlung.Empfänger==decryptedToken.BenutzerID){
               Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:prevVerhandlung.VerhandlungID}}).then(verhandlung=>{
                 if(prevVerhandlung.AbsenderCheck==true){
-                  Angebot.destroy({where:{AngebotID:verhandlung.AngebotID}}).then(a=>{
+                  Angebot.destroy({where:{AngebotID:prevverhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
                 }else{
