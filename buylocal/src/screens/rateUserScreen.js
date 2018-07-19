@@ -114,7 +114,6 @@ export class RateUserScreen extends Component {
                 <View style={styles.headlineContainer}>
                    <Text style={styles.headline}>Bewerte Partner</Text>
                 </View>
-                
                 {this.renderStarContainer()}
 
                 <View style={styles.inputBoxContainer}>
@@ -136,6 +135,7 @@ export class RateUserScreen extends Component {
                         <Text>Bewertung abgeben</Text>
                     </TouchableOpacity>
                 </View>
+
             </View>
         );
     }
@@ -152,7 +152,7 @@ const styles = StyleSheet.create ({
         padding: 10
     },
     inputContainer: {
-        height: 300,
+        height: 150,
         borderColor: 'gray', 
         borderWidth: 1,
         textAlignVertical: 'top'

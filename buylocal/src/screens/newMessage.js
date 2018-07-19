@@ -140,7 +140,7 @@ const styles = StyleSheet.create ({
         padding: 10
     },
     inputContainer: {
-        height: 300,
+        height: 150,
         borderColor: 'gray', 
         borderWidth: 1,
         textAlignVertical: 'top'
