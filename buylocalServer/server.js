@@ -621,9 +621,10 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
             var queryProms = [];
             for(var i=0;i<nachrichten.length;i++){
               nachrichtenArray.push(nachrichten[i].get(0));
-              console.log(nachrichten[i].get(0).Gelesen);
+              console.log(nachrichten[i].get(0));
               if(!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID&&nachrichten[i].get(0).Gelesen=='Invalid date'){
-                queryproms.push(Nachricht.update({gelesen:Date.now()},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
+                console.log("try to update");
+                queryproms.push(Nachricht.update({Gelesen:Date.now()},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
               }
             }
             Promise.all(queryProms).then(() => {
