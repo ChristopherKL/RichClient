@@ -525,12 +525,9 @@ api.post('/checkverhandlung', function(req,res){
         Verhandlung.findOne({where:{VerhandlungID:req.body.VerhandlungID}}).then(verhandlung=>{
           if(verhandlung){
             var prevVerhandlung=verhandlung;
-            console.log(prevVerhandlung.EmpfängerCheck);
             if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                console.log(prevVerhandlung.EmpfängerCheck);
                 if(prevVerhandlung.EmpfängerCheck==true){
-                  console.log("test");
                   Angebot.destroy({where:{AngebotID:prevVerhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
