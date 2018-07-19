@@ -147,7 +147,13 @@ export class NegotiationScreen extends Component {
         
     }
     renderLeftButton = () => {
+        if(this.props.negData != null) {
+            if(this.props.negData.AngebotID == null) {
+                return <Text>Angebot bereits beendet</Text>;
+            }
+        }
         if(this.state.confirmed == null) {
+
             return (
                 <TouchableOpacity
                 style={styles.button}
