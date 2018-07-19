@@ -6,11 +6,17 @@ import {
 
 
 export default class InfoScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+        {
+          icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+        }
+      ]
+  };
     render() {
         return (
             <View>
                 <Text>
-                    Infos!
+                    Buylocal FH Bielefeld 2018 Christopher Kluck, Karl Piplies, Stefan Schuck
                 </Text>
             </View>
         );
