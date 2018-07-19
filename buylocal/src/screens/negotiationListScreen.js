@@ -61,14 +61,14 @@ export class NegotiationListScreen extends Component {
         >
             <View style={styles.negContainer}>
                 <View style={styles.flowContainer}>
-                    <Text style={item.Gelesen ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
+                    <Text style={item.ungelesene.length == 0 ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
                         {(this.props.userData.username === item.sender.BenutzerName) ? item.recipient.BenutzerName : item.sender.BenutzerName}
                     </Text>
-                    <Text style={item.Gelesen ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
+                    <Text style={item.ungelesene.length == 0 ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
                         {item.last_edited}
                     </Text>
                 </View>
-                <Text style={item.Gelesen ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
+                <Text style={item.ungelesene.length == 0 ? { fontWeight: 'normal' } : { fontWeight: 'bold' }}>
                     {item.Betreff}
                 </Text>
             </View>
