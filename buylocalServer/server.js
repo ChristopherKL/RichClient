@@ -525,9 +525,10 @@ api.post('/checkverhandlung', function(req,res){
         Verhandlung.findOne({where:{VerhandlungID:req.body.VerhandlungID}}).then(verhandlung=>{
           if(verhandlung){
             var prevVerhandlung=verhandlung;
+            console.log(prevVerhandlung.EmpfängerCheck);
             if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                if(prevVerhandlung.EmpfängerCheck){
+                if(prevVerhandlung.EmpfängerCheck==true){
                   Angebot.destroy({where:{AngebotID:verhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
@@ -537,7 +538,7 @@ api.post('/checkverhandlung', function(req,res){
               })
             }else if(verhandlung.Empfänger==decryptedToken.BenutzerID){
               Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                if(prevVerhandlung.AbsenderCheck){
+                if(prevVerhandlung.AbsenderCheck==true){
                   Angebot.destroy({where:{AngebotID:verhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
