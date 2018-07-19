@@ -563,7 +563,7 @@ api.get("/verhandlungen/:Token", function (req,res){
     if(decryptedToken.exp>current_time){
       Verhandlung.findAll({
         attributes: Object.keys(Verhandlung.attributes).concat([
-          [Sequelize.literal('(SELECT MAX(datum) FROM Nachricht AS sortierte WHERE sortierte.VerhandlungID = Verhandlung.VerhandlungID LIMIT 1)'), 'last_edited']
+          [Sequelize.literal('(SELECT DATE_FORMAT(MAX(datum), "%H:%i %M %d %Y") FROM Nachricht AS sortierte WHERE sortierte.VerhandlungID = Verhandlung.VerhandlungID LIMIT 1)'), 'last_edited']
         ]),
       include: [  { as: "recipient", model: Benutzer, attributes: ['BenutzerName'] },
                   { as: "sender", model: Benutzer, attributes: ['BenutzerName']},
