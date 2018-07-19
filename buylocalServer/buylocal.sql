@@ -36,13 +36,34 @@ CREATE TABLE `Kategorie` (
 INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (1,"Elektronik");
 INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (2,"Haustiere");
 INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (3,"Haus & Garten");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (4,"Familie,Kind & Baby");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (5,"Freizeit, Hobby & Nachbarschaft");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (6,"Immobilien");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (7,"Auto, Rad & Boot");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (8,"Jobs");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (9,"Musik, Filme & Bücher");
+INSERT INTO `Kategorie` (`KategorieID`,`Name`) VALUES (10,"Eintrittskarten & Tickets");
 
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (4,"Handy & Telefon",1);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (5,"Haushaltsgeräte",1);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (6,"Hunde",2);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (7,"Katzen",2);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (8,"Küche & Esszimmer",3);
-INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (9,"Wohnzimmer",3);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (11,"Handy & Telefon",1);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (12,"Haushaltsgeräte",1);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (21,"Hunde",2);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (22,"Katzen",2);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (31,"Küche & Esszimmer",3);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (32,"Wohnzimmer",3);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (41,"Baby- & Kinderkleidung",4);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (42,"Kinderwagen & Buggys",4);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (51,"Kunst & Antiquitäten",5);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (52,"Sammeln",5);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (61,"Gewerbeimmobilien",6);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (62,"Häuser zum Kauf",6);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (71,"Autos",7);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (72,"Fahrräder & Zubehör",7);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (81,"Gastronomie & Tourismus",8);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (82,"Bau, Handwerk & Produktion",8);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (91,"Bücher & Zeitschriften",9);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (92,"Film & DVD",9);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (101,"Konzerte",10);
+INSERT INTO `Kategorie` (`KategorieID`,`Name`,`UeberKategorie`) VALUES (102,"Bahn",10);
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,7 +240,7 @@ CREATE TABLE `Nachricht` (
   `VerhandlungID` int(11) NOT NULL,
   `Datum` datetime NOT NULL,
   `Text` varchar(1000) NOT NULL,
-  `Gelesen` datetime DEFAULT '0000-00-00 00:00:00',
+  `Gelesen` timestamp DEFAULT 0,
   `Absender` int(11) NOT NULL,
   PRIMARY KEY (`NachrichtID`),
   CONSTRAINT `fk_Nachricht_1` FOREIGN KEY (`VerhandlungID`) REFERENCES `Verhandlung` (`VerhandlungID`) ON DELETE CASCADE ON UPDATE NO ACTION
