@@ -526,11 +526,23 @@ api.post('/checkverhandlung', function(req,res){
           if(verhandlung){
             if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                res.json({success:true,message:"Verhandlung gecheckt"})
+                if(verhandlung.AbsenderCheck==true&&verhandlung.EmpfängerCheck==true){
+                  Verhandlung.destroy({where:{VerhandlungID:verhandlung.VerhandlungID}}).then(a=>{
+                    res.json({success:true,message:"Verhandlung gecheckt"});
+                  })
+                }else{
+                  res.json({success:true,message:"Verhandlung gecheckt"});
+                }
               })
             }else if(verhandlung.Empfänger==decryptedToken.BenutzerID){
               Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                res.json({success:true,message:"Verhandlung gecheckt"})
+                if(verhandlung.AbsenderCheck==true&&verhandlung.EmpfängerCheck==true){
+                  Verhandlung.destroy({where:{VerhandlungID:verhandlung.VerhandlungID}}).then(a=>{
+                    res.json({success:true,message:"Verhandlung gecheckt"});
+                  })
+                }else{
+                  res.json({success:true,message:"Verhandlung gecheckt"});
+                }
               })
             }else{
               res.json({success:false,message:"Benutzer nicht in der Verhandlung"});
