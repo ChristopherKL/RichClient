@@ -527,7 +527,7 @@ api.post('/checkverhandlung', function(req,res){
             var prevVerhandlung=verhandlung;
             if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                if(prevVerhandlungEmpfängerCheck){
+                if(prevVerhandlung.EmpfängerCheck){
                   Angebot.destroy({where:{AngebotID:verhandlung.AngebotID}}).then(a=>{
                     res.json({success:true,message:"Verhandlung gecheckt"});
                   })
