@@ -68,9 +68,6 @@ const Op = Sequelize.Op;
 api.use(bodyParser.urlencoded({ extended: false }));
 api.use(bodyParser.json());
 
-api.post('/deleteuser', function(req,res){
-
-})
 
 
 
@@ -587,6 +584,7 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
               }
             }
             Promise.all(queryProms).then(() => {
+              console.log(nachrichtenArray);
                 res.json({success:true, Nachrichten:nachrichtenArray});
             })
           })
