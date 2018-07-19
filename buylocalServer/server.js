@@ -24,7 +24,7 @@ var Bewertung = require("./server/models/bewertung");
 var Verhandlung = require("./server/models/verhandlung");
 var Suchanfrage = require("./server/models/suchanfrage");
 var BereitsAngezeigt = require("./server/models/bereitsangezeigt");
-var Meldung = require("./server/models/Meldung");
+var Meldung = require("./server/models/meldung");
 
 const { NominatimJS } = require('nominatim-js');
 
