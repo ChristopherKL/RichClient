@@ -10,6 +10,12 @@ import {
 import { connect } from 'react-redux';
 
 export class SearchResultsScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
     constructor(props) {
         super(props);
     }

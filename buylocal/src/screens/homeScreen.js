@@ -17,10 +17,18 @@ import PushNotification from 'react-native-push-notification';
 
 
 export class HomeScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+          {
+            icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+          }
+        ]
+    };
+
     constructor(props) {
         super(props)
         this.state = {newestNearOffers: [], newestOffers: [], savedSearchRes: []}
     }
+     
 
 
     componentWillReceiveProps(nextProps) {

@@ -13,6 +13,12 @@ import getProfile from '../apiCom/getProfile';
 import deleteOffer from '../apiCom/deleteOffer';
 
 export class MyOffersScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+        {
+          icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+        }
+      ]
+  };
     constructor(props) {
         super(props)
         this.state = ({isLoading: true});

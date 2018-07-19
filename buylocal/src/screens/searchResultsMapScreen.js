@@ -12,6 +12,12 @@ import MapView from 'react-native-maps';
 import { Marker } from 'react-native-maps';
 
 export class SearchResultsMapScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
     constructor(props) {
         super(props);
         this.state={isReady: false};

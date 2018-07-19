@@ -12,6 +12,12 @@ import getRatings from '../apiCom/getRatings';
 
 
 export class UserRatingsScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
     constructor(props) {
         super(props)
         this.state = ({isLoading: true});

@@ -15,6 +15,12 @@ import {loginActionCreator} from '../redux/actions/loginAction';
 
 
 export class EditProfileScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+        {
+          icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+        }
+      ]
+    };
     constructor(props) {
         super(props);
         this.state = { inputUsername: this.props.userData.username, inputMail: this.props.userData.mail};

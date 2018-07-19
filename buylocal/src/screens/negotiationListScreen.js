@@ -11,6 +11,12 @@ import createToken from '../apiCom/createToken';
 import getNegotiations from '../apiCom/getNegotiations';
 
 export class NegotiationListScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+        {
+          icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+        }
+      ]
+  };
     constructor(props) {
         super(props)
         this.state = ({ isLoading: true });

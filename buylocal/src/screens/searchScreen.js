@@ -15,6 +15,12 @@ import createToken from '../apiCom/createToken';
 import startSearch from '../apiCom/startSearch';
 
 export class SearchScreen extends Component {
+	static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
 	constructor(props) {
 		super(props);
 		this.state = {

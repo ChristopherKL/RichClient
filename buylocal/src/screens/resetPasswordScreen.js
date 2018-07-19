@@ -9,6 +9,12 @@ import {
 
 
 export default class ResetPasswordScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
     constructor(props) {
         super(props);
         this.state = { username: '', mail: ''};

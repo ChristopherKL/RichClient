@@ -13,6 +13,12 @@ import deleteSavedSearch from "../apiCom/deleteSavedSearch";
 import { connect } from 'react-redux';
 
 export class SavedSearchesScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
     constructor(props) {
         super(props);
         this.state = {

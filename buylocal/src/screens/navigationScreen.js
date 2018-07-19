@@ -13,6 +13,12 @@ import BackgroundFetch from "react-native-background-fetch";
 
 
 export class NavigationScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+        {
+          icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+        }
+      ]
+  };
     constructor(props) {
         super(props);
 

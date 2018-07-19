@@ -15,6 +15,12 @@ import Prompt from 'rn-prompt';
 
 
 export class ViewOfferScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+		{
+		  icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+		}
+	  ]
+  	};
     constructor(props) {
         super(props)
         this.state = {imgs: [], hashtags: [], reported: false};

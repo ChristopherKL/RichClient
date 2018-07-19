@@ -14,6 +14,12 @@ import confirmNegotiation from '../apiCom/confirmNegotiation'
 
 
 export class NegotiationScreen extends Component {
+    static navigatorButtons = { rightButtons: [
+        {
+          icon: require('../../img/ic_launcher.png'), // for icon button, provide the local image asset name
+        }
+      ]
+  };
     constructor(props) {
         super(props)
         this.state = {partnerConfirmed: null, confirmed: null, rated: null, isSender: null, negData: null, messages: [] , imgs: [], hashtags: []};
@@ -80,7 +86,7 @@ export class NegotiationScreen extends Component {
             passProps: { onChangedNeg: this.props.onChangedNeg, 
                 updateCallback: () => { this.setState({rated: true}) },
                 negId: this.props.negData.VerhandlungID,
-                recipient: (this.state.isSender) ? this.props.negData.Absender : this.props.negData.Empfänger,
+                recipient: (this.state.isSender) ? this.props.negData.Empfänger : this.props.negData.Absender,
             },
             title: "Nutzer bewerten"
         });
@@ -147,11 +153,6 @@ export class NegotiationScreen extends Component {
         
     }
     renderLeftButton = () => {
-        if(this.props.negData != null) {
-            if(this.props.negData.AngebotID == null) {
-                return <Text>Angebot bereits beendet</Text>;
-            }
-        }
         if(this.state.confirmed == null) {
 
             return (
@@ -172,6 +173,11 @@ export class NegotiationScreen extends Component {
                     <Text>Partner bewerten</Text>
                 </TouchableOpacity>
             )
+        }
+        else if(this.props.negData != null) {
+            if(this.props.negData.AngebotID == null) {
+                return <Text>Angebot bereits beendet</Text>;
+            }
         }
         else {
             return (null);
