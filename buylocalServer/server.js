@@ -320,11 +320,11 @@ api.get('/suchanfragenAusfuehren/:Token', function (req,res){
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
       let results = [], searchQueries = [];
-      function handleNewOffers(mySuchanfrageID, myAngebote) {
+      function handleNewOffers(mySuchanfrageData, myAngebote) {
         let excludeOffers = []
 
-        results.push({suchanfrageID: mySuchanfrageID, neueAngebot: myAngebote})
-        myAngebote.forEach((angebot) => excludeOffers.push({SuchanfrageID: mySuchanfrageID, AngebotID: angebot.AngebotID}));
+        results.push({suchanfrageID: mySuchanfrageData['id'], suchanfrageName:mySuchanfrageData['name'], neueAngebot: myAngebote})
+        myAngebote.forEach((angebot) => excludeOffers.push({SuchanfrageID: mySuchanfrageData['id'], AngebotID: angebot.AngebotID}));
         BereitsAngezeigt.bulkCreate(excludeOffers).then(() => {})
       }
 
@@ -336,7 +336,7 @@ api.get('/suchanfragenAusfuehren/:Token', function (req,res){
           }
           queryData.include.push({model: BereitsAngezeigt, where:{ SuchanfrageID: anfrage.SuchanfrageID }, required: false})
           queryData.where["SuchanfrageID"] = Sequelize.where(Sequelize.col("BereitsAngezeigts.SuchanfrageID"), 'IS', null)
-          searchQueries.push(Angebot.findAll(queryData).then(handleNewOffers.bind(null, anfrage.SuchanfrageID)))
+          searchQueries.push(Angebot.findAll(queryData).then(handleNewOffers.bind(null, {id: anfrage.SuchanfrageID, name: anfrage.Name})))
         })
         Promise.all(searchQueries).then(() => res.json({success: true, Resultate: results}))
       })
