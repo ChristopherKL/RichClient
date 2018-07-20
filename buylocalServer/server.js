@@ -295,9 +295,9 @@ api.get('/suchanfrageLoeschen/:suchanfrageID/:Token', function (req, res) {
 })
 
 api.get('/suchanfragenListe/:Token', function (req,res) {
-  var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
-  var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
   try{
+    var decryptedTokenWithExtra = cryptico.decrypt(decodeURIComponent(req.params.Token),key).plaintext;
+    var decryptedToken=decryptedTokenWithExtra.substring(0, decryptedTokenWithExtra.length -16);
     decryptedToken = jwt.verify(decryptedToken,secret);
     var current_time = Date.now() /1000;
     if(decryptedToken.exp>current_time){
@@ -524,13 +524,26 @@ api.post('/checkverhandlung', function(req,res){
       if(decryptedToken.exp>current_time ){
         Verhandlung.findOne({where:{VerhandlungID:req.body.VerhandlungID}}).then(verhandlung=>{
           if(verhandlung){
+            var prevVerhandlung=verhandlung;
             if(verhandlung.Absender==decryptedToken.BenutzerID){
               Verhandlung.update({AbsenderCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                res.json({success:true,message:"Verhandlung gecheckt"})
+                if(prevVerhandlung.EmpfängerCheck==true){
+                  Angebot.destroy({where:{AngebotID:prevVerhandlung.AngebotID}}).then(a=>{
+                    res.json({success:true,message:"Verhandlung gecheckt"});
+                  })
+                }else{
+                  res.json({success:true,message:"Verhandlung gecheckt"});
+                }
               })
             }else if(verhandlung.Empfänger==decryptedToken.BenutzerID){
               Verhandlung.update({EmpfängerCheck:true},{where:{VerhandlungID:verhandlung.VerhandlungID}}).then(verhandlung=>{
-                res.json({success:true,message:"Verhandlung gecheckt"})
+                if(prevVerhandlung.AbsenderCheck==true){
+                  Angebot.destroy({where:{AngebotID:prevVerhandlung.AngebotID}}).then(a=>{
+                    res.json({success:true,message:"Verhandlung gecheckt"});
+                  })
+                }else{
+                  res.json({success:true,message:"Verhandlung gecheckt"});
+                }
               })
             }else{
               res.json({success:false,message:"Benutzer nicht in der Verhandlung"});
@@ -609,8 +622,8 @@ api.get('/nachrichten/:VerhandlungID/:Token', function (req,res){
             var queryProms = [];
             for(var i=0;i<nachrichten.length;i++){
               nachrichtenArray.push(nachrichten[i].get(0));
-              if(!nachrichten[i].get(0).Absender==decryptedToken.BenutzerID&&!nachrichten[i].get(0).Gelesen){
-                queryproms.push(Nachricht.update({gelesen:Date.now()},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
+              if((nachrichten[i].get(0).Absender!=decryptedToken.BenutzerID)&&(nachrichten[i].get(0).Gelesen.indexOf('date')>-1)){
+                queryProms.push(Nachricht.update({Gelesen:Date.now()},{where:{NachrichtID:nachrichten[i].get(0).NachrichtID}}));
               }
             }
             Promise.all(queryProms).then(() => {

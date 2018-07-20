@@ -223,7 +223,7 @@ CREATE TABLE `Meldung` (
   KEY `fk_Meldung_1_idx` (`Melder`),
   KEY `fk_Meldung_2_idx` (`Angebot`),
   CONSTRAINT `fk_Meldung_1` FOREIGN KEY (`Melder`) REFERENCES `Benutzer` (`BenutzerID`) ON DELETE SET NULL ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Meldung_2` FOREIGN KEY (`Angebot`) REFERENCES `Angebot` (`AngebotID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Meldung_2` FOREIGN KEY (`Angebot`) REFERENCES `Angebot` (`AngebotID`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
