@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ReactJS</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# ReactJS
+
+---
+
+# Agenda
+
+1. Use JSX With React
+2. Create Custom React Components
+3. Conditionally Rendering A React Component
+4. Use Event Handlers With React
+5. Stop Memory Leaks With ComponentWillUnmount Method
+6. Make HTTP Requests With React
+
+---
+
+# Use JSX with React
+```javascript
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const rootElement = document.getElementById(
+  'root',
+)
+const element = React.createElement('div', {
+  className: 'container',
+  children: 'Hello World',
+})
+const content = 'Hello World'
+const myClassName = 'container'
+const props = {
+  className: 'container',
+  children: 'Hello World',
+}
+ReactDOM.render(element, rootElement)
+</script>
+</body>
+```
+
+---
+
+# Create Custom React Components
+```javascript
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const rootElement = document.getElementById(
+  'root',
+)
+const Message = props => (
+  <div>{props.children}</div>
+)
+const element = (
+  <div className="container">
+    <Message>
+      Hello World
+      <Message>Goodbye World</Message>
+    </Message>
+  </div>
+)
+ReactDOM.render(element, rootElement)
+</script>
+</body>
+```
+
+---
+
+# Conditionally Rendering A React Component
+```javascript
+<body>
+<div id="root"></div>
+<script type="text/babel">
+function Message({message}) {
+  return (
+    <div>
+      {message ? (
+        <div>{message}</div>
+      ) : (
+        <div>No Message</div>
+      )}
+    </div>
+  )
+}
+ReactDOM.render(
+  <Message message={null} />,
+  document.getElementById('root'),
+)
+</script>
+</body>
+```
+
+---
+
+# Use Event Handlers With React 1/2
+```javascript
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const state = {eventCount: 0, username: ''}
+function App() {
+  return (
+    <div>
+      <p>
+        There have been {state.eventCount} events
+      </p>
+      <p>
+        <button onClick={increment}>⚛️</button>
+      </p>
+      <p>You typed: {state.username}</p>
+      <p>
+        <input onChange={updateUsername} />
+      </p>
+    </div>
+  )
+}
+```
+
+---
+
+# Use Event Handler With React 2/2
+```javascript
+function increment() {
+  setState({
+    eventCount: state.eventCount + 1,
+  })
+}
+function updateUsername(event) {
+  setState({
+    username: event.target.value,
+  })
+}
+function setState(newState) {
+  Object.assign(state, newState)
+  renderApp()
+}
+function renderApp() {
+  ReactDOM.render(
+    <App />,
+    document.getElementById('root'),
+  )
+}
+renderApp()
+</script>
+</body>
+```
+
+---
+
+# Stop Memory Leaks With ComponentWillUnmount Method 1/3
+```javascript
+<body>
+<script type="text/babel">
+class StopWatch extends React.Component {
+  state = {lapse: 0, running: false}
+  handleRunClick = () => {
+    this.setState(state => {
+      if (state.running) {
+        clearInterval(this.timer)
+      } else {
+        const startTime =
+          Date.now() - this.state.lapse
+        this.timer = setInterval(() => {
+          this.setState(
+            {lapse: Date.now() - startTime,},
+            () => {console.log(this.state.lapse)},
+          )
+        })
+      }
+      return {running: !state.running}
+    })
+  }
+ ```
+
+---
+  
+ # Stop Memory Leaks With ComponentWillUnmount Method 2/3
+  ```javascript
+  componentWillUnmount() {clearInterval(this.timer)}
+  render() {
+    const {lapse, running} = this.state
+    const buttonStyles = {
+      border: '1px solid #ccc', background: '#fff'
+    }
+    return (
+      <div style={{textAlign: 'center'}}>
+        <label
+          style={{fontSize: '5em', display: 'block',
+          }}
+        >
+          {lapse}ms
+        </label>
+        <button
+          onClick={this.handleRunClick}
+          style={buttonStyles}
+        >
+          {running ? 'Stop' : 'Start'}
+        </button>
+      </div>
+    )
+  }
+}
+```
+
+---
+
+# Stop Memory Leaks With ComponentWillUnmount Method 3/3
+```javascript
+class App extends React.Component {
+  state = {showStopWatch: true}
+  render() {
+    const {showStopWatch} = this.state
+    return (
+      <div>
+        <label>
+          Show Stop Watch{' '}
+          <input
+            type="checkbox"
+            checked={showStopWatch}
+            onChange={() =>
+              this.setState(s => ({showStopWatch: !s.showStopWatch,}))}
+          />
+        </label>
+        <hr />
+        {showStopWatch ? <StopWatch /> : null}
+      </div>
+    )}}
+ReactDOM.render(
+  <App />, 
+  document.getElementById('root'),)
+</script>
+</body>
+```
+
+---
+
+# Make HTTP Requests With React 3/3
+```javascript
+<body>
+<div id="root"></div>
+<script type="text/babel">
+class UserCompany extends React.Component {
+  state = {company: undefined, loaded: false}
+  fetchCompany = () => {
+    axios({
+      url: 'https://api.github.com/graphql',
+      method: 'post',
+      data: {
+        query: `{
+          user(login: "${this.props.username}") {
+            company
+          }
+        }`,
+      },
+    }).then(
+      response => {
+        this.setState({
+          loaded: true,
+          company:
+            response.data.data.user.company,
+        })
+      },
+    )
+  }
+```
+ 
+---
+  
+# Make HTTP Requests With React 3/3
+```javascript
+  componentDidMount() {
+    this.fetchCompany()
+  }
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.username !== this.props.username
+    ) {
+      this.fetchCompany()
+    }
+  }
+  render() {
+    return '...'
+  }
+}
+```
+
+---
+
+# Make HTTP Requests With React 3/3
+```javascript
+class App extends React.Component {
+  state = {username: undefined}
+  handleSubmit = e => {
+    e.preventDefault()
+    this.setState({username: this.inputNode.value,})
+  }
+  render() {
+    const {username} = this.state
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input
+            ref={node => (this.inputNode = node)}
+          />
+        </form>
+        {username ? (
+          <UserCompany username={username} />
+        ) : null}
+      </div>
+    )
+  }
+}
+ReactDOM.render(
+  <App />, document.getElementById('root'),
+)
+</script>
+</body>
+```
+
+
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>

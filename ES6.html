@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ES6 Features</title>
+    <meta charset="utf-8">
+    <style>
+      @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+      @import url(https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic);
+      @import url(https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+      body { font-family: 'Droid Serif'; }
+      h1, h2, h3 {
+        font-family: 'Yanone Kaffeesatz';
+        font-weight: normal;
+      }
+      .remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# ES6 Features
+
+---
+
+# Agenda
+<ol>
+<li>Variablen Deklaration</li>
+<li>Konstanten Deklaration</li>
+<li>Arrow Funktionen</li>
+<li>Implicit returns</li>
+<li>Template Literale</li>
+<li>Wert-Schlüssel Shorthand</li>
+<li>Methodendefinitions Shorthand</li>
+<li>Module</li>
+<li>Module Loader</li>
+<li>Maps</li>
+<li>Sets</li>
+<li>Klassen/Konstructor Funktionen</li>
+</ol>
+---
+
+#Agenda
+<ol start = 13>
+<li>Vererbung</li>
+<li>Promises/Callbacks</li>
+<li>Destrukturierende Zuweisung</li>
+<li>Array Iteration</li>
+<li>Default Parameter</li>
+<li>Spread Syntax</li>
+<li>Iteratoren</li>
+<li>For of und Iteratoren</li>
+<li>Generatoren und Iteratoren</li>
+<li>Unicode</li>
+<li>Proxies</li>
+<li>Symbole</li>
+</ol>
+
+---
+# Variablen Deklaration
+* mit *let* lassen sich Variablen mit einem Block Reichweite umsetzten
+    * nicht neu deklarierbar 
+        * **BSP** int bleibt int
+		
+**ES 6**
+```javascript
+let x = 0;
+```
+**vorher**
+```javascript 
+var x = 0;
+```
+
+# Konstanten Deklaration
+* Seit ES6 gibt es das Konstanten
+    * nicht neu deklarierbar
+    * nicht neu zuweisbar
+	
+```javascript
+const CONST_IDENTIFIER = 0// Konstanten sind per Konvention großgeschrieben
+```
+---
+     
+# Arrow Funktionen
+
+* Mit dem Arrow Function Syntax lassen sich Funktionen schneller erstellen
+    * man kann das deklarieren überspringen
+	
+**ES 6**
+```javascript 
+let func = a => {}         // parentheses optional with one parameter
+let func = (a, b, c) => {} // parentheses required with multiple parameters
+```
+**vorher**
+```javascript 
+function func(a, b, c) {}        // function declaration
+var func = function(a, b, c) {}  // function expression
+```
+---
+# Implicit returns
+* *return* kann durch arrows ersetzt werden
+    * spart den Block Body
+**ES 6**
+```javascript 
+let func = (a, b, c) => a + b + c; // geschweifte Klammern müssen 
+                                           // ausgelassen werden
+```
+**vorher**
+```javascript 
+function func(a, b, c) { return a + b + c; } 
+```
+---
+# Template Literale
+
+* Ausdrücke lassen sich Template Literale Strings einfach anhängen
+
+    **ES 6**
+```javascript 
+let str = `Release Date: ${date}`;
+```
+    **vorher**
+```javascript 
+var str = 'Release date: ' + date;
+```
+
+* Mit Template Literalen lassen sich mehrzeilige Strings einfach erfassen
+
+    **ES 6**
+```javascript 
+let str = `This text
+           is on
+           multiple lines`;
+```
+    **vorher**
+```javascript 
+var str = 'This text ' +
+          'is on ' +
+          'multiple lines';
+```
+---
+# Wert-Schlüssel Shorthand
+* Variablen mit dem selben Namen wie Werte lassen sich schneller zuweisen
+
+    **ES 6**
+```javascript 
+let obj = {  
+    a, 
+    b
+}
+```
+    **vorher**
+```javascript 
+var obj = { 
+    a: a, 
+    b: b
+}
+```
+---
+# Methodendefinitions Shorthand
+* beim zuweisen einer Methode zu einem Objekt kann man das *function* weglassen
+
+    **ES 6**
+```javascript
+var obj = {
+    a: function(c, d) {},
+    b: function(e, f) {}
+};
+``` 
+    **vorher**
+```javascript 
+let obj = {
+    a(c, d) {},
+    b(e, f) {}
+}
+```
+---
+# Module
+* Komponenten lassen sich definieren und auslagern
+* Laufzeitverhalten wird durch die *Module Loader* definiert
+* Module können genutzt werden um code zwischen Dateien zu transportieren
+```javascript 
+<script src="export.js"></script>
+<script type="module" src="import.js"></script>
+```  
+* exportieren  
+```javascript
+let func = a => a + a;
+let obj = {};
+let x = 0;
+export { func, obj, x };
+```
+* importieren
+```javascript
+import { func, obj, x } from './export.js';
+console.log(func(3), obj, x);
+```
+---
+# Module Loader
+* Es werden verschiedene *Loader* Arten unterstützt
+    * Dynamisches Laden
+    * State Isolation
+    * Global Namespace isolation
+    * Compilation Hooks
+    * Nested virtualization
+* Der standard *Loader* kann definiert werden und man kann auch spezielle *Loader* konstruieren um Code in einem anderen Kontext zu laden
+```javascript
+// Create execution sandboxes – new Loaders
+var loader = new Loader({
+  global: fixup(window) // replace ‘console.log’
+});
+loader.eval("console.log('hello world!');");
+```
+---
+# Maps
+```javascript
+// Maps
+var m = new Map();
+m.set("hello", 42);
+m.set(s, 34);
+m.get(s) == 34;
+// Weak Maps
+var wm = new WeakMap();
+wm.set(s, { extra: 42 });
+wm.size === undefined
+```  
+# Sets
+```javascript
+// Sets
+var s = new Set();
+s.add("hello").add("goodbye").add("hello");
+s.size === 2;
+s.has("hello") === true;
+// Weak Sets
+var ws = new WeakSet();
+ws.add({ data: 42 });
+// Because the added object has no other references,
+// it will not be held in the set
+```
+---
+# Klassen/Konstructor Funktionen 1
+
+
+ES6 führt die Klassen Syntaxs über der prototype-basierten Konstruktor Funktion ein.
+
+*_ES5_*
+```javascript
+function Func(a, b) {
+    this.a = a;
+    this.b = b;
+}
+
+Func.prototype.getSum = function() {
+    return this.a + this.b;
+}
+
+var x = new Func(3, 4);
+```
+
+---
+
+# Klassen/Konstructor Funktionen 2
+
+
+*_ES6_*
+```javascript
+class Func {
+    constructor(a, b) {
+        this.a = a;
+        this.b = b;
+    }
+
+    getSum() {
+        return this.a + this.b;
+    }
+}
+
+let x = new Func(3, 4);
+```
+
+```javascript
+x.getSum(); // returns 7
+```
+
+---
+
+# Vererbung 1
+
+
+Das **extends** Schlüsselwort erstellt eine Subklasse.
+
+*_ES5_*
+```javascript
+function Inheritance(a, b, c) {
+    Func.call(this, a, b);
+
+    this.c = c;
+}
+
+Inheritance.prototype = Object.create(Func.prototype);
+Inheritance.prototype.getProduct = function() {
+    return this.a * this.b * this.c;
+}
+
+var y = new Inheritance(3, 4, 5);
+```
+
+---
+
+# Vererbung 2
+
+
+*_ES6_*
+````javascript
+class Inheritance extends Func {
+    constructor(a, b, c) {
+        super(a, b);
+
+        this.c = c;
+    }
+
+    getProduct() {
+        return this.a * this.b * this.c;
+    }
+}
+
+let y = new Inheritance(3, 4, 5);
+```
+
+```javascript
+y.getProduct(); // 60
+```
+
+---
+
+# Promises/Callbacks 1
+
+
+Promises representieren die komplettierung von einer asynchronen Funktion. Sie kann als alternative zu Ketten Funktionen benutzt werden.
+
+
+*_ES5 callback_*
+```javascript
+function doSecond() {
+    console.log('Do second.');
+}
+
+function doFirst(callback) {
+    setTimeout(function() {
+        console.log('Do first.');
+
+        callback();
+    }, 500);
+}
+
+doFirst(doSecond);
+```
+
+---
+
+# Promises/Callbacks 2
+
+
+*_ES6 Promise_*
+```javascript
+let doSecond = () => {
+    console.log('Do second.');
+}
+
+let doFirst = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        console.log('Do first.');
+
+        resolve();
+    }, 500);
+});
+
+doFirst.then(doSecond);
+```
+
+---
+
+# Promises/Callbacks 3
+
+
+Ein Beispiel unten zeigt für demonstrative Zwecke wie man eine moderne API holt. 
+
+*_ES5 callback_*
+```javascript
+function makeRequest(method, url, callback) {
+    var request = new XMLHttpRequest();
+
+    request.open(method, url);
+    request.onload = function() {
+        callback(null, request.response);
+    };
+    request.onerror = function() {
+        callback(request.response);
+    };
+    request.send();
+}
+
+makeRequest('GET', 'https://url.json', function (err, data) {
+        if (err) { 
+            throw new Error(err);
+        } else {
+            console.log(data);
+        }
+    }
+);
+```
+
+---
+
+# Promises/Callbacks 4
+
+
+*_ES6 Promise_*
+```javascript
+function makeRequest(method, url) {
+    return new Promise((resolve, reject) => {
+        let request = new XMLHttpRequest();
+
+        request.open(method, url);
+        request.onload = resolve;
+        request.onerror = reject;
+        request.send();
+    });
+}
+
+makeRequest('GET', 'https://url.json')
+.then(event => {
+    console.log(event.target.response);
+})
+.catch(err => {
+    throw new Error(err);
+});
+```
+
+---
+
+# Destrukturierende Zuweisung
+* Geschweifte Klammern, um den Variablen eines Objekts Werte zuzuweisen
+```javascript
+var obj = { a: 1, b: 2, c: 3 };
+```
+**ES 6**
+```javascript
+let {a, b, c} = obj;
+```
+**vorher**
+```javascript
+var a = obj.a;
+var b = obj.b;
+var c = obj.c;
+```
+
+---
+
+# Array Iteration
+* kürzere Syntax zur Iteration von Arrays und anderen iterierbaren Strukturen
+```javascript
+var arr = ['a', 'b', 'c'];
+```
+**ES 6**
+```javascript
+for (let i of arr) {
+console.log(i);
+}
+```
+**vorher**
+```javascript
+for (var i = 0; i < arr.length; i++) {
+console.log(arr[i]);
+}
+```
+
+---
+
+# Default Parameter
+* Funktionen können mit Default Parametern initialisiert werden
+    * genutzt, falls Argument nicht übergeben wird
+
+	**ES 6**
+```javascript
+let func = (a, b = 2) => {
+return a + b;
+}
+```
+**vorher**
+```javascript
+var func = function(a, b) {
+b = (b === undefined) ? 2 : b;
+return a + b;
+}
+```
+```javascript
+func(10);   // returns 12
+func(10, 5) // returns 15
+```
+
+---
+
+# Spread Syntax
+* Erweitern eines Arrays
+```javascript
+let arr1 = [1, 2, 3];
+let arr2 = ['a', 'b', 'c'];
+let arr3 = [...arr1, ...arr2];
+console.log(arr3); // [1, 2, 3, "a", "b", "c"]
+```
+* Nutzung als Funktionsargumente
+```javascript
+let arr1 = [1, 2, 3];
+let func = (a, b, c) => a + b + c;
+console.log(func(...arr1)); // 6
+```
+
+---
+
+# Iteratoren
+* Interfaces zum Typ Iterator
+```javascript
+interface IteratorResult {
+      done: boolean;
+      value: any;
+}
+interface Iterator {
+      next(): IteratorResult;
+}
+interface Iterable {
+      [Symbol.iterator](): Iterator
+}
+```
+* Beispiel Iterator
+```javascript
+let fibonacci = {
+      [Symbol.iterator]() {
+            let pre = 0, cur = 1;
+            return {
+                  next() {
+                          [pre, cur] = [cur, pre + cur];
+                          return { done: false, value: cur }
+      }
+    }
+  }
+}
+```
+
+---
+
+# For of und Iteratoren
+* Ausgabe der Fibonaccizahlen mit Hilfe von for of
+```javascript
+for (var n of fibonacci) {
+      // truncate the sequence at 1000
+      if (n > 1000)
+          break;
+      console.log(n);
+}
+```
+
+---
+
+# Generatoren und Iteratoren
+* Fibonaccizahlen mit einem Generator
+```javascript
+var fibonacci = {
+      [Symbol.iterator]: function*() {
+            var pre = 0, cur = 1;
+            for (;;) {
+                  var temp = pre;
+                  pre = cur;
+                  cur += temp;
+                  yield cur;
+            }      
+     }
+}
+```
+** yield gibt Zahlen zurück, diese warten bis sie mit einem next()-Aufruf abgerufen werden.
+
+---
+
+# Unicode
+* ES6 unterstützt Unicode in vollem Umfang
+
+```javascript
+// same as ES5.1
+"𠮷".length == 2
+
+// new RegExp behaviour, opt-in ‘u’
+"𠮷".match(/./u)[0].length == 2
+
+// new form
+"\u{20BB7}"=="𠮷"=="\uD842\uDFB7"
+
+// new String ops
+"𠮷".codePointAt(0) == 0x20BB7
+
+// for-of iterates code points
+for(var c of "𠮷") {
+  console.log(c);
+}
+```
+---
+# Proxies
+* ermöglichen erstellung eines Objektes das den selben Umfang an Funktionen und Verhalten, wie das Ursprungs Objekt hat
+    * für Interception
+    * für Objekt Virtualisierung
+    * für Logging/ Profiling und vieles mehr
+```javascript
+//  Proxy eines normalen Objektes
+var target = {};
+var handler = {
+  get: function (receiver, name) {
+    return `Hello, ${name}!`;
+  }
+};
+var p = new Proxy(target, handler);
+p.world === 'Hello, world!';
+```
+```javascript
+// Proxy eines funktion Objektes
+var target = function () { return 'I am the target'; };
+var handler = {
+  apply: function (receiver, ...args) {
+    return 'I am the proxy';
+  }
+};
+var p = new Proxy(target, handler);
+p() === 'I am the proxy';
+```
+---
+# Symbole
+* Symbole ermöglichen Zugriff auf Objekt Zustände
+```javascript
+var MyClass = (function() {
+  // Modul weites Symbol
+  var key = Symbol("key");
+  function MyClass(privateData) {
+    this[key] = privateData;
+  }
+  MyClass.prototype = {
+    doStuff: function() {
+      ... this[key] ...
+    }
+  };
+  return MyClass;
+})();
+var c = new MyClass("hello")
+c["key"] === undefined
+```
+    </textarea>
+    <script src="https://remarkjs.com/downloads/remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create();
+    </script>
+  </body>
+</html>
